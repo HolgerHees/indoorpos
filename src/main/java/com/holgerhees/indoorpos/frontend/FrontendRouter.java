@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.holgerhees.indoorpos.Router;
 import com.holgerhees.indoorpos.ApplicationConfig;
+import com.holgerhees.indoorpos.Router;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
 import com.holgerhees.web.PageDtoInitService;
 import com.holgerhees.web.model.PageDTO;
@@ -18,25 +18,27 @@ import com.holgerhees.web.model.Request;
 import com.holgerhees.web.view.View;
 
 @Component("frontendRouter")
-public class FrontendRouter implements Router{
+public class FrontendRouter implements Router
+{
 	private static Log LOGGER = LogFactory.getLog(Router.class);
-	private static DecimalFormat df = new DecimalFormat("#.###"); 
-	
+	private static DecimalFormat df = new DecimalFormat("#.###");
+
 	@Autowired
 	private ApplicationContext applicationContext;
 
 	@Autowired
 	private ApplicationConfig config;
-	
+
 	@Autowired
 	private PageDtoInitService pageDtoInitService;
 
-	public View routeRequest(Request request, boolean isPostRequest, DefaultServlet staticContentServlet){
-	
+	public View routeRequest(Request request, boolean isPostRequest, DefaultServlet staticContentServlet)
+	{
+
 		final long start = System.currentTimeMillis();
-		
+
 		Controller controller = null;
-		
+
 		if (request.getServletPath().startsWith("/tracker/"))
 		{
 			controller = (Controller) applicationContext.getBean("trackerController");
@@ -49,28 +51,30 @@ public class FrontendRouter implements Router{
 		{
 			controller = getStaticContentController(request, staticContentServlet);
 		}
-		else{
-			
+		else
+		{
+
 			controller = (Controller) applicationContext.getBean("homeController");
 		}
-		
+
 		View view = null;
-		
-		if( controller != null )
+
+		if (controller != null)
 		{
 			view = controller.handle(request);
 		}
-		
-		if( !request.hasPageDTO() )
+
+		if (!request.hasPageDTO())
 		{
 			pageDtoInitService.getPageDto(new PageDTO(), request);
 		}
-		
-		LOGGER.info("Handle '"+request.getServletPath()+" with '"+controller.getClass().getName()+"' in " + df.format(((System.currentTimeMillis() - start) / 1000.0f)) + " seconds");
-		
+
+		LOGGER.info("Handle '" + request.getServletPath() + " with '" + controller.getClass().getName() + "' in " + df
+			.format(((System.currentTimeMillis() - start) / 1000.0f)) + " seconds");
+
 		return view;
 	}
-	
+
 	private Controller getStaticContentController(Request request, DefaultServlet staticContentServlet)
 	{
 		request.getHttpResponse().setDateHeader("Expires", System.currentTimeMillis() + 2764800000L);
@@ -83,7 +87,7 @@ public class FrontendRouter implements Router{
 	private boolean isStaticContent(Request request)
 	{
 		final String path = request.getServletPath();
-		return path.startsWith("/css/") || path.startsWith("/img/") || path.startsWith("/js/") 
-				|| path.endsWith("favicon.ico") || path.endsWith("robots.txt");
+		return path.startsWith("/css/") || path.startsWith("/img/") || path.startsWith("/js/") || path.endsWith("favicon.ico") || path
+			.endsWith("robots.txt");
 	}
 }

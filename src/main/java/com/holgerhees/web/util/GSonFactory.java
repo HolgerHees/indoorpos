@@ -3,7 +3,8 @@ package com.holgerhees.web.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class GSonFactory {
+public class GSonFactory
+{
 
 	private static Gson gson = null;
 

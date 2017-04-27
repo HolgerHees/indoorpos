@@ -7,16 +7,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component("jdbcTemplate")
-public class JdbcTemplateDAO {
-	
+public class JdbcTemplateDAO
+{
+
 	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+	public void setDataSource(DataSource dataSource)
+	{
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
-	public JdbcTemplate getJdbcTemplate() {
+	public JdbcTemplate getJdbcTemplate()
+	{
 		return jdbcTemplate;
 	}
 }

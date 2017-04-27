@@ -12,8 +12,9 @@ public class TestController implements Controller
 {
 
 	@Override
-	public View handle(Request request) {
-		
+	public View handle(Request request)
+	{
+
 		return new JspView("/WEB-INF/jsp/test.jsp", request);
 	}
 

@@ -13,58 +13,59 @@ public @interface DbIndex
 	enum Type
 	{
 		PRIMARY_KEY
-		{
-			@Override
-			public String getSqlStatement(String... columnNames)
 			{
-				return "PRIMARY KEY (`" + split(columnNames, "`, `") + "`)";
-			}
-		},
+				@Override
+				public String getSqlStatement(String... columnNames)
+				{
+					return "PRIMARY KEY (`" + split(columnNames, "`, `") + "`)";
+				}
+			},
 
 		UNIQUE
-		{
-			@Override
-			public String getSqlStatement(String... columnNames)
 			{
-				return "UNIQUE KEY " + getName( this, columnNames ) + " (`" + split(columnNames, "`, `") + "`)";
-			}
-		},
+				@Override
+				public String getSqlStatement(String... columnNames)
+				{
+					return "UNIQUE KEY " + getName(this, columnNames) + " (`" + split(columnNames, "`, `") + "`)";
+				}
+			},
 
 		INDEX
-		{
-			@Override
-			public String getSqlStatement(String... columnNames)
 			{
-				return "KEY " + getName( this, columnNames ) + " (`" + split(columnNames, "`, `") + "`)";
-			}
-		},
+				@Override
+				public String getSqlStatement(String... columnNames)
+				{
+					return "KEY " + getName(this, columnNames) + " (`" + split(columnNames, "`, `") + "`)";
+				}
+			},
 
 		FULLTEXT
-		{
-			@Override
-			public String getSqlStatement(String... columnNames)
 			{
-				return "FULLTEXT (`" + split(columnNames, "`, `") + "`)";
-			}
-		},
+				@Override
+				public String getSqlStatement(String... columnNames)
+				{
+					return "FULLTEXT (`" + split(columnNames, "`, `") + "`)";
+				}
+			},
 
 		DESC_INDEX
-		{
-			@Override
-			public String getSqlStatement(String... columnNames)
 			{
-				return "KEY " + getName( this, columnNames ) + " (`" + split(columnNames, "`, `") + "` DESC)";
-			}
-		};
+				@Override
+				public String getSqlStatement(String... columnNames)
+				{
+					return "KEY " + getName(this, columnNames) + " (`" + split(columnNames, "`, `") + "` DESC)";
+				}
+			};
 
 		public abstract String getSqlStatement(String... columnNames);
-		
-		public static String getName(DbIndex.Type type, String... columnNames){
-			if( type.equals(DbIndex.Type.PRIMARY_KEY ) )
+
+		public static String getName(DbIndex.Type type, String... columnNames)
+		{
+			if (type.equals(DbIndex.Type.PRIMARY_KEY))
 			{
 				return "PRIMARY";
 			}
-			else if( type.equals(DbIndex.Type.UNIQUE ) )
+			else if (type.equals(DbIndex.Type.UNIQUE))
 			{
 				return split(columnNames, "_") + "_unique";
 			}
@@ -89,24 +90,29 @@ public @interface DbIndex
 			return result.toString();
 		}
 	}
-	
-	DbIndex DEFAULT = new DbIndex() {
+
+	DbIndex DEFAULT = new DbIndex()
+	{
 		@Override
-		public Class<? extends Annotation> annotationType() {
+		public Class<? extends Annotation> annotationType()
+		{
 			return DbIndex.class;
 		}
-		
+
 		@Override
-		public Type type() {
+		public Type type()
+		{
 			return DbIndex.Type.INDEX;
 		}
-		
+
 		@Override
-		public String group() {
+		public String group()
+		{
 			return "";
 		}
 	};
 
 	Type type();
+
 	String group() default "";
 }

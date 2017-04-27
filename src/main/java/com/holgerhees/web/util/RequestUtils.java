@@ -5,13 +5,14 @@ import java.util.Map;
 
 import com.holgerhees.web.model.Request;
 
-public class RequestUtils {
+public class RequestUtils
+{
 
 	public static String getProtocolFromUrl(String url)
 	{
 		return url == null || url.indexOf("://") == -1 ? null : url.substring(0, url.indexOf("://"));
 	}
-	
+
 	public static Map<String, String> getParameterMap(Request req)
 	{
 		Map<String, String> map = new HashMap<String, String>();

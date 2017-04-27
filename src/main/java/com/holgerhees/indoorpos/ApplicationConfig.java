@@ -13,12 +13,14 @@ public class ApplicationConfig
 	public void init()
 	{
 	}
-	
-	public Boolean isProduction() {
+
+	public Boolean isProduction()
+	{
 		return production;
 	}
 
-	public void setProduction(Boolean production) {
+	public void setProduction(Boolean production)
+	{
 		this.production = production;
 	}
 }

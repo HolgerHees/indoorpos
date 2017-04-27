@@ -4,8 +4,8 @@ public enum Protocol
 {
 	HTTP("http"),
 	HTTPS("https"),
-	NONE ("");
-	
+	NONE("");
+
 	private String urlName;
 
 	private Protocol(String urlName)
@@ -17,7 +17,7 @@ public enum Protocol
 	{
 		return urlName;
 	}
-	
+
 	public static Protocol fromUrlName(String urlName)
 	{
 		if (urlName != null && urlName.trim().isEmpty() == false)

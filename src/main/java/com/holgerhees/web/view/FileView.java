@@ -8,8 +8,9 @@ import org.apache.catalina.servlets.DefaultServlet;
 
 import com.holgerhees.web.model.Request;
 
-public class FileView extends View {
-	
+public class FileView extends View
+{
+
 	private DefaultServlet defaultServlet;
 
 	public FileView(DefaultServlet defaultServlet, Request request)

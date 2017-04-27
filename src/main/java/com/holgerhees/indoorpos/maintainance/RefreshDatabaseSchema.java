@@ -13,19 +13,20 @@ public class RefreshDatabaseSchema
 {
 	private static boolean DROP_TABLES = false;
 
-	public static void main(String[] args) {
-		
+	public static void main(String[] args)
+	{
+
 		BasicConfigurator.resetConfiguration();
 
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		URL url = cl.getResource(ProfileBasedPropertyPlaceholderConfigurer.replaceName( "com/holgerhees/indoorpos/config/application.properties"));
+		URL url = cl.getResource(ProfileBasedPropertyPlaceholderConfigurer.replaceName("com/holgerhees/indoorpos/config/application.properties"));
 		PropertyConfigurator.configure(url);
 
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("DefaultApplicationContext.xml");
 		try
 		{
 			MaintainanceService maintainanceService = applicationContext.getBean(MaintainanceService.class);
-			maintainanceService.createDatabaseSchema( DROP_TABLES );
+			maintainanceService.createDatabaseSchema(DROP_TABLES);
 		}
 		finally
 		{

@@ -12,46 +12,46 @@ public class Table
 	private Map<String, Column> columns = new LinkedHashMap<String, Column>();
 	private Map<String, Index> indexes = new LinkedHashMap<String, Index>();
 	private Column[] primaryColumns;
-	
-	public Table( Class<?> dtoClass, String name )
+
+	public Table(Class<?> dtoClass, String name)
 	{
 		this.dtoClass = dtoClass;
 		this.name = name;
 	}
-	
+
 	public Class<?> getDtoClass()
 	{
 		return dtoClass;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public List<Column> getColumns()
 	{
-		return new ArrayList<Column>( columns.values() );
+		return new ArrayList<Column>(columns.values());
 	}
 
 	public Column getColumn(String name)
 	{
 		return columns.get(name);
 	}
-	
-	public void addColumn( Column column )
+
+	public void addColumn(Column column)
 	{
-		columns.put( column.getName(), column );
+		columns.put(column.getName(), column);
 	}
 
 	public List<Index> getIndexes()
 	{
-		return new ArrayList<Index>( indexes.values() );
+		return new ArrayList<Index>(indexes.values());
 	}
 
-	public void addIndex( Index index )
+	public void addIndex(Index index)
 	{
-		indexes.put( index.getName(), index );
+		indexes.put(index.getName(), index);
 	}
 
 	public Column[] getPrimaryColumns()
@@ -59,7 +59,7 @@ public class Table
 		return primaryColumns;
 	}
 
-	public void setPrimaryColumns( Column[] columns )
+	public void setPrimaryColumns(Column[] columns)
 	{
 		primaryColumns = columns;
 	}

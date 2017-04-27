@@ -3,18 +3,32 @@ package com.holgerhees.indoorpos.persistance.dto;
 import com.holgerhees.persistance.annotations.DbColumn;
 import com.holgerhees.persistance.annotations.DbForeignKey;
 import com.holgerhees.persistance.annotations.DbTable;
+import com.holgerhees.persistance.dto.AbstractBaseDTO;
 import com.holgerhees.persistance.dto.AbstractKeyDTO;
 
-@DbTable(name="tracked_beacon")
-public class TrackedBeaconDTO extends AbstractKeyDTO
+@DbTable(name = "tracked_beacon")
+public class TrackedBeaconDTO extends AbstractBaseDTO
 {
-	@DbColumn( name="tracker_id", type="int(11)", updatable=false, foreignKey = { @DbForeignKey(target = TrackerDTO.class, field = "id", onUpdate = "CASCADE", onDelete = "CASCADE") } )
+	@DbColumn(name = "tracker_id",
+	          type = "int(11)",
+	          updatable = false,
+	          foreignKey = { @DbForeignKey(target = TrackerDTO.class,
+	                                       field = "id",
+	                                       onUpdate = "CASCADE",
+	                                       onDelete = "CASCADE") })
 	private Long trackerId;
 
-	@DbColumn( name="beacon_id", type="int(11)", updatable=false, foreignKey = { @DbForeignKey(target = BeaconDTO.class, field = "id", onUpdate = "CASCADE", onDelete = "CASCADE") } )
+	@DbColumn(name = "beacon_id",
+	          type = "int(11)",
+	          updatable = false,
+	          foreignKey = { @DbForeignKey(target = BeaconDTO.class,
+	                                       field = "id",
+	                                       onUpdate = "CASCADE",
+	                                       onDelete = "CASCADE") })
 	private Long beaconId;
 
-	@DbColumn( name="power", type="tinyint(2)" )
+	@DbColumn(name = "power",
+	          type = "tinyint(2)")
 	private int power;
 
 	public Long getTrackerId()

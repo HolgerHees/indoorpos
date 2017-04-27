@@ -7,12 +7,18 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface DbColumn {
+public @interface DbColumn
+{
 
 	String name();
+
 	String type();
+
 	boolean nullable() default false;
+
 	boolean insertable() default true;
+
 	boolean updatable() default true;
+
 	DbForeignKey[] foreignKey() default {};
 }

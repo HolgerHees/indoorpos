@@ -18,7 +18,8 @@ import com.holgerhees.web.model.Request;
 import com.holgerhees.web.util.RequestUtils;
 import com.holgerhees.web.view.View;
 
-public class RouterServlet extends HttpServlet {
+public class RouterServlet extends HttpServlet
+{
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,7 +47,7 @@ public class RouterServlet extends HttpServlet {
 			System.exit(-1);
 		}
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
@@ -64,9 +65,9 @@ public class RouterServlet extends HttpServlet {
 		try
 		{
 			Request req = createRequest(request, response);
-			
+
 			View view = router.routeRequest(req, isPostRequest, staticContentServlet);
-			
+
 			view.render();
 		}
 		catch (IOException ioException)
@@ -74,7 +75,7 @@ public class RouterServlet extends HttpServlet {
 			throw new ServletException("this shouldnt happen. Converting Exception to ServletException", ioException);
 		}
 	}
-	
+
 	private Request createRequest(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
 	{
 		final String url = httpRequest.getRequestURL().toString();
@@ -83,22 +84,22 @@ public class RouterServlet extends HttpServlet {
 		request.setUrl(url);
 		request.setServletPath(httpRequest.getServletPath());
 		request.setProtocol(Protocol.fromUrlName(RequestUtils.getProtocolFromUrl(url)));
-		
+
 		return request;
 	}
-	
+
 	private Application getApplication()
 	{
 		try
 		{
-			@SuppressWarnings("rawtypes")
-			Class applicationClass = Class.forName(getServletContext().getInitParameter("applicationClass"));
+			@SuppressWarnings("rawtypes") Class applicationClass = Class.forName(getServletContext().getInitParameter("applicationClass"));
 			LOGGER.info("instantiating application descriptor class [" + applicationClass + "]");
 			return (Application) applicationClass.newInstance();
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new IllegalArgumentException("the web.xml appears to be missing the [applicationClass] parameter. Please add necessary <context-param> elements.", e);
+			throw new IllegalArgumentException(
+				"the web.xml appears to be missing the [applicationClass] parameter. Please add necessary <context-param> elements.", e);
 		}
 		catch (InstantiationException e)
 		{
@@ -109,7 +110,7 @@ public class RouterServlet extends HttpServlet {
 			throw new IllegalArgumentException("could not create instance of class " + applicationContext, e);
 		}
 	}
-	
+
 	@Override
 	public void destroy()
 	{

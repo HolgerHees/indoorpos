@@ -6,7 +6,8 @@ import javax.servlet.ServletException;
 
 import com.holgerhees.web.model.Request;
 
-public abstract class View {
+public abstract class View
+{
 
 	private Request request;
 

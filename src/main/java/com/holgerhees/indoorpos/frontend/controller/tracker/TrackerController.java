@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.frontend.controller.Controller;
+import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackedBeaconDAO;
+import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
 import com.holgerhees.web.model.Request;
 import com.holgerhees.web.util.GSonFactory;
 import com.holgerhees.web.view.TextView;
 import com.holgerhees.web.view.View;
-import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
-import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 
 @Component("trackerController")
 public class TrackerController implements Controller
@@ -59,34 +59,34 @@ public class TrackerController implements Controller
 			}
 			body = baos.toByteArray();
 		}
-		catch( IOException e )
+		catch (IOException e)
 		{
 
 		}
 
-		if (body == null || body.length == 0 )
+		if (body == null || body.length == 0)
 		{
-			return new TextView(req,"empty request");
+			return new TextView(req, "empty request");
 		}
 
 		String json = new String(body, Charset.defaultCharset());
 
-		Parameter param = GSonFactory.createGSon().fromJson( json, Parameter.class );
+		Parameter param = GSonFactory.createGSon().fromJson(json, Parameter.class);
 
-		Map<String,BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
+		Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
 
-		for( TrackedBeacon beacon: param.trachedBeacon )
+		for (TrackedBeacon beacon : param.trachedBeacon)
 		{
-			BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
+			BeaconDTO beaconDTO = beaconDTOMap.get(beacon.uuid);
 
 			TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
-			trackedBeaconDTO.setTrackerId( param.trackerId );
-			trackedBeaconDTO.setBeaconId( beaconDTO.getId() );
-			trackedBeaconDTO.setPower( beacon.power );
+			trackedBeaconDTO.setTrackerId(param.trackerId);
+			trackedBeaconDTO.setBeaconId(beaconDTO.getId());
+			trackedBeaconDTO.setPower(beacon.power);
 
-			beaconDAO.save( beaconDTO );
+			beaconDAO.save(beaconDTO);
 		}
 
-		return new TextView(req,"tracked");
+		return new TextView(req, "tracked");
 	}
 }

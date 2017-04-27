@@ -9,7 +9,8 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
+public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer
+{
 
 	public static String getHostname()
 	{
@@ -22,13 +23,13 @@ public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlacehold
 			throw new RuntimeException("Unable to resolve hostname", e);
 		}
 	}
-	
+
 	private static boolean shouldBeReplaced(Resource location)
 	{
 		String name = location.getFilename();
 		return name.endsWith("version.properties") || name.endsWith("shared.properties") ? false : true;
 	}
-	
+
 	protected static Resource replaceLocation(Resource location)
 	{
 		ClassPathResource oldLocation = (ClassPathResource) location;
@@ -41,7 +42,7 @@ public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlacehold
 		}
 		return new ClassPathResource(newPath);
 	}
-	
+
 	public static String replaceName(String name)
 	{
 		return name.replace(".properties", "." + getHostname() + ".properties");
@@ -64,16 +65,16 @@ public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlacehold
 				locationsToSet.add(location);
 				continue;
 			}
-			
+
 			Resource profileBasedLocation = replaceLocation(location);
 			if (profileBasedLocation == null)
 			{
-				throw new IllegalStateException("Unable to replace resource with profile based resource. Resource type was: ["
-						+ location.getClass().getName() + "]");
+				throw new IllegalStateException(
+					"Unable to replace resource with profile based resource. Resource type was: [" + location.getClass().getName() + "]");
 			}
 			locationsToSet.add(profileBasedLocation);
 		}
-		
+
 		super.setLocations(locationsToSet.toArray(new Resource[locationsToSet.size()]));
 	}
 }

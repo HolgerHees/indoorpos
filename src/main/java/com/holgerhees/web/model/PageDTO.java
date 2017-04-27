@@ -1,6 +1,7 @@
 package com.holgerhees.web.model;
 
-public class PageDTO {
+public class PageDTO
+{
 
 	private String cssPrefix;
 	private String jsPrefix;
@@ -10,22 +11,27 @@ public class PageDTO {
 	{
 		return cssPrefix;
 	}
+
 	public void setCssPrefix(String cssPrefix)
 	{
 		this.cssPrefix = cssPrefix;
 	}
+
 	public String getJsPrefix()
 	{
 		return jsPrefix;
 	}
+
 	public void setJsPrefix(String jsPrefix)
 	{
 		this.jsPrefix = jsPrefix;
 	}
+
 	public String getImgPrefix()
 	{
 		return imgPrefix;
 	}
+
 	public void setImgPrefix(String imgPrefix)
 	{
 		this.imgPrefix = imgPrefix;

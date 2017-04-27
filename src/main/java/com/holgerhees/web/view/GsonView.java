@@ -4,11 +4,12 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import com.google.gson.JsonElement;
 import com.holgerhees.web.model.Request;
 import com.holgerhees.web.util.GSonFactory;
-import com.google.gson.JsonElement;
 
-public class GsonView extends View{
+public class GsonView extends View
+{
 
 	private String gson;
 
@@ -27,7 +28,8 @@ public class GsonView extends View{
 		getRequest().getHttpResponse().getWriter().print(gson);
 	}
 
-	public String toJSON(){
+	public String toJSON()
+	{
 		return this.gson;
 	}
 }

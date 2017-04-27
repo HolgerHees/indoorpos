@@ -8,7 +8,8 @@ import com.holgerhees.indoorpos.frontend.FrontendConfig;
 import com.holgerhees.web.model.Protocol;
 
 @Service("urlPrefixService")
-public class UrlPrefixService {
+public class UrlPrefixService
+{
 
 	protected final static String COLON = ":";
 	protected final static String DOT = ".";
@@ -36,7 +37,7 @@ public class UrlPrefixService {
 		if (!applicationConfig.isProduction())
 		{
 			sb.append(COLON);
-			sb.append( protocol == Protocol.HTTPS ? frontendConfig.getWebHttpsPort() : frontendConfig.getWebHttpPort() );
+			sb.append(protocol == Protocol.HTTPS ? frontendConfig.getWebHttpsPort() : frontendConfig.getWebHttpPort());
 		}
 
 		return sb.toString();
@@ -57,7 +58,7 @@ public class UrlPrefixService {
 
 		return sb.toString();
 	}
-	
+
 	public String getJavaScriptUrlPrefix(Protocol protocol)
 	{
 		StringBuilder sb = new StringBuilder();

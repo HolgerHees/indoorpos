@@ -1,20 +1,20 @@
 package com.holgerhees.indoorpos.util;
 
-public class LocationHelper {
+public class LocationHelper
+{
 
-	public static double getDistance( double _lat1, double _lon1, double _lat2, double _lon2 )
+	public static double getDistance(double _lat1, double _lon1, double _lat2, double _lon2)
 	{
 		int R = 6371000; // m
-		double dLat = Math.toRadians( _lat2 - _lat1 );
-		double dLon = Math.toRadians( _lon2 - _lon1 );
-		double lat1 = Math.toRadians( _lat1 );
-		double lat2 = Math.toRadians( _lat2 );
+		double dLat = Math.toRadians(_lat2 - _lat1);
+		double dLon = Math.toRadians(_lon2 - _lon1);
+		double lat1 = Math.toRadians(_lat1);
+		double lat2 = Math.toRadians(_lat2);
 
-		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-		        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double d = R * c;
-		
+
 		return d;
 	}
 	

@@ -6,7 +6,8 @@ public class CharSetConverter
 
 	public static String convertToCharset(String orig, String charSet)
 	{
-		if (orig == null || charSet == null) return orig;
+		if (orig == null || charSet == null)
+		{ return orig; }
 		try
 		{
 			return new String(orig.getBytes(), charSet);

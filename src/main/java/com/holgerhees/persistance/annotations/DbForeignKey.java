@@ -10,7 +10,10 @@ import java.lang.annotation.Target;
 public @interface DbForeignKey
 {
 	Class<?> target();
+
 	String field();
+
 	String onUpdate();
+
 	String onDelete();
 }

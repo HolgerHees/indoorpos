@@ -7,7 +7,8 @@ import com.holgerhees.web.model.PageDTO;
 import com.holgerhees.web.model.Request;
 
 @Service("pageDtoInitService")
-public class PageDtoInitService {
+public class PageDtoInitService
+{
 
 	@Autowired
 	private UrlPrefixService urlPrefixService;
