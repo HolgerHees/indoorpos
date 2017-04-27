@@ -1,0 +1,16 @@
+
+?squid:S1166"%Either log or rethrow this exception.(ğÕçÓÿÿÿÿÿ
+[squid:S1192"FDefine a constant instead of duplicating this literal " = ? " 5 times.(Ÿ¦ŠÃ
+`squid:S1192"FDefine a constant instead of duplicating this literal " SET " 3 times.(ÈïÉ‚ùÿÿÿÿ
+ssquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(å÷¿Íüÿÿÿÿ
+:squid:S1166"%Either log or rethrow this exception.(´õ®ú
+Dsquid:S1068"*Remove this unused "LOGGER" private field.(ñª¼¹ûÿÿÿÿ
+\squid:S1192"GDefine a constant instead of duplicating this literal " = ?, " 3 times.(Ÿ¦ŠÃ
+tsquid:S1149"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(²·¿»
+ssquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(”õæ‰şÿÿÿÿ
+=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+ssquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(°¼ë·ıÿÿÿÿ
+ksquid:S3008"QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ñª¼¹ûÿÿÿÿ
+nsquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(şß…
+=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+gsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 38 to the 15 allowed.(ƒ¶ÜÚ

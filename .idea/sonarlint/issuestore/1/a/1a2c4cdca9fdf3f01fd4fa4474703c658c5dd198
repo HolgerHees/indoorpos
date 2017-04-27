@@ -1,0 +1,4 @@
+
+fsquid:S3008"QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ýº£œ
+osquid:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(µšØÏ
+Zsquid:S2259"ENullPointerException might be thrown as 'controller' is nullable here(ù…çª

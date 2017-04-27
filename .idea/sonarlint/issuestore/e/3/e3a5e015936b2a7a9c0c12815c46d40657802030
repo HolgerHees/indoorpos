@@ -1,0 +1,20 @@
+
+O
+squid:S106";Replace this usage of System.out or System.err by a logger.(‘½‰ı
+N
+squid:S106";Replace this usage of System.out or System.err by a logger.(€ãØ?
+T
+squid:S106";Replace this usage of System.out or System.err by a logger.(®²çüÿÿÿÿ
+O
+squid:S106";Replace this usage of System.out or System.err by a logger.(µ¼®¤
+O
+squid:S106";Replace this usage of System.out or System.err by a logger.(µ¼®¤
+=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+T
+squid:S106";Replace this usage of System.out or System.err by a logger.(¤§ûÏùÿÿÿÿ
+Usquid:S1147";Remove this call to "exit" or ensure it is really required.(ôá¤“úÿÿÿÿ
+ksquid:S3008"QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Úµƒ€üÿÿÿÿ
+isquid:S1215"TDon't try to be smarter than the JVM, remove this call to run the garbage collector.(Ì°¬“
+O
+squid:S106";Replace this usage of System.out or System.err by a logger.(¤«®Ù
+?squid:S1166"%Either log or rethrow this exception.(ñ“Š±üÿÿÿÿ

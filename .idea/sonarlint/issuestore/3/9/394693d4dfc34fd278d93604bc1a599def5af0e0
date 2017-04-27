@@ -1,0 +1,5 @@
+
+Wsquid:S1854"6Remove this useless assignment to local variable "jb".(¼Þ¬ÿüÿÿÿÿ8’Þ‚úº+
+Ysquid:S1197"8Move the array designator from the variable to the type.(È¤Ý”úÿÿÿÿ8’Þ‚úº+
+Fsquid:S1166"%Either log or rethrow this exception.(É˜ÙŽúÿÿÿÿ8”ë…úº+
+Hsquid:S1481"'Remove this unused "jb" local variable.(¼Þ¬ÿüÿÿÿÿ8’Þ‚úº+

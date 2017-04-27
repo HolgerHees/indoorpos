@@ -1,0 +1,214 @@
+
+pjavascript:S2873"VThis expression might have a value which cannot be called; it might not be a function.(Ø„¼î
+^javascript:S2583"DChange this condition so that it does not always evaluate to "true".(ÿ½âï
+djavascript:S2583"EChange this condition so that it does not always evaluate to "false".(»‰è½úÿÿÿÿ
+djavascript:S2583"EChange this condition so that it does not always evaluate to "false".(»‰è½úÿÿÿÿ
+cjavascript:S2583"DChange this condition so that it does not always evaluate to "true".(—¹ùÿÿÿÿ
+^javascript:S2583"DChange this condition so that it does not always evaluate to "true".(Ÿ¿Ã½
+cjavascript:S2583"DChange this condition so that it does not always evaluate to "true".(’ü¯İùÿÿÿÿ
+^javascript:S2583"DChange this condition so that it does not always evaluate to "true".(ûëÑÃ
+bjavascript:S3402"HEither make this concatenation explicit or cast one operand to a number.(Å³óÎ
+ijavascript:S3403"JRemove this "!==" check; it will always be true. Did you mean to use "!="?(’ü¯İùÿÿÿÿ
+Pjavascript:S3800"6Refactor this function to always return the same type.(éƒ´‰
+Pjavascript:S3800"6Refactor this function to always return the same type.(õ‹Åæ
+javascript:S3757"`Change the expression which uses this operand so that it can't evaluate to "NaN" (Not a Number).(«Ë†ûÿÿÿÿ
+ljavascript:S3758"MRe-evaluate the data flow; this operand of a numeric comparison could be NaN.(µıÁĞûÿÿÿÿ
+vjavascript:S3759"WRemove this access to "length" property, it doesn't exist, as a built-in, on a Boolean.(ÔÍ¨èşÿÿÿÿ
+qjavascript:S3759"WRemove this access to "replace" property, it doesn't exist, as a built-in, on a Number.(Ø„¼î
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ÔßÎİ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Ş’ºîùÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(’¦¾ã
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(’¦¾ã
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(’¦¾ã
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(’¦¾ã
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ª‚Öùÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(“×÷Å
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ÛÆçıÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(¡»¢üùÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(£ìÎûÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(­ñåûÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(—¹ùÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(¡ù¾Õ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(˜É¦É
+ojavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(¡Îc
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ÛÆçıÿÿÿÿ
+ojavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(È¦ºr
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.( ¡Õııÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(¡ù¾Õ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ÛÆçıÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Ä«¦¹şÿÿÿÿ
+ojavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Í¡ìf
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ÿï ¶øÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(İº
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ø­ï¨
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ÛÆçıÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ªÆ»ä
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Ïìµ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ªë“¢
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(”÷íáıÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(”÷íáıÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(©Äá×
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(âøº’şÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(‡‘İÚıÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Ã¡¿ëÿÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Î²¦
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(©±Ëşÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Æ·†øÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(•×‘
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Ÿ¦ÍŒ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ß€„–
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ãú€ıÿÿÿÿ
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ø¥×ú
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Ÿ¸Í
+pjavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(Ï±Ïù
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ä§½Ïûÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(¬Î­êûÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ä§½Ïûÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(¬Î­êûÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ú÷Ç×ûÿÿÿÿ
+ujavascript:NestedIfDepth"NRefactor this code to not nest more than 3 if/for/while/switch/try statements.(ñ†¶¼ÿÿÿÿÿ
+m(javascript:VariableDeclarationAfterUsage"6Move the declaration of "animation" before this usage.(ø¹Ûøÿÿÿÿ
+g(javascript:VariableDeclarationAfterUsage"5Move the declaration of "deferred" before this usage.(ùÖñÔ
+c(javascript:VariableDeclarationAfterUsage"1Move the declaration of "tick" before this usage.(·•Òï
+c(javascript:VariableDeclarationAfterUsage"1Move the declaration of "self" before this usage.(ûëßŞ
+r(javascript:VariableDeclarationAfterUsage";Move the declaration of "progressValues" before this usage.(•ÑôÙùÿÿÿÿ
+Jjavascript:BitwiseOperators" Remove the use of "<<" operator.(×‘ Ñúÿÿÿÿ
+Ijavascript:BitwiseOperators"Remove the use of "|" operator.(™œ²ïıÿÿÿÿ
+Jjavascript:BitwiseOperators" Remove the use of ">>" operator.(™œ²ïıÿÿÿÿ
+Ijavascript:BitwiseOperators"Remove the use of "|" operator.(™œ²ïıÿÿÿÿ
+Ijavascript:BitwiseOperators"Remove the use of "&" operator.(™œ²ïıÿÿÿÿ
+Ijavascript:BitwiseOperators"Remove the use of "~" operator.(¯ˆ´üıÿÿÿÿ
+Ijavascript:BitwiseOperators"Remove the use of "~" operator.(ÑÎÖÒüÿÿÿÿ
+Djavascript:BitwiseOperators"Remove the use of "&" operator.(‰ğİÿ
+Ijavascript:BitwiseOperators"Remove the use of "&" operator.(ù²²Ùÿÿÿÿÿ
+Djavascript:BitwiseOperators"Remove the use of "&" operator.(Ëª¾
+Djavascript:BitwiseOperators"Remove the use of "~" operator.(ˆ£’¶
+Djavascript:BitwiseOperators"Remove the use of "&" operator.(«şñ¹
+Djavascript:BitwiseOperators"Remove the use of "^" operator.(‚úå
+Ijavascript:BitwiseOperators"Remove the use of "&" operator.(º–¯øÿÿÿÿ
+Ijavascript:BitwiseOperators"Remove the use of "&" operator.(º–¯øÿÿÿÿ
+Ijavascript:BitwiseOperators"Remove the use of "&" operator.(º–¯øÿÿÿÿ
+Qjavascript:S1135"2Complete the task associated to this TODO comment.(©ÇÈùÿÿÿÿ
+Ljavascript:S1135"2Complete the task associated to this TODO comment.(£ş«Î
+Fjavascript:CommentedCode"Remove this commented out code.(­ô¹öÿÿÿÿÿ
+“'javascript:TooManyBreakOrContinueInLoop"]Reduce the total number of "break" and "continue" statements in this loop to use one at most.(ÛÆçıÿÿÿÿ
+Jjavascript:S1264"+Replace this "for" loop with a "while" loop(ÒöÁşøÿÿÿÿ
+Ejavascript:S1264"+Replace this "for" loop with a "while" loop(ï¾Ü
+]"javascript:CollapsibleIfStatements",Merge this if statement with the nested one.(¾áòéùÿÿÿÿ
+]"javascript:CollapsibleIfStatements",Merge this if statement with the nested one.(ÛÌñ‡şÿÿÿÿ
+]"javascript:CollapsibleIfStatements",Merge this if statement with the nested one.(ÏàÈŞúÿÿÿÿ
+X"javascript:CollapsibleIfStatements",Merge this if statement with the nested one.(£’¬³
+]"javascript:CollapsibleIfStatements",Merge this if statement with the nested one.(¨´õ„ıÿÿÿÿ
+X"javascript:CollapsibleIfStatements",Merge this if statement with the nested one.(¤Ç‘Æ
+X"javascript:CollapsibleIfStatements",Merge this if statement with the nested one.(©Äá×
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(¹ãâˆıÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(ÅàÉ¿ıÿÿÿÿ
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(“ç¬Ü
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(“ç¬Ü
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(ñİø³
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(ñÜ©Ûıÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(é¦ô¡ùÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(ÌÀ¡ßùÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(ÌÀ¡ßùÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(é¦ô¡ùÿÿÿÿ
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(·œ­
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(©‰¡šıÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(©‰¡šıÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(Âõè›şÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(×â‘ìÿÿÿÿÿ
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(Èãìøÿÿÿÿ
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(‡è›¹
+Xjavascript:ForIn"9Restrict what this loop acts on by testing each property.(ÅàÉ¿ıÿÿÿÿ
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(µáÄ
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(°‰Øœ
+Sjavascript:ForIn"9Restrict what this loop acts on by testing each property.(ÉÊ¯õ
+ujavascript:S3776"VRefactor this function to reduce its Cognitive Complexity from 4628 to the 15 allowed.(³µÁüÿÿÿÿ
+=javascript:S2310"Remove this assignment of "i".(­¤Ïşÿÿÿÿ
+Ajavascript:S2310""Remove this assignment of "index".(é‰Ü„üÿÿÿÿ
+7javascript:S2310"Remove this assignment of "i".(¤©‰
+]%javascript:ArrayAndObjectConstructors"/Use a literal instead of the Array constructor.(‹’f
+c%javascript:ArrayAndObjectConstructors"/Use a literal instead of the Array constructor.(ÂŠ½ùÿÿÿÿ
+^%javascript:ArrayAndObjectConstructors"/Use a literal instead of the Array constructor.(ğÀĞú
+Gjavascript:EmptyBlock")Either remove or fill this block of code.(ô÷‹`
+Gjavascript:EmptyBlock")Either remove or fill this block of code.(şÁµ3
+Mjavascript:EmptyBlock")Either remove or fill this block of code.(èâïÏøÿÿÿÿ
+Hjavascript:EmptyBlock")Either remove or fill this block of code.(çÛ£ï
+Mjavascript:EmptyBlock")Either remove or fill this block of code.(èâïÏøÿÿÿÿ
+Mjavascript:EmptyBlock")Either remove or fill this block of code.(òï¸Ñüÿÿÿÿ
+Mjavascript:EmptyBlock")Either remove or fill this block of code.(èâïÏøÿÿÿÿ
+Mjavascript:EmptyBlock")Either remove or fill this block of code.(èâïÏøÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(»¡½Í
+]javascript:S3358"DExtract this nested ternary operation into an independent statement.(’Ÿ£X
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(Äî†åúÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(ÚœŒò
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(³ÜµĞúÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(è×Õ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(´›íâşÿÿÿÿ
+]javascript:S3358"DExtract this nested ternary operation into an independent statement.(ü´£G
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(é³üËÿÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(ú‹¯…ıÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(¹šıêıÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(º¬ Ò
+]javascript:S3358"DExtract this nested ternary operation into an independent statement.(®·èY
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(Ó¾óÃ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(§œäÿúÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(Şø­¨
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(ÇÔÊÒ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(°ˆÃ¶ıÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(°ˆÃ¶ıÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(ú‹¯…ıÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(–Ëûäşÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(°é–…øÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(Ìõ…Äüÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(‚²Ûûÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(Ã »Ø
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(²ˆµôûÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(Û¾²
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(º–¯øÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(º–¯øÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(ˆ›ª£
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(€öÂ¿şÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(‡ßã¿ùÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(×—»íùÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(ÿ¿„°şÿÿÿÿ
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(Øİ—Ôşÿÿÿÿ
+]javascript:S3358"DExtract this nested ternary operation into an independent statement.(‚ë¼
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(ÂæÎ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(Å¡í¼
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(Ó³†Îùÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(üÆ¨ı
+cjavascript:S3358"DExtract this nested ternary operation into an independent statement.(€ÖÙöùÿÿÿÿ
+^javascript:S3358"DExtract this nested ternary operation into an independent statement.(çŞ‚
+Vjavascript:S1854"7Remove this useless assignment to local variable "name"(ÅàÉ¿ıÿÿÿÿ
+Yjavascript:S1854"?Remove this useless assignment to local variable "handlerQueue"(ÌŞ‘
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(˜äê­
+yjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(»”Ğ”úÿÿÿÿ
+tjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(µÆ×ª
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(ê“Ÿ‡
+yjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(ÁáıÁøÿÿÿÿ
+tjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(À—˜ù
+sjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(´‰Ù
+yjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(±ää•ÿÿÿÿÿ
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(™”µ
+zjavascript:S1067"[Reduce the number of conditional operators (11) used in the expression (maximum allowed 3).(¥«ÏŸøÿÿÿÿ
+yjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(«Ë†ûÿÿÿÿ
+yjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(«Ë†ûÿÿÿÿ
+tjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(ˆ£’¶
+yjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(ƒ¬…¬şÿÿÿÿ
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(‰ºÆò
+yjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(ÚÂ½›üÿÿÿÿ
+tjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(¾â¡ë
+tjavascript:S1067"ZReduce the number of conditional operators (9) used in the expression (maximum allowed 3).(¿ÂÕÎ
+yjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(ì®”œúÿÿÿÿ
+yjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(ì®”œúÿÿÿÿ
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(³‘¯º
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(³‘¯º
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(Ÿû¤
+tjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(Ÿ¿Ã½
+sjavascript:S1067"ZReduce the number of conditional operators (4) used in the expression (maximum allowed 3).(…š¨
+yjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(ÀŸ‘ûÿÿÿÿ
+yjavascript:S1067"ZReduce the number of conditional operators (7) used in the expression (maximum allowed 3).(Ñ»½ÿÿÿÿÿ
+sjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(¬ó³q
+tjavascript:S1067"ZReduce the number of conditional operators (5) used in the expression (maximum allowed 3).(ñ¿åŞ
+tjavascript:S1186"ZAdd a nested comment explaining why this function is empty or complete the implementation.(Î¯›·
+tjavascript:S1186"ZAdd a nested comment explaining why this function is empty or complete the implementation.(»•ÿò

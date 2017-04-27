@@ -1,0 +1,16 @@
+
+ssquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(åç ıÿÿÿÿ
+squid:S1488"jImmediately return this expression instead of assigning it to the temporary variable "existingTableNames".(«ıÊ‡
+Dsquid:S1068"*Remove this unused "LOGGER" private field.(÷„Ü¤ùÿÿÿÿ
+gsquid:S1192"MDefine a constant instead of duplicating this literal "ALTER TABLE " 5 times.(ïõ¸Åüÿÿÿÿ
+msquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ŞÌ«+
+[squid:S1192"FDefine a constant instead of duplicating this literal ",\n\t" 5 times.(çª¥
+ssquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(íØ¡ãúÿÿÿÿ
+Xsquid:S1155">Use isEmpty() to check whether the collection is empty or not.(ƒ©›¾ıÿÿÿÿ
+ssquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(åç ıÿÿÿÿ
+nsquid:S1132"TMove the "auto_increment" string literal on the left side of this string comparison.(Éà™—ÿÿÿÿÿ
+Xsquid:S1155">Use isEmpty() to check whether the collection is empty or not.(ƒ©›¾ıÿÿÿÿ
+]squid:S1132"HMove the "NO" string literal on the left side of this string comparison.(ë‚»È
+msquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ÚÊç$
+ksquid:S3008"QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(÷„Ü¤ùÿÿÿÿ
+‰squid:S1488"oImmediately return this expression instead of assigning it to the temporary variable "existingConstraintNames".(ëÔ×Òüÿÿÿÿ
