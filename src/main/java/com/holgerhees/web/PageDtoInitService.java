@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.holgerhees.web.model.PageDTO;
 import com.holgerhees.web.model.Request;
 
-@Service("pageDtoInitService")
+@Service( "pageDtoInitService" )
 public class PageDtoInitService
 {
 

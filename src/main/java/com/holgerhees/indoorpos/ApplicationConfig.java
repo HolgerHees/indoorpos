@@ -2,7 +2,7 @@ package com.holgerhees.indoorpos;
 
 import org.springframework.stereotype.Component;
 
-@Component("applicationConfig")
+@Component( "applicationConfig" )
 public class ApplicationConfig
 {
 	private Boolean production;
@@ -12,6 +12,7 @@ public class ApplicationConfig
 	 */
 	public void init()
 	{
+		// just a dummy placeholder
 	}
 
 	public Boolean isProduction()

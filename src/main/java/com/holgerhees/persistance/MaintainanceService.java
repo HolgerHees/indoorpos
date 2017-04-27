@@ -16,7 +16,7 @@ import com.holgerhees.persistance.schema.Column;
 import com.holgerhees.persistance.schema.Index;
 import com.holgerhees.persistance.schema.Table;
 
-@Component("maintainanceService")
+@Component( "maintainanceService" )
 public class MaintainanceService
 {
 	private static Log LOGGER = LogFactory.getLog(MaintainanceService.class);
@@ -31,14 +31,14 @@ public class MaintainanceService
 	{
 		List<String> existingTables = schemaDao.getExistingTables();
 
-		if (dropTable)
+		if( dropTable )
 		{
 
 			LinkedList<Table> dropTableList = schemaService.getTablesInDropOrder();
-			for (Table table : dropTableList)
+			for( Table table : dropTableList )
 			{
 
-				if (!existingTables.contains(table.getName()))
+				if( !existingTables.contains(table.getName()) )
 				{ continue; }
 
 				LOGGER.info("DROP TABLE " + table.getName());
@@ -49,28 +49,28 @@ public class MaintainanceService
 		}
 
 		LinkedList<Table> createTableList = schemaService.getTablesInCreationOrder();
-		for (Table table : createTableList)
+		for( Table table : createTableList )
 		{
 
 			Map<String, String> existingColumns = existingTables.contains(table.getName()) ?
 			                                      schemaDao.getExistingColumns(table.getName()) :
-			                                      new HashMap<String, String>();
-			if (existingColumns.size() > 0)
+			                                      new HashMap<>();
+			if( existingColumns.size() > 0 )
 			{
 				boolean skipped = true;
 
 				// ADD missing Columns
 				String previousColumn = null;
-				for (Column column : table.getColumns())
+				for( Column column : table.getColumns() )
 				{
-					if (!existingColumns.containsKey(column.getName()))
+					if( !existingColumns.containsKey(column.getName()) )
 					{
 						LOGGER.info("ALTER TABLE " + table.getName() + " ADD COLUMN " + column.getName());
 
 						schemaDao.createColumn(table.getName(), column.getDefinition(), previousColumn);
 						skipped = false;
 					}
-					else if (!existingColumns.get(column.getName()).equals(column.getDefinition()))
+					else if( !existingColumns.get(column.getName()).equals(column.getDefinition()) )
 					{
 						LOGGER.error(
 							"Changing of column definition of column '" + column.getName() + "' in table '" + table.getName() + "' not implemented");
@@ -82,7 +82,7 @@ public class MaintainanceService
 				}
 
 				// REMOVE unused Columns
-				if (existingColumns.size() > 0)
+				if( existingColumns.size() > 0 )
 				{
 					LOGGER.error("Removing of unsed column '" + StringUtils.join(existingColumns.keySet(), ", ") + "' in table '" + table.getName()
 						+ "' not implemented");
@@ -91,9 +91,9 @@ public class MaintainanceService
 
 				// ADD missing Indexes
 				List<String> existingIndexes = schemaDao.getExistingIndexNames(table.getName());
-				for (Index index : table.getIndexes())
+				for( Index index : table.getIndexes() )
 				{
-					if (!existingIndexes.contains(index.getName()))
+					if( !existingIndexes.contains(index.getName()) )
 					{
 						LOGGER.info("ALTER TABLE " + table.getName() + " ADD INDEX " + index.getName());
 						schemaDao.createIndex(table.getName(), index.getDefinition());
@@ -104,9 +104,9 @@ public class MaintainanceService
 				}
 
 				// Remove unused Indexes
-				if (existingIndexes.size() > 0)
+				if( !existingIndexes.isEmpty() )
 				{
-					for (String indexName : existingIndexes)
+					for( String indexName : existingIndexes )
 					{
 						LOGGER.info("ALTER TABLE " + table.getName() + " DROP INDEX " + indexName);
 						schemaDao.dropIndex(table.getName(), indexName);
@@ -116,12 +116,12 @@ public class MaintainanceService
 
 				// ADD missing Constraints
 				List<String> existingConstraints = schemaDao.getExistingConstraintNames(table.getName());
-				for (Column column : table.getColumns())
+				for( Column column : table.getColumns() )
 				{
-					if (column.getConstraint() == null)
+					if( column.getConstraint() == null )
 					{ continue; }
 
-					if (!existingConstraints.contains(column.getConstraint().getName()))
+					if( !existingConstraints.contains(column.getConstraint().getName()) )
 					{
 						LOGGER.info("ALTER TABLE " + table.getName() + " ADD " + column.getConstraint().getDefinition());
 						schemaDao.createConstraint(table.getName(), column.getConstraint().getDefinition());
@@ -132,9 +132,9 @@ public class MaintainanceService
 				}
 
 				// Remove unused Constraints
-				if (existingConstraints.size() > 0)
+				if( !existingConstraints.isEmpty() )
 				{
-					for (String constraintName : existingConstraints)
+					for( String constraintName : existingConstraints )
 					{
 						LOGGER.info("ALTER TABLE " + table.getName() + " DROP CONSTRAINT " + constraintName);
 						schemaDao.dropConstraint(table.getName(), constraintName);
@@ -142,7 +142,7 @@ public class MaintainanceService
 					}
 				}
 
-				if (skipped)
+				if( skipped )
 				{
 					LOGGER.info("SKIP unchanged TABLE '" + table.getName() + "'");
 				}
@@ -160,7 +160,7 @@ public class MaintainanceService
 		System.out.println("\n\n");
 
 		LinkedList<Table> createTableList = schemaService.getTablesInCreationOrder();
-		for (Table table : createTableList)
+		for( Table table : createTableList )
 		{
 
 			System.out.println(schemaDao.getCreateTableStatement(table, true) + "\n\n");

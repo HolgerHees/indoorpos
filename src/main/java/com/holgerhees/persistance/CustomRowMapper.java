@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.core.ArgumentPreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -24,8 +22,6 @@ import com.holgerhees.persistance.schema.Table;
 
 public class CustomRowMapper<T> implements RowMapper<T>
 {
-	private static Log LOGGER = LogFactory.getLog(CustomRowMapper.class);
-
 	private Class<T> mappedClass;
 
 	private Table table;
@@ -48,14 +44,14 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
 			T mappedObject = this.mappedClass.newInstance();
 
-			for (int index = 1; index <= columnCount; index++)
+			for( int index = 1; index <= columnCount; index++ )
 			{
 				String columnName = metaData.getColumnName(index);
 
 				Column column = table.getColumn(columnName);
 
 				// is unmapped field
-				if (column == null)
+				if( column == null )
 				{ continue; }
 				
 				/*System.out.println("0:" + columnName);
@@ -66,7 +62,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
 				Object value = JdbcUtils.getResultSetValue(rs, index, column.getType());
 
-				if (column.getSetterConverter() != null)
+				if( column.getSetterConverter() != null )
 				{
 					value = column.getSetterConverter().invoke(null, value);
 				}
@@ -76,7 +72,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
 			return mappedObject;
 		}
-		catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+		catch( InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e )
 		{
 			e.printStackTrace();
 		}
@@ -94,15 +90,15 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
 		try
 		{
-			if (dto instanceof AbstractBaseDTO)
+			if( dto instanceof AbstractBaseDTO )
 			{
 				Date now = new Date((System.currentTimeMillis() / 1000L) * 1000L);
-				if (((AbstractBaseDTO) dto).getCreated() == null)
+				if( ((AbstractBaseDTO) dto).getCreated() == null )
 				{
 					((AbstractBaseDTO) dto).setCreated(now);
 					((AbstractBaseDTO) dto).setLastModified(now);
 				}
-				else if (refreshLastModified)
+				else if( refreshLastModified )
 				{
 					((AbstractBaseDTO) dto).setLastModified(now);
 				}
@@ -110,29 +106,29 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
 			Column[] primaryColumns = table.getPrimaryColumns();
 			Object[] primaryValues = new Object[primaryColumns.length];
-			for (int i = 0; i < primaryValues.length; i++)
+			for( int i = 0; i < primaryValues.length; i++ )
 			{
 				primaryValues[i] = primaryColumns[i].getGetter().invoke(dto);
 
-				if (primaryColumns[i].getGetterConverter() != null)
+				if( primaryColumns[i].getGetterConverter() != null )
 				{ primaryValues[i] = primaryColumns[i].getGetterConverter().invoke(primaryValues[i]); }
 			}
 
 			// PRIMARY KEY TABLES
-			if (primaryColumns.length == 1 && !primaryColumns[0].isInsertable())
+			if( primaryColumns.length == 1 && !primaryColumns[0].isInsertable() )
 			{
 				boolean isInsert = primaryValues[0] == null;
 
-				Map<String, Object> mappedValueFields = new HashMap<String, Object>();
+				Map<String, Object> mappedValueFields = new HashMap<>();
 
-				for (Column column : table.getColumns())
+				for( Column column : table.getColumns() )
 				{
 					Object value = column.getGetter().invoke(dto);
 
-					if (column.getGetterConverter() != null)
+					if( column.getGetterConverter() != null )
 					{ value = column.getGetterConverter().invoke(value); }
 
-					if ((!isInsert && !column.isUpdateable()) || (isInsert && !column.isInsertable()))
+					if( (!isInsert && !column.isUpdateable()) || (isInsert && !column.isInsertable()) )
 					{ continue; }
 
 					mappedValueFields.put(column.getName(), value);
@@ -140,7 +136,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
 				String fieldSQL = StringUtils.join(mappedValueFields.keySet(), " = ?, ") + " = ? ";
 
-				if (isInsert)
+				if( isInsert )
 				{
 					jdbcTemplateDao.getJdbcTemplate().update("INSERT INTO " + table.getName() + " SET " + fieldSQL,
 						new ArgumentPreparedStatementSetter(mappedValueFields.values().toArray()));
@@ -151,7 +147,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
 				else
 				{
-					List<Object> values = new LinkedList<Object>();
+					List<Object> values = new LinkedList<>();
 					values.addAll(mappedValueFields.values());
 					values.add(primaryValues[0]);
 
@@ -162,20 +158,20 @@ public class CustomRowMapper<T> implements RowMapper<T>
 			}
 			else
 			{
-				Map<String, Object> mappedInsertValueFields = new HashMap<String, Object>();
-				Map<String, Object> mappedUpdateValueFields = new HashMap<String, Object>();
+				Map<String, Object> mappedInsertValueFields = new HashMap<>();
+				Map<String, Object> mappedUpdateValueFields = new HashMap<>();
 
-				for (Column column : table.getColumns())
+				for( Column column : table.getColumns() )
 				{
 					Object value = column.getGetter().invoke(dto);
 
-					if (column.getGetterConverter() != null)
+					if( column.getGetterConverter() != null )
 					{ value = column.getGetterConverter().invoke(value); }
 
-					if (column.isInsertable())
+					if( column.isInsertable() )
 					{ mappedInsertValueFields.put(column.getName(), value); }
 
-					if (column.isUpdateable())
+					if( column.isUpdateable() )
 					{ mappedUpdateValueFields.put(column.getName(), value); }
 				}
 
@@ -199,8 +195,8 @@ public class CustomRowMapper<T> implements RowMapper<T>
 					.update("INSERT INTO " + table.getName() + " SET " + insertFieldSQL + " ON DUPLICATE KEY UPDATE " + updateFieldSQL,
 						new ArgumentPreparedStatementSetter(values));
 
-				StringBuffer whereFieldSQL = new StringBuffer();
-				for (Column column : primaryColumns)
+				StringBuilder whereFieldSQL = new StringBuilder();
+				for( Column column : primaryColumns )
 				{
 					whereFieldSQL.append(" AND " + column.getName() + " = ? ");
 				}
@@ -216,7 +212,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
 			}
 
 		}
-		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+		catch( IllegalAccessException | IllegalArgumentException | InvocationTargetException e )
 		{
 			e.printStackTrace();
 		}

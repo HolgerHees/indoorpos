@@ -13,6 +13,10 @@ public class RefreshDatabaseSchema
 {
 	private static boolean DROP_TABLES = false;
 
+	private RefreshDatabaseSchema()
+	{
+	}
+
 	public static void main(String[] args)
 	{
 

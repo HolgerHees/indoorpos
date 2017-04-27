@@ -2,7 +2,7 @@ package com.holgerhees.indoorpos.frontend;
 
 import org.springframework.stereotype.Component;
 
-@Component("frontendConfig")
+@Component( "frontendConfig" )
 public class FrontendConfig
 {
 	private String webDomain;

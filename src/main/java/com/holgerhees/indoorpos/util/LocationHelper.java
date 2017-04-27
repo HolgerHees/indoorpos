@@ -2,6 +2,9 @@ package com.holgerhees.indoorpos.util;
 
 public class LocationHelper
 {
+	private LocationHelper()
+	{
+	}
 
 	public static double getDistance(double _lat1, double _lon1, double _lat2, double _lon2)
 	{

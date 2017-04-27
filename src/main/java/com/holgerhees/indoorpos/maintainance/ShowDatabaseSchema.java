@@ -11,6 +11,9 @@ import com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer;
 
 public class ShowDatabaseSchema
 {
+	private ShowDatabaseSchema()
+	{
+	}
 
 	public static void main(String[] args)
 	{

@@ -6,8 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.FIELD )
 public @interface DbIndex
 {
 	enum Type
@@ -61,11 +61,11 @@ public @interface DbIndex
 
 		public static String getName(DbIndex.Type type, String... columnNames)
 		{
-			if (type.equals(DbIndex.Type.PRIMARY_KEY))
+			if( type.equals(DbIndex.Type.PRIMARY_KEY) )
 			{
 				return "PRIMARY";
 			}
-			else if (type.equals(DbIndex.Type.UNIQUE))
+			else if( type.equals(DbIndex.Type.UNIQUE) )
 			{
 				return split(columnNames, "_") + "_unique";
 			}
@@ -77,13 +77,13 @@ public @interface DbIndex
 
 		private static String split(String[] array, String separator)
 		{
-			if (array.length == 0)
+			if( array.length == 0 )
 			{
 				return "";
 			}
 			StringBuilder result = new StringBuilder();
 			result.append(array[0]);
-			for (int i = 1; i < array.length; i++)
+			for( int i = 1; i < array.length; i++ )
 			{
 				result.append(separator).append(array[i]);
 			}

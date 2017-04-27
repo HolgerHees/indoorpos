@@ -44,7 +44,7 @@ public class FrontendApplication implements Application
 
 			//applicationConfig = (ApplicationConfig) applicationContext.getBean("applicationConfig");
 		}
-		catch (Exception e)
+		catch( Exception e )
 		{
 
 			e.printStackTrace();
@@ -54,8 +54,6 @@ public class FrontendApplication implements Application
 
 			System.exit(1);
 		}
-
-		System.gc();
 
 		System.out.println("#### " + (System.currentTimeMillis() - start) + " ms : final System.gc() done ####");
 

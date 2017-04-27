@@ -40,7 +40,7 @@ public class RefreshPosition
 		private int distance;
 	}
 
-	@Scheduled(cron = "*/2 * * * * *") // every second
+	@Scheduled( cron = "*/2 * * * * *" ) // every second
 	public void run()
 	{
 		LOGGER.info("refresh position");
@@ -52,13 +52,13 @@ public class RefreshPosition
 		Map<BeaconDTO, List<TrackerDistance>> trackedDistances = new HashMap<>();
 
 		// First step: group tracked distances for every beacon
-		for (TrackedBeaconDTO trackedBeaconDTO : trackedBeaconDTOS)
+		for( TrackedBeaconDTO trackedBeaconDTO : trackedBeaconDTOS )
 		{
 			BeaconDTO beaconDTO = beaconDTOMap.get(trackedBeaconDTO.getBeaconId());
 
 			List<TrackerDistance> _trackedDistances = trackedDistances.get(beaconDTO);
 
-			if (_trackedDistances == null)
+			if( _trackedDistances == null )
 			{
 				_trackedDistances = new ArrayList<>();
 				trackedDistances.put(beaconDTO, _trackedDistances);
@@ -75,10 +75,10 @@ public class RefreshPosition
 		Map<Long, TrackerDTO> trackerIdMap = trackerDAO.getTrackerIDMap();
 
 		// Second step: Set current Room
-		for (BeaconDTO beaconDTO : beaconDTOMap.values())
+		for( BeaconDTO beaconDTO : beaconDTOMap.values() )
 		{
 			List<TrackerDistance> _trackerDistances = trackedDistances.get(beaconDTO);
-			if (_trackerDistances == null || _trackerDistances.size() == 0)
+			if( _trackerDistances == null || !_trackerDistances.isEmpty() )
 			{
 				beaconDTO.setRoom(null);
 			}
@@ -89,9 +89,9 @@ public class RefreshPosition
 					@Override
 					public int compare(TrackerDistance o1, TrackerDistance o2)
 					{
-						if (o1.distance > o2.distance)
+						if( o1.distance > o2.distance )
 						{ return 1; }
-						if (o1.distance < o2.distance)
+						if( o1.distance < o2.distance )
 						{ return -1; }
 						return 0;
 					}

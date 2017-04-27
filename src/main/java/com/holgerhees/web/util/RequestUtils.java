@@ -7,6 +7,9 @@ import com.holgerhees.web.model.Request;
 
 public class RequestUtils
 {
+	private RequestUtils()
+	{
+	}
 
 	public static String getProtocolFromUrl(String url)
 	{
@@ -15,14 +18,14 @@ public class RequestUtils
 
 	public static Map<String, String> getParameterMap(Request req)
 	{
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 
-		if (req.getHttpRequest().getParameterMap() == null || req.getHttpRequest().getParameterMap().isEmpty())
+		if( req.getHttpRequest().getParameterMap() == null || req.getHttpRequest().getParameterMap().isEmpty() )
 		{
 			return map;
 		}
 
-		for (Object key : req.getHttpRequest().getParameterMap().keySet())
+		for( Object key : req.getHttpRequest().getParameterMap().keySet() )
 		{
 			map.put((String) key, req.getHttpRequest().getParameter((String) key));
 		}

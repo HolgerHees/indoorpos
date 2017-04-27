@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.persistance.dao.AbstractBaseDAO;
 
-@Component("trackerDAO")
+@Component( "trackerDAO" )
 public class TrackerDAO extends AbstractBaseDAO<TrackerDTO>
 {
 	protected Class<TrackerDTO> getMappedClass()
@@ -39,7 +39,7 @@ public class TrackerDAO extends AbstractBaseDAO<TrackerDTO>
 		List<TrackerDTO> tracker = query("SELECT * FROM beacon");
 
 		Map<Long, TrackerDTO> trackerMap = new HashMap<>();
-		for (TrackerDTO trackerDTO : tracker)
+		for( TrackerDTO trackerDTO : tracker )
 		{
 			trackerMap.put(trackerDTO.getId(), trackerDTO);
 		}

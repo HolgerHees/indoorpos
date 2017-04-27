@@ -18,7 +18,7 @@ public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlacehold
 		{
 			return InetAddress.getLocalHost().getHostName();
 		}
-		catch (UnknownHostException e)
+		catch( UnknownHostException e )
 		{
 			throw new RuntimeException("Unable to resolve hostname", e);
 		}
@@ -36,7 +36,7 @@ public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlacehold
 
 		String oldPath = oldLocation.getPath();
 		String newPath = replaceName(oldPath);
-		if (newPath == null)
+		if( newPath == null )
 		{
 			return null;
 		}
@@ -57,17 +57,17 @@ public class ProfileBasedPropertyPlaceholderConfigurer extends PropertyPlacehold
 	@Override
 	public void setLocations(Resource... locations)
 	{
-		List<Resource> locationsToSet = new LinkedList<Resource>();
-		for (Resource location : locations)
+		List<Resource> locationsToSet = new LinkedList<>();
+		for( Resource location : locations )
 		{
-			if (!shouldBeReplaced(location))
+			if( !shouldBeReplaced(location) )
 			{
 				locationsToSet.add(location);
 				continue;
 			}
 
 			Resource profileBasedLocation = replaceLocation(location);
-			if (profileBasedLocation == null)
+			if( profileBasedLocation == null )
 			{
 				throw new IllegalStateException(
 					"Unable to replace resource with profile based resource. Resource type was: [" + location.getClass().getName() + "]");

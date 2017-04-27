@@ -26,7 +26,7 @@ public abstract class AbstractBaseDAO<T>
 	@PostConstruct
 	public void init()
 	{
-		customRowMapper = new CustomRowMapper<T>(getMappedClass(), schemaService);
+		customRowMapper = new CustomRowMapper<>(getMappedClass(), schemaService);
 	}
 
 	public void save(T obj, boolean refreshLastModified)
@@ -55,7 +55,7 @@ public abstract class AbstractBaseDAO<T>
 		{
 			return jdbcTemplateDao.getJdbcTemplate().query(sql, args, rowMapper);
 		}
-		catch (EmptyResultDataAccessException e)
+		catch( EmptyResultDataAccessException e )
 		{
 			return null;
 		}
@@ -67,7 +67,7 @@ public abstract class AbstractBaseDAO<T>
 		{
 			return jdbcTemplateDao.getJdbcTemplate().queryForObject(sql, args, customRowMapper);
 		}
-		catch (EmptyResultDataAccessException e)
+		catch( EmptyResultDataAccessException e )
 		{
 			return null;
 		}
@@ -79,7 +79,7 @@ public abstract class AbstractBaseDAO<T>
 		{
 			return jdbcTemplateDao.getJdbcTemplate().queryForObject(sql, args, requiredType);
 		}
-		catch (EmptyResultDataAccessException e)
+		catch( EmptyResultDataAccessException e )
 		{
 			return null;
 		}
@@ -92,7 +92,7 @@ public abstract class AbstractBaseDAO<T>
 			jdbcTemplateDao.getJdbcTemplate().update(sql, args);
 			return true;
 		}
-		catch (EmptyResultDataAccessException e)
+		catch( EmptyResultDataAccessException e )
 		{
 			return false;
 		}

@@ -9,8 +9,8 @@ public class Table
 {
 	private Class<?> dtoClass;
 	private String name;
-	private Map<String, Column> columns = new LinkedHashMap<String, Column>();
-	private Map<String, Index> indexes = new LinkedHashMap<String, Index>();
+	private Map<String, Column> columns = new LinkedHashMap<>();
+	private Map<String, Index> indexes = new LinkedHashMap<>();
 	private Column[] primaryColumns;
 
 	public Table(Class<?> dtoClass, String name)
@@ -31,7 +31,7 @@ public class Table
 
 	public List<Column> getColumns()
 	{
-		return new ArrayList<Column>(columns.values());
+		return new ArrayList<>(columns.values());
 	}
 
 	public Column getColumn(String name)
@@ -46,7 +46,7 @@ public class Table
 
 	public List<Index> getIndexes()
 	{
-		return new ArrayList<Index>(indexes.values());
+		return new ArrayList<>(indexes.values());
 	}
 
 	public void addIndex(Index index)

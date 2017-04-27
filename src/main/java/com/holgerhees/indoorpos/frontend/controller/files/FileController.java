@@ -8,7 +8,7 @@ import com.holgerhees.web.model.Request;
 import com.holgerhees.web.view.FileView;
 import com.holgerhees.web.view.View;
 
-@Component("fileController")
+@Component( "fileController" )
 public class FileController implements Controller
 {
 

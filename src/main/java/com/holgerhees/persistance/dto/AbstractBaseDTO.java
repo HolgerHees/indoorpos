@@ -7,13 +7,13 @@ import com.holgerhees.persistance.annotations.DbColumn;
 public abstract class AbstractBaseDTO
 {
 
-	@DbColumn(name = "created",
-	          type = "datetime",
-	          updatable = false)
+	@DbColumn( name = "created",
+	           type = "datetime",
+	           updatable = false )
 	private Date created;
 
-	@DbColumn(name = "lastModified",
-	          type = "datetime")
+	@DbColumn( name = "lastModified",
+	           type = "datetime" )
 	private Date lastModified;
 
 	public Date getCreated()

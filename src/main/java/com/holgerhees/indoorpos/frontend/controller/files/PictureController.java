@@ -19,7 +19,7 @@ import com.holgerhees.web.view.ImageView;
 import com.holgerhees.web.view.TextView;
 import com.holgerhees.web.view.View;
 
-@Component("pictureController")
+@Component( "pictureController" )
 public class PictureController implements Controller
 {
 	private static Log LOGGER = LogFactory.getLog(PictureController.class);
@@ -38,7 +38,7 @@ public class PictureController implements Controller
 			InputStream input = new FileInputStream(file);
 			return new ImageView(req, file, input, "image/jpeg");
 		}
-		catch (FileNotFoundException e)
+		catch( FileNotFoundException e )
 		{
 			LOGGER.error("Imagefile '" + req.getServletPath() + "' not found");
 			return new TextView(req, "Image not found", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

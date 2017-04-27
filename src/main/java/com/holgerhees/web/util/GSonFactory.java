@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 
 public class GSonFactory
 {
-
 	private static Gson gson = null;
 
 	static
@@ -13,6 +12,10 @@ public class GSonFactory
 		GsonBuilder builder = new GsonBuilder();
 		//gson = builder.setPrettyPrinting().serializeNulls().create();
 		gson = builder.serializeNulls().create();
+	}
+
+	private GSonFactory()
+	{
 	}
 
 	public static final Gson createGSon()

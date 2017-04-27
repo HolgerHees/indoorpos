@@ -7,7 +7,7 @@ import com.holgerhees.indoorpos.ApplicationConfig;
 import com.holgerhees.indoorpos.frontend.FrontendConfig;
 import com.holgerhees.web.model.Protocol;
 
-@Service("urlPrefixService")
+@Service( "urlPrefixService" )
 public class UrlPrefixService
 {
 
@@ -25,7 +25,7 @@ public class UrlPrefixService
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if (protocol != null && protocol != Protocol.NONE)
+		if( protocol != null && protocol != Protocol.NONE )
 		{
 			sb.append(protocol.getUrlName());
 			sb.append(COLON);
@@ -34,7 +34,7 @@ public class UrlPrefixService
 
 		sb.append(frontendConfig.getWebDomain());
 
-		if (!applicationConfig.isProduction())
+		if( !applicationConfig.isProduction() )
 		{
 			sb.append(COLON);
 			sb.append(protocol == Protocol.HTTPS ? frontendConfig.getWebHttpsPort() : frontendConfig.getWebHttpPort());
@@ -50,7 +50,7 @@ public class UrlPrefixService
 		sb.append(SLASH);
 		sb.append(frontendConfig.getStaticFolderCss());
 
-		if (applicationConfig.isProduction())
+		if( applicationConfig.isProduction() )
 		{
 			sb.append(SLASH);
 			sb.append(frontendConfig.getStaticVersionCss());
@@ -66,7 +66,7 @@ public class UrlPrefixService
 		sb.append(SLASH);
 		sb.append(frontendConfig.getStaticFolderJs());
 
-		if (applicationConfig.isProduction())
+		if( applicationConfig.isProduction() )
 		{
 			sb.append(SLASH);
 			sb.append(frontendConfig.getStaticVersionJs());

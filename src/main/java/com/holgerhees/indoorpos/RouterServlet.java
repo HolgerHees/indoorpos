@@ -41,7 +41,7 @@ public class RouterServlet extends HttpServlet
 		applicationContext = application.initialize(config.getServletContext());
 		router = application.getRouter();
 
-		if (router == null)
+		if( router == null )
 		{
 			LOGGER.error("Application.getRouter() returned null pointer. Please return a Router instance.");
 			System.exit(-1);
@@ -68,9 +68,12 @@ public class RouterServlet extends HttpServlet
 
 			View view = router.routeRequest(req, isPostRequest, staticContentServlet);
 
-			view.render();
+			if( view != null )
+			{
+				view.render();
+			}
 		}
-		catch (IOException ioException)
+		catch( IOException ioException )
 		{
 			throw new ServletException("this shouldnt happen. Converting Exception to ServletException", ioException);
 		}
@@ -92,20 +95,16 @@ public class RouterServlet extends HttpServlet
 	{
 		try
 		{
-			@SuppressWarnings("rawtypes") Class applicationClass = Class.forName(getServletContext().getInitParameter("applicationClass"));
+			@SuppressWarnings( "rawtypes" ) Class applicationClass = Class.forName(getServletContext().getInitParameter("applicationClass"));
 			LOGGER.info("instantiating application descriptor class [" + applicationClass + "]");
 			return (Application) applicationClass.newInstance();
 		}
-		catch (ClassNotFoundException e)
+		catch( ClassNotFoundException e )
 		{
 			throw new IllegalArgumentException(
 				"the web.xml appears to be missing the [applicationClass] parameter. Please add necessary <context-param> elements.", e);
 		}
-		catch (InstantiationException e)
-		{
-			throw new IllegalArgumentException("could not create instance of class " + applicationContext, e);
-		}
-		catch (IllegalAccessException e)
+		catch( InstantiationException | IllegalAccessException e )
 		{
 			throw new IllegalArgumentException("could not create instance of class " + applicationContext, e);
 		}

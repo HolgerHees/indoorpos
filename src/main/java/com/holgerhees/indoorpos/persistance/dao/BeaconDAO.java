@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.persistance.dao.AbstractBaseDAO;
 
-@Component("beaconDAO")
+@Component( "beaconDAO" )
 public class BeaconDAO extends AbstractBaseDAO<BeaconDTO>
 {
 	protected Class<BeaconDTO> getMappedClass()
@@ -44,7 +44,7 @@ public class BeaconDAO extends AbstractBaseDAO<BeaconDTO>
 		List<BeaconDTO> beacons = query("SELECT * FROM beacon");
 
 		Map<String, BeaconDTO> beaconMap = new HashMap<>();
-		for (BeaconDTO beaconDTO : beacons)
+		for( BeaconDTO beaconDTO : beacons )
 		{
 			beaconMap.put(beaconDTO.getUuid(), beaconDTO);
 		}
@@ -57,7 +57,7 @@ public class BeaconDAO extends AbstractBaseDAO<BeaconDTO>
 		List<BeaconDTO> beacons = query("SELECT * FROM beacon");
 
 		Map<Long, BeaconDTO> beaconMap = new HashMap<>();
-		for (BeaconDTO beaconDTO : beacons)
+		for( BeaconDTO beaconDTO : beacons )
 		{
 			beaconMap.put(beaconDTO.getId(), beaconDTO);
 		}

@@ -37,7 +37,7 @@ public class ImageView extends View
 		OutputStream output = getRequest().getHttpResponse().getOutputStream();
 		byte[] bytes = new byte[BUFFER_LENGTH];
 		int read = 0;
-		while ((read = input.read(bytes, 0, BUFFER_LENGTH)) != -1)
+		while( (read = input.read(bytes, 0, BUFFER_LENGTH)) != -1 )
 		{
 			output.write(bytes, 0, read);
 			output.flush();

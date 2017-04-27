@@ -7,7 +7,7 @@ import com.holgerhees.web.model.Request;
 import com.holgerhees.web.view.JspView;
 import com.holgerhees.web.view.View;
 
-@Component("testController")
+@Component( "testController" )
 public class TestController implements Controller
 {
 

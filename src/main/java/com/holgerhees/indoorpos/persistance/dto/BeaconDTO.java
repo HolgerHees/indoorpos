@@ -4,20 +4,20 @@ import com.holgerhees.persistance.annotations.DbColumn;
 import com.holgerhees.persistance.annotations.DbTable;
 import com.holgerhees.persistance.dto.AbstractKeyDTO;
 
-@DbTable(name = "beacon")
+@DbTable( name = "beacon" )
 public class BeaconDTO extends AbstractKeyDTO
 {
-	@DbColumn(name = "uuid",
-	          type = "varchar(255)")
+	@DbColumn( name = "uuid",
+	           type = "varchar(255)" )
 	private String uuid;
 
-	@DbColumn(name = "name",
-	          type = "varchar(255)")
+	@DbColumn( name = "name",
+	           type = "varchar(255)" )
 	private String name;
 
-	@DbColumn(name = "room",
-	          type = "varchar(255)",
-	          nullable = true )
+	@DbColumn( name = "room",
+	           type = "varchar(255)",
+	           nullable = true )
 	private String room;
 
 	public String getUuid()

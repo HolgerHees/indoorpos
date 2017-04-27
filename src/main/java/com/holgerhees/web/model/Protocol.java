@@ -20,11 +20,11 @@ public enum Protocol
 
 	public static Protocol fromUrlName(String urlName)
 	{
-		if (urlName != null && urlName.trim().isEmpty() == false)
+		if( urlName != null && !urlName.trim().isEmpty() )
 		{
-			for (Protocol protocol : values())
+			for( Protocol protocol : values() )
 			{
-				if (protocol.getUrlName().equals(urlName))
+				if( protocol.getUrlName().equals(urlName) )
 				{
 					return protocol;
 				}

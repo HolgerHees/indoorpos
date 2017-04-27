@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
 import com.holgerhees.persistance.dao.AbstractBaseDAO;
 
-@Component("trackedBeaconDAO")
+@Component( "trackedBeaconDAO" )
 public class TrackedBeaconDAO extends AbstractBaseDAO<TrackedBeaconDTO>
 {
 	protected Class<TrackedBeaconDTO> getMappedClass()

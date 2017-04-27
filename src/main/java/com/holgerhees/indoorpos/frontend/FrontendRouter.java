@@ -17,7 +17,7 @@ import com.holgerhees.web.model.PageDTO;
 import com.holgerhees.web.model.Request;
 import com.holgerhees.web.view.View;
 
-@Component("frontendRouter")
+@Component( "frontendRouter" )
 public class FrontendRouter implements Router
 {
 	private static Log LOGGER = LogFactory.getLog(Router.class);
@@ -39,15 +39,15 @@ public class FrontendRouter implements Router
 
 		Controller controller = null;
 
-		if (request.getServletPath().startsWith("/tracker/"))
+		if( request.getServletPath().startsWith("/tracker/") )
 		{
 			controller = (Controller) applicationContext.getBean("trackerController");
 		}
-		else if (request.getServletPath().startsWith("/test/"))
+		else if( request.getServletPath().startsWith("/test/") )
 		{
 			controller = (Controller) applicationContext.getBean("testController");
 		}
-		else if (isStaticContent(request))
+		else if( isStaticContent(request) )
 		{
 			controller = getStaticContentController(request, staticContentServlet);
 		}
@@ -58,19 +58,18 @@ public class FrontendRouter implements Router
 		}
 
 		View view = null;
-
-		if (controller != null)
+		if( controller != null )
 		{
 			view = controller.handle(request);
-		}
 
-		if (!request.hasPageDTO())
-		{
-			pageDtoInitService.getPageDto(new PageDTO(), request);
-		}
+			LOGGER.info("Handle '" + request.getServletPath() + " with '" + controller.getClass().getName() + "' in " + df
+				.format(((System.currentTimeMillis() - start) / 1000.0f)) + " seconds");
 
-		LOGGER.info("Handle '" + request.getServletPath() + " with '" + controller.getClass().getName() + "' in " + df
-			.format(((System.currentTimeMillis() - start) / 1000.0f)) + " seconds");
+			if( !request.hasPageDTO() )
+			{
+				pageDtoInitService.getPageDto(new PageDTO(), request);
+			}
+		}
 
 		return view;
 	}

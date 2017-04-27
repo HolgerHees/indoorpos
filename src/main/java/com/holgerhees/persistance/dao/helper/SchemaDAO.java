@@ -23,7 +23,7 @@ import com.holgerhees.persistance.schema.Column;
 import com.holgerhees.persistance.schema.Index;
 import com.holgerhees.persistance.schema.Table;
 
-@Component("schemaDAO")
+@Component( "schemaDAO" )
 public class SchemaDAO
 {
 
@@ -82,7 +82,7 @@ public class SchemaDAO
 	{
 		StringBuilder sb = new StringBuilder("ALTER TABLE " + table + " ");
 		sb.append("ADD COLUMN " + columnDefinition);
-		if (afterColumn != null)
+		if( afterColumn != null )
 		{ sb.append(" AFTER " + afterColumn); }
 		jdbcTemplateDao.getJdbcTemplate().execute(sb.toString());
 	}
@@ -93,31 +93,31 @@ public class SchemaDAO
 		sb.append("CREATE TABLE " + (ifNotExists ? "IF NOT EXISTS " : "") + table.getName() + "(\n");
 
 		// Columns
-		List<String> definitions = new LinkedList<String>();
-		for (Column column : table.getColumns())
+		List<String> definitions = new LinkedList<>();
+		for( Column column : table.getColumns() )
 		{
 			definitions.add(column.getDefinition());
 		}
 		sb.append("\n\t" + StringUtils.join(definitions, ",\n\t"));
 
 		// Indexes
-		definitions = new LinkedList<String>();
-		for (Index index : table.getIndexes())
+		definitions = new LinkedList<>();
+		for( Index index : table.getIndexes() )
 		{
 			definitions.add(index.getDefinition());
 		}
-		if (definitions.size() > 0)
+		if( !definitions.isEmpty() )
 		{ sb.append(",\n\t" + StringUtils.join(definitions, ",\n\t")); }
 
 		// Constraints
-		definitions = new LinkedList<String>();
-		for (Column column : table.getColumns())
+		definitions = new LinkedList<>();
+		for( Column column : table.getColumns() )
 		{
-			if (column.getConstraint() == null)
+			if( column.getConstraint() == null )
 			{ continue; }
 			definitions.add(column.getConstraint().getDefinition());
 		}
-		if (definitions.size() > 0)
+		if( !definitions.isEmpty() )
 		{ sb.append(",\n\t" + StringUtils.join(definitions, ",\n\t")); }
 
 		sb.append("\n) ENGINE=INNODB");
@@ -156,7 +156,7 @@ public class SchemaDAO
 					StringBuilder builder = new StringBuilder("`" + rs.getString("Field") + "` " + rs.getString("Type") + " ");
 					builder.append(rs.getString("Null").equals("NO") ? "NOT " : "");
 					builder.append("NULL");
-					if (rs.getString("Extra").equals("auto_increment"))
+					if( rs.getString("Extra").equals("auto_increment") )
 					{
 						builder.append(" AUTO_INCREMENT");
 					}
@@ -165,8 +165,8 @@ public class SchemaDAO
 				}
 			}));
 
-		Map<String, String> existingColumns = new HashMap<String, String>();
-		for (String[] col : existingColumnData)
+		Map<String, String> existingColumns = new HashMap<>();
+		for( String[] col : existingColumnData )
 		{
 			existingColumns.put(col[0], col[1]);
 		}
@@ -184,7 +184,7 @@ public class SchemaDAO
 				return rs.getString("Key_name");
 			}
 		}));
-		return new ArrayList<String>(new HashSet<String>(existingIndexNames));
+		return new ArrayList<>(new HashSet<String>(existingIndexNames));
 	}
 
 	public List<String> getExistingConstraintNames(String tableName)

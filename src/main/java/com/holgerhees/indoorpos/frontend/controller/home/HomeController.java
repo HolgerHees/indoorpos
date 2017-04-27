@@ -9,7 +9,7 @@ import com.holgerhees.web.model.Request;
 import com.holgerhees.web.view.JspView;
 import com.holgerhees.web.view.View;
 
-@Component("homeController")
+@Component( "homeController" )
 public class HomeController implements Controller
 {
 	@Autowired

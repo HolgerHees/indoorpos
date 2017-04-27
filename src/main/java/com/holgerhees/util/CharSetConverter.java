@@ -4,15 +4,19 @@ public class CharSetConverter
 {
 	public static final String CHARSET_UTF8 = "UTF-8";
 
+	private CharSetConverter()
+	{
+	}
+
 	public static String convertToCharset(String orig, String charSet)
 	{
-		if (orig == null || charSet == null)
+		if( orig == null || charSet == null )
 		{ return orig; }
 		try
 		{
 			return new String(orig.getBytes(), charSet);
 		}
-		catch (Exception e)
+		catch( Exception e )
 		{
 			e.printStackTrace();
 		}

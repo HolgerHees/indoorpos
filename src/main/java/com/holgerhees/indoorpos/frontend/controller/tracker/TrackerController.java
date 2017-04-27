@@ -20,7 +20,7 @@ import com.holgerhees.web.util.GSonFactory;
 import com.holgerhees.web.view.TextView;
 import com.holgerhees.web.view.View;
 
-@Component("trackerController")
+@Component( "trackerController" )
 public class TrackerController implements Controller
 {
 	private class TrackedBeacon
@@ -48,23 +48,22 @@ public class TrackerController implements Controller
 
 		try
 		{
-			StringBuilder jb = new StringBuilder();
 			InputStream reader = req.getHttpRequest().getInputStream();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte buf[] = new byte[1024];
 			int count;
-			while ((count = reader.read(buf)) > 0)
+			while( (count = reader.read(buf)) > 0 )
 			{
 				baos.write(buf, 0, count);
 			}
 			body = baos.toByteArray();
 		}
-		catch (IOException e)
+		catch( IOException e )
 		{
 
 		}
 
-		if (body == null || body.length == 0)
+		if( body == null || body.length == 0 )
 		{
 			return new TextView(req, "empty request");
 		}
@@ -75,7 +74,7 @@ public class TrackerController implements Controller
 
 		Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
 
-		for (TrackedBeacon beacon : param.trachedBeacon)
+		for( TrackedBeacon beacon : param.trachedBeacon )
 		{
 			BeaconDTO beaconDTO = beaconDTOMap.get(beacon.uuid);
 
