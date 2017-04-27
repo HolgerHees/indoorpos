@@ -1,11 +1,11 @@
-package com.holgerhees.indoorpos.frontend.web;
+package com.holgerhees.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.holgerhees.indoorpos.application.ApplicationConfig;
+import com.holgerhees.indoorpos.ApplicationConfig;
 import com.holgerhees.indoorpos.frontend.FrontendConfig;
-import com.holgerhees.indoorpos.frontend.web.model.Protocol;
+import com.holgerhees.web.model.Protocol;
 
 @Service("urlPrefixService")
 public class UrlPrefixService {

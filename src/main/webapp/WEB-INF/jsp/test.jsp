@@ -5,7 +5,7 @@
 	function send(button){
 		$.ajax({
 			  type: "POST",
-			  url: "/api/",
+			  url: "/tracker/",
 			  data: $(button.form.call).val(),
 			  success: function(data){
 				  $('#result').html('<pre>'+data+'</pre>');

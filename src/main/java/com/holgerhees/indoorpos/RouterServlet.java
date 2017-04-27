@@ -13,11 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.holgerhees.indoorpos.application.Application;
-import com.holgerhees.indoorpos.frontend.web.model.Protocol;
-import com.holgerhees.indoorpos.frontend.web.model.Request;
-import com.holgerhees.indoorpos.frontend.web.util.RequestUtils;
-import com.holgerhees.indoorpos.frontend.web.view.View;
+import com.holgerhees.web.model.Protocol;
+import com.holgerhees.web.model.Request;
+import com.holgerhees.web.util.RequestUtils;
+import com.holgerhees.web.view.View;
 
 public class RouterServlet extends HttpServlet {
 

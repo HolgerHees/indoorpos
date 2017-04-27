@@ -12,8 +12,8 @@
 
 	<import resource="classpath:DefaultApplicationContext.xml" />
 	
-	<context:component-scan base-package="com.holgerhees.indoorpos.frontend" />
-	
+	<context:component-scan base-package="com.holgerhees" />
+
 	<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
 
 	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
@@ -34,7 +34,7 @@
          </property>
     </bean>
 
-	<bean id="frontendPlaceholderConfig" class="com.holgerhees.indoorpos.service.util.ProfileBasedPropertyPlaceholderConfigurer">
+	<bean id="frontendPlaceholderConfig" class="com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer">
 		<property name="order" value="0" />
 		<property name="locations">
 			<list>

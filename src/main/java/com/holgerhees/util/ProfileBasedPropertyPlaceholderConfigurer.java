@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos.service.util;
+package com.holgerhees.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

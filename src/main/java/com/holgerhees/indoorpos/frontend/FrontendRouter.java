@@ -10,12 +10,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.Router;
-import com.holgerhees.indoorpos.application.ApplicationConfig;
+import com.holgerhees.indoorpos.ApplicationConfig;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.indoorpos.frontend.web.PageDtoInitService;
-import com.holgerhees.indoorpos.frontend.web.model.PageDTO;
-import com.holgerhees.indoorpos.frontend.web.model.Request;
-import com.holgerhees.indoorpos.frontend.web.view.View;
+import com.holgerhees.web.PageDtoInitService;
+import com.holgerhees.web.model.PageDTO;
+import com.holgerhees.web.model.Request;
+import com.holgerhees.web.view.View;
 
 @Component("frontendRouter")
 public class FrontendRouter implements Router{
@@ -37,9 +37,9 @@ public class FrontendRouter implements Router{
 		
 		Controller controller = null;
 		
-		if (request.getServletPath().startsWith("/api/"))
+		if (request.getServletPath().startsWith("/tracker/"))
 		{
-			controller = (Controller) applicationContext.getBean("apiController");
+			controller = (Controller) applicationContext.getBean("trackerController");
 		}
 		else if (request.getServletPath().startsWith("/test/"))
 		{

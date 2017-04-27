@@ -1,11 +1,11 @@
-package com.holgerhees.indoorpos.frontend.web.view;
+package com.holgerhees.web.view;
 
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 
-import com.holgerhees.indoorpos.frontend.web.model.Request;
+import com.holgerhees.web.model.Request;
 
 public class JspView extends View
 {

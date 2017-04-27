@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos.application;
+package com.holgerhees.indoorpos;
 
 import javax.servlet.ServletContext;
 

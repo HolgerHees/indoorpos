@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos.service.util;
+package com.holgerhees.indoorpos.util;
 
 public class LocationHelper {
 

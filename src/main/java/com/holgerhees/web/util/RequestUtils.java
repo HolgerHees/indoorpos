@@ -1,9 +1,9 @@
-package com.holgerhees.indoorpos.frontend.web.util;
+package com.holgerhees.web.util;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.holgerhees.indoorpos.frontend.web.model.Request;
+import com.holgerhees.web.model.Request;
 
 public class RequestUtils {
 

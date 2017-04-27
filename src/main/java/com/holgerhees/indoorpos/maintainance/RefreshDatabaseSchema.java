@@ -1,25 +1,13 @@
 package com.holgerhees.indoorpos.maintainance;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.PropertyConfigurator;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.holgerhees.persistance.MaintainanceService;
-import com.holgerhees.persistance.SchemaService;
-import com.holgerhees.persistance.dao.helper.SchemaDAO;
-import com.holgerhees.persistance.schema.Column;
-import com.holgerhees.persistance.schema.Index;
-import com.holgerhees.persistance.schema.Table;
-import com.holgerhees.indoorpos.service.util.ProfileBasedPropertyPlaceholderConfigurer;
+import com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer;
 
 public class RefreshDatabaseSchema
 {

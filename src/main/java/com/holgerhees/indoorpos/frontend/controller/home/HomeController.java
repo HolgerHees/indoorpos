@@ -3,12 +3,11 @@ package com.holgerhees.indoorpos.frontend.controller.home;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.holgerhees.indoorpos.application.ApplicationConfig;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.indoorpos.frontend.web.PageDtoInitService;
-import com.holgerhees.indoorpos.frontend.web.model.Request;
-import com.holgerhees.indoorpos.frontend.web.view.JspView;
-import com.holgerhees.indoorpos.frontend.web.view.View;
+import com.holgerhees.web.PageDtoInitService;
+import com.holgerhees.web.model.Request;
+import com.holgerhees.web.view.JspView;
+import com.holgerhees.web.view.View;
 
 @Component("homeController")
 public class HomeController implements Controller

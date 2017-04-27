@@ -1,11 +1,11 @@
-package com.holgerhees.indoorpos.frontend.web.view;
+package com.holgerhees.web.view;
 
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-import com.holgerhees.indoorpos.frontend.web.model.Request;
+import com.holgerhees.web.model.Request;
 
 public class TextView extends View{
 	

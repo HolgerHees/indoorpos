@@ -9,14 +9,14 @@ import com.holgerhees.persistance.dto.AbstractKeyDTO;
 public class TrackerDTO extends AbstractKeyDTO
 {
 	@DbColumn( name="name", type="varchar(255)" )
-	private boolean name;
+	private String name;
 
-	public boolean isName()
+	public String getName()
 	{
 		return name;
 	}
 
-	public void setName(boolean name)
+	public void setName(String name)
 	{
 		this.name = name;
 	}

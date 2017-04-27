@@ -1,10 +1,10 @@
-package com.holgerhees.indoorpos.frontend.web;
+package com.holgerhees.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.holgerhees.indoorpos.frontend.web.model.PageDTO;
-import com.holgerhees.indoorpos.frontend.web.model.Request;
+import com.holgerhees.web.model.PageDTO;
+import com.holgerhees.web.model.Request;
 
 @Service("pageDtoInitService")
 public class PageDtoInitService {

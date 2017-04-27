@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos.frontend.web.util;
+package com.holgerhees.web.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

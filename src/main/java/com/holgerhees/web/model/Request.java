@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos.frontend.web.model;
+package com.holgerhees.web.model;
 
 import java.util.Map;
 

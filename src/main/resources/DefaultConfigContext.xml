@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="applicationPlaceholderConfig"  class="com.holgerhees.indoorpos.service.util.ProfileBasedPropertyPlaceholderConfigurer">
+	<bean id="applicationPlaceholderConfig"  class="com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:com/holgerhees/indoorpos/config/application.properties</value>
@@ -34,7 +34,7 @@
 		<property name="maxWait" value="${jdbc.max_wait}" />
     </bean>
 
-	<bean id="applicationConfig" class="com.holgerhees.indoorpos.application.ApplicationConfig" init-method="init">
+	<bean id="applicationConfig" class="com.holgerhees.indoorpos.ApplicationConfig" init-method="init">
 		<property name="production" value="${app.production}" />
 	</bean>
 </beans>
