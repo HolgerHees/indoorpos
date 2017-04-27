@@ -1,11 +1,0 @@
-
-Csquid:S1948"(Make "router" transient or serializable.(íåáx8¡µ÷º+
--squid:S1989"Add a "try/catch" block.(ª¾›¡
-Gsquid:S1989"2Add a "try/catch" block for "doRequestProcessing".(µ±®ï
-Usquid:S1147";Remove this call to "exit" or ensure it is really required.(“¤‚üúÿÿÿÿ
-fsquid:S3008"QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¶¼¨å
-Gsquid:S1989"2Add a "try/catch" block for "doRequestProcessing".(µæß¾
-_squid:S2147"ECombine this catch with the one at line 103, which has the same body.(Úİ©Òùÿÿÿÿ
-Nsquid:S1948"4Make "applicationContext" transient or serializable.(î‡²şÿÿÿÿ
-Fsquid:S1989"%Add a "try/catch" block for "render".(ÛÖÕœıÿÿÿÿ8ı±Ôúº+
-Nsquid:S1948"-Make "application" transient or serializable.(£šß™şÿÿÿÿ8ı±Ôúº+

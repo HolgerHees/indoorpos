@@ -1,5 +1,0 @@
-
-Nsquid:S1068"-Remove this unused "trackerId" private field.(ßÀË«øÿÿÿÿ8çûôúº+
-Jsquid:S1481".Remove this unused "beaconDTO" local variable.(§÷û©8àãñúº+
-fsquid:S3008"QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ò·–¾
-Gsquid:S1068",Remove this unused "distance" private field.(Ê÷©[8Óµõúº+

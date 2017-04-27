@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="indoorpos:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="indoorpos.war">
-      <element id="artifact" artifact-name="indoorpos:war exploded" />
-    </root>
-  </artifact>
-</component>

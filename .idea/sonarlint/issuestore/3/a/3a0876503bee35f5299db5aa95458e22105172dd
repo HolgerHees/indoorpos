@@ -1,11 +1,0 @@
-
-T
-squid:S106";Replace this usage of System.out or System.err by a logger.(î‘šüÿÿÿÿ
-usquid:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(ÂÒïƒ8­¤£÷º+
-_squid:S1155">Use isEmpty() to check whether the collection is empty or not.(ÏÜ†îùÿÿÿÿ8­¤£÷º+
-[
-squid:S106";Replace this usage of System.out or System.err by a logger.(ˆšÑÖüÿÿÿÿ8§«°÷º+
-_squid:S1155">Use isEmpty() to check whether the collection is empty or not.(«Ş‘øÿÿÿÿ8­¤£÷º+
-nsquid:S1192"MDefine a constant instead of duplicating this literal "ALTER TABLE " 5 times.(Ç¦ó‚şÿÿÿÿ8­¤£÷º+
-nsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 58 to the 15 allowed.(Û°¿ã8ğ”¤÷º+
-rsquid:S3008"QRename this field "LOGGER" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨÷Ø“ÿÿÿÿÿ8ÿÎ¥÷º+
