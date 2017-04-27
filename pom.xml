@@ -114,7 +114,6 @@
 			<artifactId>reflections</artifactId>
 			<version>0.9.9</version>
 		</dependency>
-
 	</dependencies>
 
 	<repositories>
@@ -132,20 +131,6 @@
 	<build>
 		<finalName>indoorpos</finalName>
 		<plugins>
-			<!-- Eclipse project -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<!-- Always download and attach dependencies source code -->
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
-					<!-- Avoid type mvn eclipse:eclipse -Dwtpversion=2.0 -->
-					<wtpversion>2.0</wtpversion>
-				</configuration>
-			</plugin>
-
 			<!-- Set JDK Compiler Level -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -156,17 +141,6 @@
 					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
-
-			<!-- For Maven Tomcat Plugin -->
-			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat8-maven-plugin</artifactId>
-				<version>LATEST</version>
-				<configuration>
-					<path>/</path>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 </project>
