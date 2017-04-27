@@ -2,7 +2,6 @@ package com.holgerhees.shared.persistance;
 
 public class PersistanceException extends RuntimeException
 {
-
 	/**
 	 *
 	 */

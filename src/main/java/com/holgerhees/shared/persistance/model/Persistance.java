@@ -2,7 +2,7 @@ package com.holgerhees.shared.persistance.model;
 
 public interface Persistance
 {
-	public Integer getPersistenceID();
+	Integer getPersistenceID();
 
-	public String getIdentifier();
+	String getIdentifier();
 }

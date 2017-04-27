@@ -29,7 +29,6 @@ import com.holgerhees.shared.persistance.schema.Table;
 @Component( "schemaService" )
 public class SchemaService
 {
-
 	private Map<String, Table> tables = new HashMap<>();
 
 	private String prefix;

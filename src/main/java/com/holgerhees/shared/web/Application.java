@@ -6,9 +6,9 @@ import org.springframework.context.ApplicationContext;
 
 public interface Application
 {
-	public ApplicationContext initialize(ServletContext servletContext);
+	ApplicationContext initialize(ServletContext servletContext);
 
-	public void shutdown();
+	void shutdown();
 
-	public Router getRouter();
+	Router getRouter();
 }

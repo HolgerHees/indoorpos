@@ -7,5 +7,5 @@ import com.holgerhees.shared.web.view.View;
 
 public interface Router
 {
-	public View routeRequest(Request request, boolean isPostRequest, DefaultServlet staticContentServlet);
+	View routeRequest(Request request, boolean isPostRequest, DefaultServlet staticContentServlet);
 }
