@@ -19,6 +19,7 @@ import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
+import com.holgerhees.indoorpos.util.LocationHelper;
 
 @Component
 public class RefreshPosition
@@ -37,7 +38,7 @@ public class RefreshPosition
 	private class TrackerDistance
 	{
 		private Long trackerId;
-		private int distance;
+		private double distance;
 	}
 
 	@Scheduled( cron = "*/2 * * * * *" ) // every second
@@ -47,6 +48,7 @@ public class RefreshPosition
 
 		Map<Long, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconIDMap();
 
+		// TODO limit to last 10 seconds?
 		List<TrackedBeaconDTO> trackedBeaconDTOS = trackedBeaconDAO.getTrackedBeacons();
 
 		Map<BeaconDTO, List<TrackerDistance>> trackedDistances = new HashMap<>();
@@ -67,7 +69,7 @@ public class RefreshPosition
 			TrackerDistance trackerDistance = new TrackerDistance();
 			trackerDistance.trackerId = trackedBeaconDTO.getTrackerId();
 			// TODO convert to distance
-			trackerDistance.distance = trackedBeaconDTO.getPower();
+			trackerDistance.distance = LocationHelper.getDistance(trackedBeaconDTO.getRssi(), trackedBeaconDTO.getTxPower() );
 
 			_trackedDistances.add(trackerDistance);
 		}

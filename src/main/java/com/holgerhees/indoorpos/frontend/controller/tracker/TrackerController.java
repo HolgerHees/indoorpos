@@ -26,7 +26,8 @@ public class TrackerController implements Controller
 	private class TrackedBeacon
 	{
 		private String uuid;
-		private int power;
+		private int txPower;
+		private int rssi;
 	}
 
 	private class Parameter
@@ -81,7 +82,8 @@ public class TrackerController implements Controller
 			TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
 			trackedBeaconDTO.setTrackerId(param.trackerId);
 			trackedBeaconDTO.setBeaconId(beaconDTO.getId());
-			trackedBeaconDTO.setPower(beacon.power);
+			trackedBeaconDTO.setTxPower(beacon.txPower);
+			trackedBeaconDTO.setRssi(beacon.rssi);
 
 			beaconDAO.save(beaconDTO);
 		}

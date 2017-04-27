@@ -26,9 +26,13 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
 	                                         onDelete = "CASCADE" ) } )
 	private Long beaconId;
 
-	@DbColumn( name = "power",
+	@DbColumn( name = "tx_power",
 	           type = "tinyint(2)" )
-	private int power;
+	private int txPower;
+
+	@DbColumn( name = "rssi",
+	           type = "tinyint(2)" )
+	private int rssi;
 
 	public Long getTrackerId()
 	{
@@ -50,13 +54,23 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
 		this.beaconId = beaconId;
 	}
 
-	public int getPower()
+	public int getTxPower()
 	{
-		return power;
+		return txPower;
 	}
 
-	public void setPower(int power)
+	public void setTxPower(int txPower)
 	{
-		this.power = power;
+		this.txPower = txPower;
+	}
+
+	public int getRssi()
+	{
+		return rssi;
+	}
+
+	public void setRssi(int rssi)
+	{
+		this.rssi = rssi;
 	}
 }
