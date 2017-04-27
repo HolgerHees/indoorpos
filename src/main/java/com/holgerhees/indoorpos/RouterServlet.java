@@ -13,10 +13,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
-import com.holgerhees.web.model.Protocol;
-import com.holgerhees.web.model.Request;
-import com.holgerhees.web.util.RequestUtils;
-import com.holgerhees.web.view.View;
+import com.holgerhees.shared.web.model.Protocol;
+import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.util.RequestUtils;
+import com.holgerhees.shared.web.view.View;
 
 public class RouterServlet extends HttpServlet
 {

@@ -6,8 +6,8 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.PropertyConfigurator;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.holgerhees.persistance.MaintainanceService;
-import com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer;
+import com.holgerhees.shared.persistance.MaintainanceService;
+import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 
 public class RefreshDatabaseSchema
 {

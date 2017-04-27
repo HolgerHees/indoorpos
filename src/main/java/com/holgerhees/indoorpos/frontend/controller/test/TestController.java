@@ -3,9 +3,9 @@ package com.holgerhees.indoorpos.frontend.controller.test;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.web.model.Request;
-import com.holgerhees.web.view.JspView;
-import com.holgerhees.web.view.View;
+import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.view.JspView;
+import com.holgerhees.shared.web.view.View;
 
 @Component( "testController" )
 public class TestController implements Controller

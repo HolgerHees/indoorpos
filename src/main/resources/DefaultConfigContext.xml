@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="applicationPlaceholderConfig" class="com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer">
+	<bean id="applicationPlaceholderConfig" class="com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:com/holgerhees/indoorpos/config/application.properties</value>
@@ -12,7 +12,7 @@
 		</property>
 	</bean>
 
-	<bean id="jdbcTemplate" class="com.holgerhees.persistance.dao.helper.JdbcTemplateDAO">
+	<bean id="jdbcTemplate" class="com.holgerhees.shared.persistance.dao.helper.JdbcTemplateDAO">
 		<property name="dataSource" ref="jdbcSource"/>
 	</bean>
 

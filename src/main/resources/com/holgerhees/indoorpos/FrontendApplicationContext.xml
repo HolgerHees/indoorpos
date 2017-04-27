@@ -13,7 +13,7 @@
 	<import resource="classpath:DefaultApplicationContext.xml"/>
 
 	<context:component-scan base-package="com.holgerhees.indoorpos"/>
-	<context:component-scan base-package="com.holgerhees.web"/>
+	<context:component-scan base-package="com.holgerhees.shared.web"/>
 
 	<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
 
@@ -35,7 +35,7 @@
 		</property>
 	</bean>
 
-	<bean id="frontendPlaceholderConfig" class="com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer">
+	<bean id="frontendPlaceholderConfig" class="com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer">
 		<property name="order" value="0"/>
 		<property name="locations">
 			<list>

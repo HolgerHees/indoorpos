@@ -14,7 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import com.holgerhees.indoorpos.Application;
 import com.holgerhees.indoorpos.Router;
-import com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer;
+import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 
 public class FrontendApplication implements Application
 {

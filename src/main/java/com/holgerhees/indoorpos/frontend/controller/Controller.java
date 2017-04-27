@@ -1,7 +1,7 @@
 package com.holgerhees.indoorpos.frontend.controller;
 
-import com.holgerhees.web.model.Request;
-import com.holgerhees.web.view.View;
+import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.view.View;
 
 public interface Controller
 {

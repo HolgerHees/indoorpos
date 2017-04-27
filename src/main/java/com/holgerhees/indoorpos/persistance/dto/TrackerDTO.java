@@ -1,8 +1,8 @@
 package com.holgerhees.indoorpos.persistance.dto;
 
-import com.holgerhees.persistance.annotations.DbColumn;
-import com.holgerhees.persistance.annotations.DbTable;
-import com.holgerhees.persistance.dto.AbstractKeyDTO;
+import com.holgerhees.shared.persistance.annotations.DbColumn;
+import com.holgerhees.shared.persistance.annotations.DbTable;
+import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 
 @DbTable( name = "tracker" )
 public class TrackerDTO extends AbstractKeyDTO

@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 import com.holgerhees.indoorpos.ApplicationConfig;
 import com.holgerhees.indoorpos.Router;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.web.PageDtoInitService;
-import com.holgerhees.web.model.PageDTO;
-import com.holgerhees.web.model.Request;
-import com.holgerhees.web.view.View;
+import com.holgerhees.shared.web.PageDtoInitService;
+import com.holgerhees.shared.web.model.PageDTO;
+import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.view.View;
 
 @Component( "frontendRouter" )
 public class FrontendRouter implements Router

@@ -10,7 +10,7 @@ import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
-import com.holgerhees.util.ProfileBasedPropertyPlaceholderConfigurer;
+import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 
 public class ImportData
 {

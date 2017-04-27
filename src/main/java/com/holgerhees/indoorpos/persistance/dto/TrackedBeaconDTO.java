@@ -1,9 +1,9 @@
 package com.holgerhees.indoorpos.persistance.dto;
 
-import com.holgerhees.persistance.annotations.DbColumn;
-import com.holgerhees.persistance.annotations.DbForeignKey;
-import com.holgerhees.persistance.annotations.DbTable;
-import com.holgerhees.persistance.dto.AbstractBaseDTO;
+import com.holgerhees.shared.persistance.annotations.DbColumn;
+import com.holgerhees.shared.persistance.annotations.DbForeignKey;
+import com.holgerhees.shared.persistance.annotations.DbTable;
+import com.holgerhees.shared.persistance.dto.AbstractBaseDTO;
 
 @DbTable( name = "tracked_beacon" )
 public class TrackedBeaconDTO extends AbstractBaseDTO

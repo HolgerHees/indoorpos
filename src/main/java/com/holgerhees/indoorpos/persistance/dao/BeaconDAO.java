@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
-import com.holgerhees.persistance.dao.AbstractBaseDAO;
+import com.holgerhees.shared.persistance.dao.AbstractBaseDAO;
 
 @Component( "beaconDAO" )
 public class BeaconDAO extends AbstractBaseDAO<BeaconDTO>

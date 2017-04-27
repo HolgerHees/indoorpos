@@ -4,9 +4,9 @@ import org.apache.catalina.servlets.DefaultServlet;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.web.model.Request;
-import com.holgerhees.web.view.FileView;
-import com.holgerhees.web.view.View;
+import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.view.FileView;
+import com.holgerhees.shared.web.view.View;
 
 @Component( "fileController" )
 public class FileController implements Controller

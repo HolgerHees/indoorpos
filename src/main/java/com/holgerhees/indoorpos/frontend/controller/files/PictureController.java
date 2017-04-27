@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.frontend.FrontendConfig;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.web.model.Request;
-import com.holgerhees.web.view.ImageView;
-import com.holgerhees.web.view.TextView;
-import com.holgerhees.web.view.View;
+import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.view.ImageView;
+import com.holgerhees.shared.web.view.TextView;
+import com.holgerhees.shared.web.view.View;
 
 @Component( "pictureController" )
 public class PictureController implements Controller

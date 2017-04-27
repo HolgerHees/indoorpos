@@ -15,10 +15,10 @@ import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackedBeaconDAO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
-import com.holgerhees.web.model.Request;
-import com.holgerhees.web.util.GSonFactory;
-import com.holgerhees.web.view.TextView;
-import com.holgerhees.web.view.View;
+import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.util.GSonFactory;
+import com.holgerhees.shared.web.view.TextView;
+import com.holgerhees.shared.web.view.View;
 
 @Component( "trackerController" )
 public class TrackerController implements Controller
