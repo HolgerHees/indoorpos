@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos;
+package com.holgerhees.shared.web;
 
 import org.apache.catalina.servlets.DefaultServlet;
 

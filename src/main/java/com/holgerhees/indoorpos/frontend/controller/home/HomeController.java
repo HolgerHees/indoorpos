@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.shared.web.PageDtoInitService;
+import com.holgerhees.shared.web.service.PageDtoInitService;
 import com.holgerhees.shared.web.model.Request;
 import com.holgerhees.shared.web.view.JspView;
 import com.holgerhees.shared.web.view.View;

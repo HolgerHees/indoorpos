@@ -7,7 +7,7 @@
 
 	<servlet>
 		<servlet-name>RouterServlet</servlet-name>
-		<servlet-class>com.holgerhees.indoorpos.RouterServlet</servlet-class>
+		<servlet-class>com.holgerhees.shared.web.RouterServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

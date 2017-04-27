@@ -10,9 +10,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.ApplicationConfig;
-import com.holgerhees.indoorpos.Router;
+import com.holgerhees.shared.web.Router;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.shared.web.PageDtoInitService;
+import com.holgerhees.shared.web.service.PageDtoInitService;
 import com.holgerhees.shared.web.model.PageDTO;
 import com.holgerhees.shared.web.model.Request;
 import com.holgerhees.shared.web.view.View;
