@@ -17,7 +17,7 @@ public class Column
     private Table table;
     private Constraint constraint;
 
-    public Column(String name, boolean insertable, boolean updateable, Table table)
+    public Column( String name, boolean insertable, boolean updateable, Table table )
     {
         this.name = name;
         this.insertable = insertable;
@@ -30,7 +30,7 @@ public class Column
         return setter;
     }
 
-    public void setSetter(Method setter)
+    public void setSetter( Method setter )
     {
         this.setter = setter;
     }
@@ -40,7 +40,7 @@ public class Column
         return setterConverter;
     }
 
-    public void setSetterConverter(Method setterConverter)
+    public void setSetterConverter( Method setterConverter )
     {
         this.setterConverter = setterConverter;
     }
@@ -50,7 +50,7 @@ public class Column
         return getter;
     }
 
-    public void setGetter(Method getter)
+    public void setGetter( Method getter )
     {
         this.getter = getter;
     }
@@ -60,7 +60,7 @@ public class Column
         return getterConverter;
     }
 
-    public void setGetterConverter(Method getterConverter)
+    public void setGetterConverter( Method getterConverter )
     {
         this.getterConverter = getterConverter;
     }
@@ -80,7 +80,7 @@ public class Column
         return definition;
     }
 
-    public void setDefinition(String definition)
+    public void setDefinition( String definition )
     {
         this.definition = definition;
     }
@@ -95,7 +95,7 @@ public class Column
         return constraint;
     }
 
-    public void setConstraint(Constraint constraint)
+    public void setConstraint( Constraint constraint )
     {
         this.constraint = constraint;
     }
@@ -110,7 +110,7 @@ public class Column
         return type;
     }
 
-    public void setType(Class<?> type)
+    public void setType( Class<?> type )
     {
         this.type = type;
     }

@@ -25,7 +25,7 @@ public class SchemaService
 
     private String prefix;
 
-    public void setPrefix(String prefix)
+    public void setPrefix( String prefix )
     {
         this.prefix = prefix;
     }
@@ -33,110 +33,110 @@ public class SchemaService
     public void init()
     {
 
-        Reflections reflections = new Reflections(prefix);
-        Set<Class<? extends AbstractBaseDTO>> classes = reflections.getSubTypesOf(AbstractBaseDTO.class);
+        Reflections reflections = new Reflections( prefix );
+        Set<Class<? extends AbstractBaseDTO>> classes = reflections.getSubTypesOf( AbstractBaseDTO.class );
 
         Map<Column, DbForeignKey> tmpConstraintMapping = new HashMap<>();
 
         for( Class<?> mappedClass : classes )
         {
 
-            if( Modifier.isAbstract(mappedClass.getModifiers()) )
+            if( Modifier.isAbstract( mappedClass.getModifiers() ) )
             {
                 continue;
             }
 
-            Table table = buildTable(mappedClass, tmpConstraintMapping);
+            Table table = buildTable( mappedClass, tmpConstraintMapping );
 
-            if( tables.containsKey(table.getName()) )
+            if( tables.containsKey( table.getName() ) )
             {
-                throw new RuntimeException("Duplicate table \"" + table.getName() + "\"");
+                throw new RuntimeException( "Duplicate table \"" + table.getName() + "\"" );
             }
 
-            tables.put(table.getName(), table);
+            tables.put( table.getName(), table );
         }
 
         for( Entry<Column, DbForeignKey> entry : tmpConstraintMapping.entrySet() )
         {
 
             Class<?> targetTableClass = entry.getValue().target();
-            DbTable targetDbTable = targetTableClass.getAnnotation(DbTable.class);
+            DbTable targetDbTable = targetTableClass.getAnnotation( DbTable.class );
 
-            Table targetTable = tables.get(targetDbTable.name());
-            Column targetColumn = targetTable.getColumn(entry.getValue().field());
+            Table targetTable = tables.get( targetDbTable.name() );
+            Column targetColumn = targetTable.getColumn( entry.getValue().field() );
 
-            entry.getKey().getConstraint().setTarget(targetColumn);
+            entry.getKey().getConstraint().setTarget( targetColumn );
         }
     }
 
-    public Table getTable(Class<?> mappedClass)
+    public Table getTable( Class<?> mappedClass )
     {
-        DbTable table = mappedClass.getAnnotation(DbTable.class);
-        return tables.get(table.name());
+        DbTable table = mappedClass.getAnnotation( DbTable.class );
+        return tables.get( table.name() );
     }
 
-    private Table buildTable(Class<?> mappedClass, Map<Column, DbForeignKey> tmpConstraintMapping)
+    private Table buildTable( Class<?> mappedClass, Map<Column, DbForeignKey> tmpConstraintMapping )
     {
         try
         {
-            DbTable dbTable = mappedClass.getAnnotation(DbTable.class);
+            DbTable dbTable = mappedClass.getAnnotation( DbTable.class );
 
             List<Column> uniqueColumns = new ArrayList<>();
             List<Column> primaryColumns = new ArrayList<>();
 
-            List<Field> fields = SchemaService.getAllFields(new LinkedList<Field>(), mappedClass);
+            List<Field> fields = SchemaService.getAllFields( new LinkedList<Field>(), mappedClass );
 
             // Columns definitions
             Map<String, List<String>> indexColumns = new HashMap<>();
             Map<String, DbIndex.Type> indexTypes = new HashMap<>();
 
-            Table table = new Table(mappedClass, dbTable.name());
+            Table table = new Table( mappedClass, dbTable.name() );
 
             for( int i = 0; i < fields.size(); i++ )
             {
-                Field field = fields.get(i);
+                Field field = fields.get( i );
 
-                DbColumn dbColumn = field.getAnnotation(DbColumn.class);
+                DbColumn dbColumn = field.getAnnotation( DbColumn.class );
                 if( dbColumn == null )
                 {
                     continue;
                 }
 
-                DbIndex index = field.getAnnotation(DbIndex.class);
+                DbIndex index = field.getAnnotation( DbIndex.class );
 
-                Column column = new Column(dbColumn.name(), dbColumn.insertable(), dbColumn.updatable(), table);
+                Column column = new Column( dbColumn.name(), dbColumn.insertable(), dbColumn.updatable(), table );
 
                 String fieldName = field.getName();
-                String baseName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+                String baseName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
 
-                String getterName = field.getType().equals(boolean.class) ? "is" + baseName : "get" + baseName;
+                String getterName = field.getType().equals( boolean.class ) ? "is" + baseName : "get" + baseName;
                 String setterName = "set" + baseName;
 
-                column.setSetter(mappedClass.getMethod(setterName, field.getType()));
-                column.setGetter(mappedClass.getMethod(getterName));
+                column.setSetter( mappedClass.getMethod( setterName, field.getType() ) );
+                column.setGetter( mappedClass.getMethod( getterName ) );
 
-                if( Persistance.class.isAssignableFrom(field.getType()) )
+                if( Persistance.class.isAssignableFrom( field.getType() ) )
                 {
-                    column.setSetterConverter(field.getType().getMethod("fromPersistenceID", Integer.class));
-                    column.setGetterConverter(field.getType().getMethod("getPersistenceID"));
-                    column.setType(Integer.class);
+                    column.setSetterConverter( field.getType().getMethod( "fromPersistenceID", Integer.class ) );
+                    column.setGetterConverter( field.getType().getMethod( "getPersistenceID" ) );
+                    column.setType( Integer.class );
                 } else
                 {
-                    column.setType(field.getType());
+                    column.setType( field.getType() );
                 }
 
-                table.addColumn(column);
+                table.addColumn( column );
 
-                buildColumnDefinition(column, dbColumn,
-                        (!field.getType().equals(String.class) && index != null && index.type() == DbIndex.Type.PRIMARY_KEY && index.group().isEmpty()));
+                buildColumnDefinition( column, dbColumn,
+                                       ( !field.getType().equals( String.class ) && index != null && index.type() == DbIndex.Type.PRIMARY_KEY && index.group().isEmpty() ) );
 
                 if( dbColumn.foreignKey().length > 0 )
                 {
-                    buildConstraintDefinition(column, dbTable, dbColumn, tmpConstraintMapping);
+                    buildConstraintDefinition( column, dbTable, dbColumn, tmpConstraintMapping );
 
-                    if( index == null || (!index.group().isEmpty() && indexColumns.containsKey(getGroupId(index, i))) )
+                    if( index == null || ( !index.group().isEmpty() && indexColumns.containsKey( getGroupId( index, i ) ) ) )
                     {
-                        addIndex(DbIndex.DEFAULT, dbColumn, indexColumns, indexTypes, i);
+                        addIndex( DbIndex.DEFAULT, dbColumn, indexColumns, indexTypes, i );
                     }
                 }
 
@@ -145,29 +145,29 @@ public class SchemaService
 
                     if( index.type() == DbIndex.Type.PRIMARY_KEY )
                     {
-                        primaryColumns.add(column);
+                        primaryColumns.add( column );
                     } else if( index.type() == DbIndex.Type.UNIQUE )
                     {
-                        uniqueColumns.add(column);
+                        uniqueColumns.add( column );
                     }
 
-                    addIndex(index, dbColumn, indexColumns, indexTypes, i);
+                    addIndex( index, dbColumn, indexColumns, indexTypes, i );
                 }
             }
 
             // Columns indexes
             for( String groupId : indexColumns.keySet() )
             {
-                Index index = buildIndexDefinition(groupId, indexColumns, indexTypes);
-                table.addIndex(index);
+                Index index = buildIndexDefinition( groupId, indexColumns, indexTypes );
+                table.addIndex( index );
             }
 
             if( !primaryColumns.isEmpty() )
             {
-                table.setPrimaryColumns(primaryColumns.toArray(new Column[primaryColumns.size()]));
+                table.setPrimaryColumns( primaryColumns.toArray( new Column[primaryColumns.size()] ) );
             } else if( !uniqueColumns.isEmpty() )
             {
-                table.setPrimaryColumns(uniqueColumns.toArray(new Column[uniqueColumns.size()]));
+                table.setPrimaryColumns( uniqueColumns.toArray( new Column[uniqueColumns.size()] ) );
             }
 
 			/*System.out.println(table.getName());
@@ -179,11 +179,11 @@ public class SchemaService
             return table;
         } catch( NoSuchMethodException | SecurityException e )
         {
-            throw new PersistanceException("Unable to build TableInfo for class " + mappedClass.getName(), e);
+            throw new PersistanceException( "Unable to build TableInfo for class " + mappedClass.getName(), e );
         }
     }
 
-    private String getGroupId(DbIndex index, int i)
+    private String getGroupId( DbIndex index, int i )
     {
         String groupId;
         if( index.type() == DbIndex.Type.PRIMARY_KEY )
@@ -199,33 +199,33 @@ public class SchemaService
         return groupId;
     }
 
-    private void addIndex(DbIndex index, DbColumn dbColumn, Map<String, List<String>> indexColumns, Map<String, DbIndex.Type> indexTypes, int i)
+    private void addIndex( DbIndex index, DbColumn dbColumn, Map<String, List<String>> indexColumns, Map<String, DbIndex.Type> indexTypes, int i )
     {
 
-        String groupId = getGroupId(index, i);
+        String groupId = getGroupId( index, i );
 
-        if( !indexColumns.containsKey(groupId) )
+        if( !indexColumns.containsKey( groupId ) )
         {
-            indexColumns.put(groupId, new LinkedList<String>());
-            indexTypes.put(groupId, index.type());
+            indexColumns.put( groupId, new LinkedList<String>() );
+            indexTypes.put( groupId, index.type() );
         }
 
-        indexColumns.get(groupId).add(dbColumn.name());
+        indexColumns.get( groupId ).add( dbColumn.name() );
     }
 
-    private void buildColumnDefinition(Column column, DbColumn dbColumn, boolean isAutoincrement)
+    private void buildColumnDefinition( Column column, DbColumn dbColumn, boolean isAutoincrement )
     {
 
-        String definition = "`" + dbColumn.name() + "` " + dbColumn.type() + " " + (dbColumn.nullable() ? "NULL" : "NOT NULL");
+        String definition = "`" + dbColumn.name() + "` " + dbColumn.type() + " " + ( dbColumn.nullable() ? "NULL" : "NOT NULL" );
         if( isAutoincrement )
         {
             definition += " AUTO_INCREMENT";
         }
 
-        column.setDefinition(definition);
+        column.setDefinition( definition );
     }
 
-    private void buildConstraintDefinition(Column column, DbTable dbTable, DbColumn dbColumn, Map<Column, DbForeignKey> tmpConstraintMapping)
+    private void buildConstraintDefinition( Column column, DbTable dbTable, DbColumn dbColumn, Map<Column, DbForeignKey> tmpConstraintMapping )
     {
 
         StringBuilder fsb = new StringBuilder();
@@ -233,52 +233,52 @@ public class SchemaService
         String columnName = dbColumn.name();
         String constraintName = dbTable.name() + "_" + columnName + "_fk";
 
-        fsb.append("CONSTRAINT `" + constraintName + "` FOREIGN KEY (`" + columnName + "`) REFERENCES ");
+        fsb.append( "CONSTRAINT `" + constraintName + "` FOREIGN KEY (`" + columnName + "`) REFERENCES " );
 
         DbForeignKey foreignKey = dbColumn.foreignKey()[0];
 
-        tmpConstraintMapping.put(column, foreignKey);
+        tmpConstraintMapping.put( column, foreignKey );
 
-        DbTable foreignTable = getTableAnnotation(foreignKey.target());
-        Field foreignField = getField(foreignKey);
+        DbTable foreignTable = getTableAnnotation( foreignKey.target() );
+        Field foreignField = getField( foreignKey );
 
-        DbColumn foreignColumn = foreignField.getAnnotation(DbColumn.class);
+        DbColumn foreignColumn = foreignField.getAnnotation( DbColumn.class );
         if( foreignColumn == null )
         {
             throw new PersistanceException(
-                    "@Column annotation missing on field [" + foreignKey.field() + "] in class " + foreignKey.target().getName());
+                    "@Column annotation missing on field [" + foreignKey.field() + "] in class " + foreignKey.target().getName() );
         }
 
-        fsb.append(foreignTable.name() + " (" + foreignColumn.name() + ") ");
+        fsb.append( foreignTable.name() + " (" + foreignColumn.name() + ") " );
 
-        fsb.append("ON DELETE " + foreignKey.onDelete() + " ON UPDATE " + foreignKey.onUpdate());
+        fsb.append( "ON DELETE " + foreignKey.onDelete() + " ON UPDATE " + foreignKey.onUpdate() );
 
-        Constraint constraint = new Constraint(constraintName, fsb.toString());
+        Constraint constraint = new Constraint( constraintName, fsb.toString() );
 
-        column.setConstraint(constraint);
+        column.setConstraint( constraint );
     }
 
-    private Index buildIndexDefinition(String groupId, Map<String, List<String>> indexColumns, Map<String, DbIndex.Type> indexTypes)
+    private Index buildIndexDefinition( String groupId, Map<String, List<String>> indexColumns, Map<String, DbIndex.Type> indexTypes )
     {
 
-        DbIndex.Type type = indexTypes.get(groupId);
-        String[] columns = indexColumns.get(groupId).toArray(new String[]{});
+        DbIndex.Type type = indexTypes.get( groupId );
+        String[] columns = indexColumns.get( groupId ).toArray( new String[]{} );
 
-        Index index = new Index(DbIndex.Type.getName(type, columns), type.getSqlStatement(columns));
+        Index index = new Index( DbIndex.Type.getName( type, columns ), type.getSqlStatement( columns ) );
         return index;
     }
 
     public LinkedList<Table> getTablesInDropOrder()
     {
         LinkedList<Table> list = getTablesInCreationOrder();
-        Collections.reverse(list);
+        Collections.reverse( list );
         return list;
     }
 
     public LinkedList<Table> getTablesInCreationOrder()
     {
 
-        List<Table> process = new ArrayList<>(tables.values());
+        List<Table> process = new ArrayList<>( tables.values() );
 
         LinkedList<Table> creationOrder = new LinkedList<>();
         while( !process.isEmpty() )
@@ -289,7 +289,7 @@ public class SchemaService
                 for( Column column : table.getColumns() )
                 {
 
-                    if( column.getConstraint() != null && !creationOrder.contains(column.getConstraint().getTarget().getTable()) )
+                    if( column.getConstraint() != null && !creationOrder.contains( column.getConstraint().getTarget().getTable() ) )
                     {
                         found = false;
                         break;
@@ -298,8 +298,8 @@ public class SchemaService
 
                 if( found )
                 {
-                    creationOrder.add(table);
-                    process.remove(table);
+                    creationOrder.add( table );
+                    process.remove( table );
                     break;
                 }
             }
@@ -331,42 +331,42 @@ public class SchemaService
         return creationOrder;
     }
 
-    public static List<Field> getAllFields(List<Field> fields, Class<?> type)
+    public static List<Field> getAllFields( List<Field> fields, Class<?> type )
     {
 
         if( type.getSuperclass() != null )
         {
-            fields = getAllFields(fields, type.getSuperclass());
+            fields = getAllFields( fields, type.getSuperclass() );
         }
 
-        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+        fields.addAll( Arrays.asList( type.getDeclaredFields() ) );
 
         return fields;
     }
 
-    protected static Field getField(DbForeignKey foreignKey)
+    protected static Field getField( DbForeignKey foreignKey )
     {
 
-        List<Field> fields = getAllFields(new LinkedList<Field>(), foreignKey.target());
+        List<Field> fields = getAllFields( new LinkedList<Field>(), foreignKey.target() );
         for( Field field : fields )
         {
-            if( field.getName().equals(foreignKey.field()) )
+            if( field.getName().equals( foreignKey.field() ) )
             {
                 return field;
             }
         }
 
         throw new PersistanceException(
-                "Field [" + foreignKey.field() + "] for foreign key in class [" + foreignKey.target().getName() + "] doesn't exist.");
+                "Field [" + foreignKey.field() + "] for foreign key in class [" + foreignKey.target().getName() + "] doesn't exist." );
     }
 
-    public static DbTable getTableAnnotation(Class<?> mappedClass)
+    public static DbTable getTableAnnotation( Class<?> mappedClass )
     {
-        DbTable table = mappedClass.getAnnotation(DbTable.class);
+        DbTable table = mappedClass.getAnnotation( DbTable.class );
 
         if( table == null )
         {
-            throw new PersistanceException("the provided class " + mappedClass.getName() + " is not annotated with @Table");
+            throw new PersistanceException( "the provided class " + mappedClass.getName() + " is not annotated with @Table" );
         }
 
         return table;

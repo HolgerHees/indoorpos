@@ -8,5 +8,5 @@ import javax.servlet.ServletException;
 
 public interface Router
 {
-    View routeRequest(Request request, boolean isPostRequest, DefaultServlet staticContentServlet) throws ServletException;
+    View routeRequest( Request request, boolean isPostRequest, DefaultServlet staticContentServlet ) throws ServletException;
 }

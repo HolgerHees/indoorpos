@@ -21,7 +21,7 @@ public class RouterServlet extends HttpServlet
 
     private static final long serialVersionUID = 1L;
 
-    private static Log LOGGER = LogFactory.getLog(RouterServlet.class);
+    private static Log LOGGER = LogFactory.getLog( RouterServlet.class );
 
     private ApplicationContext applicationContext;
     private Application application;
@@ -29,42 +29,42 @@ public class RouterServlet extends HttpServlet
     private static DefaultServlet staticContentServlet = new DefaultServlet();
 
     @Override
-    public void init(ServletConfig config) throws ServletException
+    public void init( ServletConfig config ) throws ServletException
     {
-        super.init(config);
+        super.init( config );
 
-        staticContentServlet.init(config);
+        staticContentServlet.init( config );
 
         application = getApplication();
-        applicationContext = application.initialize(config.getServletContext());
+        applicationContext = application.initialize( config.getServletContext() );
         router = application.getRouter();
 
         if( router == null )
         {
-            LOGGER.error("Application.getRouter() returned null pointer. Please return a Router instance.");
-            System.exit(-1);
+            LOGGER.error( "Application.getRouter() returned null pointer. Please return a Router instance." );
+            System.exit( -1 );
         }
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
-        doRequestProcessing(request, response, false);
+        doRequestProcessing( request, response, false );
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
-        doRequestProcessing(request, response, true);
+        doRequestProcessing( request, response, true );
     }
 
-    private final void doRequestProcessing(HttpServletRequest request, HttpServletResponse response, boolean isPostRequest) throws ServletException
+    private final void doRequestProcessing( HttpServletRequest request, HttpServletResponse response, boolean isPostRequest ) throws ServletException
     {
         try
         {
-            Request req = createRequest(request, response);
+            Request req = createRequest( request, response );
 
-            View view = router.routeRequest(req, isPostRequest, staticContentServlet);
+            View view = router.routeRequest( req, isPostRequest, staticContentServlet );
 
             if( view != null )
             {
@@ -72,21 +72,21 @@ public class RouterServlet extends HttpServlet
             }
         } catch( IOException e )
         {
-            LOGGER.fatal("RouterServlet io exception", e);
+            LOGGER.fatal( "RouterServlet io exception", e );
         } catch( ServletException e )
         {
-            LOGGER.fatal("RouterServlet catched exception", e.getRootCause() == null ? e : e.getRootCause());
+            LOGGER.fatal( "RouterServlet catched exception", e.getRootCause() == null ? e : e.getRootCause() );
         }
     }
 
-    private Request createRequest(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    private Request createRequest( HttpServletRequest httpRequest, HttpServletResponse httpResponse )
     {
         final String url = httpRequest.getRequestURL().toString();
 
-        Request request = new Request(httpRequest, httpResponse, getServletContext());
-        request.setUrl(url);
-        request.setServletPath(httpRequest.getServletPath());
-        request.setProtocol(Protocol.fromUrlName(RequestUtils.getProtocolFromUrl(url)));
+        Request request = new Request( httpRequest, httpResponse, getServletContext() );
+        request.setUrl( url );
+        request.setServletPath( httpRequest.getServletPath() );
+        request.setProtocol( Protocol.fromUrlName( RequestUtils.getProtocolFromUrl( url ) ) );
 
         return request;
     }
@@ -95,16 +95,16 @@ public class RouterServlet extends HttpServlet
     {
         try
         {
-            @SuppressWarnings( "rawtypes" ) Class applicationClass = Class.forName(getServletContext().getInitParameter("applicationClass"));
-            LOGGER.info("instantiating application descriptor class [" + applicationClass + "]");
+            @SuppressWarnings( "rawtypes" ) Class applicationClass = Class.forName( getServletContext().getInitParameter( "applicationClass" ) );
+            LOGGER.info( "instantiating application descriptor class [" + applicationClass + "]" );
             return (Application) applicationClass.newInstance();
         } catch( ClassNotFoundException e )
         {
             throw new IllegalArgumentException(
-                    "the web.xml appears to be missing the [applicationClass] parameter. Please add necessary <context-param> elements.", e);
+                    "the web.xml appears to be missing the [applicationClass] parameter. Please add necessary <context-param> elements.", e );
         } catch( InstantiationException | IllegalAccessException e )
         {
-            throw new IllegalArgumentException("could not create instance of class " + applicationContext, e);
+            throw new IllegalArgumentException( "could not create instance of class " + applicationContext, e );
         }
     }
 

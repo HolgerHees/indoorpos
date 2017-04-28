@@ -9,28 +9,28 @@ import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 public class AreaDTO extends AbstractKeyDTO
 {
     @DbColumn( name = "room_id",
-            type = "int(11)",
-            updatable = false,
-            foreignKey = {@DbForeignKey( target = RoomDTO.class,
-                    field = "id",
-                    onUpdate = "CASCADE",
-                    onDelete = "CASCADE" )} )
+               type = "int(11)",
+               updatable = false,
+               foreignKey = { @DbForeignKey( target = RoomDTO.class,
+                                             field = "id",
+                                             onUpdate = "CASCADE",
+                                             onDelete = "CASCADE" ) } )
     private Long roomId;
 
     @DbColumn( name = "top_left_x",
-            type = "smallint(8)" )
+               type = "smallint(8)" )
     private int topLeftX;
 
     @DbColumn( name = "top_left_y",
-            type = "smallint(8)" )
+               type = "smallint(8)" )
     private int topLeftY;
 
     @DbColumn( name = "bottom_right_x",
-            type = "smallint(8)" )
+               type = "smallint(8)" )
     private int bottomRightX;
 
     @DbColumn( name = "bottom_right_y",
-            type = "smallint(8)" )
+               type = "smallint(8)" )
     private int bottomRightY;
 
     public Long getRoomId()
@@ -38,7 +38,7 @@ public class AreaDTO extends AbstractKeyDTO
         return roomId;
     }
 
-    public void setRoomId(Long roomId)
+    public void setRoomId( Long roomId )
     {
         this.roomId = roomId;
     }
@@ -48,7 +48,7 @@ public class AreaDTO extends AbstractKeyDTO
         return topLeftX;
     }
 
-    public void setTopLeftX(int topLeftX)
+    public void setTopLeftX( int topLeftX )
     {
         this.topLeftX = topLeftX;
     }
@@ -58,7 +58,7 @@ public class AreaDTO extends AbstractKeyDTO
         return topLeftY;
     }
 
-    public void setTopLeftY(int topLeftY)
+    public void setTopLeftY( int topLeftY )
     {
         this.topLeftY = topLeftY;
     }
@@ -68,7 +68,7 @@ public class AreaDTO extends AbstractKeyDTO
         return bottomRightX;
     }
 
-    public void setBottomRightX(int bottomRightX)
+    public void setBottomRightX( int bottomRightX )
     {
         this.bottomRightX = bottomRightX;
     }
@@ -78,7 +78,7 @@ public class AreaDTO extends AbstractKeyDTO
         return bottomRightY;
     }
 
-    public void setBottomRightY(int bottomRightY)
+    public void setBottomRightY( int bottomRightY )
     {
         this.bottomRightY = bottomRightY;
     }

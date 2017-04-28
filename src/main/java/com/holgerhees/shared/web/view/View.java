@@ -10,7 +10,7 @@ public abstract class View
 
     private Request request;
 
-    public View(Request request)
+    public View( Request request )
     {
         this.request = request;
     }

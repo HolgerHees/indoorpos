@@ -2,13 +2,13 @@ package com.holgerhees.shared.web.model;
 
 public enum Protocol
 {
-    HTTP("http"),
-    HTTPS("https"),
-    NONE("");
+    HTTP( "http" ),
+    HTTPS( "https" ),
+    NONE( "" );
 
     private String urlName;
 
-    private Protocol(String urlName)
+    private Protocol( String urlName )
     {
         this.urlName = urlName;
     }
@@ -18,13 +18,13 @@ public enum Protocol
         return urlName;
     }
 
-    public static Protocol fromUrlName(String urlName)
+    public static Protocol fromUrlName( String urlName )
     {
         if( urlName != null && !urlName.trim().isEmpty() )
         {
             for( Protocol protocol : values() )
             {
-                if( protocol.getUrlName().equals(urlName) )
+                if( protocol.getUrlName().equals( urlName ) )
                 {
                     return protocol;
                 }

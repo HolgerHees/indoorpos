@@ -9,28 +9,28 @@ import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 public class BeaconDTO extends AbstractKeyDTO
 {
     @DbColumn( name = "uuid",
-            type = "varchar(255)" )
+               type = "varchar(255)" )
     private String uuid;
 
     @DbColumn( name = "room_id",
-            type = "int(11)",
-            nullable = true,
-            foreignKey = {@DbForeignKey( target = RoomDTO.class,
-                    field = "id",
-                    onUpdate = "CASCADE",
-                    onDelete = "CASCADE" )} )
+               type = "int(11)",
+               nullable = true,
+               foreignKey = { @DbForeignKey( target = RoomDTO.class,
+                                             field = "id",
+                                             onUpdate = "CASCADE",
+                                             onDelete = "CASCADE" ) } )
     private Long roomId;
 
     @DbColumn( name = "pos_x",
-            type = "smallint(8)" )
+               type = "smallint(8)" )
     private int posX;
 
     @DbColumn( name = "pos_y",
-            type = "smallint(8)" )
+               type = "smallint(8)" )
     private int posY;
 
     @DbColumn( name = "name",
-            type = "varchar(255)" )
+               type = "varchar(255)" )
     private String name;
 
     public String getUuid()
@@ -38,7 +38,7 @@ public class BeaconDTO extends AbstractKeyDTO
         return uuid;
     }
 
-    public void setUuid(String uuid)
+    public void setUuid( String uuid )
     {
         this.uuid = uuid;
     }
@@ -48,7 +48,7 @@ public class BeaconDTO extends AbstractKeyDTO
         return roomId;
     }
 
-    public void setRoomId(Long roomId)
+    public void setRoomId( Long roomId )
     {
         this.roomId = roomId;
     }
@@ -58,7 +58,7 @@ public class BeaconDTO extends AbstractKeyDTO
         return posX;
     }
 
-    public void setPosX(int posX)
+    public void setPosX( int posX )
     {
         this.posX = posX;
     }
@@ -68,7 +68,7 @@ public class BeaconDTO extends AbstractKeyDTO
         return posY;
     }
 
-    public void setPosY(int posY)
+    public void setPosY( int posY )
     {
         this.posY = posY;
     }
@@ -78,7 +78,7 @@ public class BeaconDTO extends AbstractKeyDTO
         return name;
     }
 
-    public void setName(String name)
+    public void setName( String name )
     {
         this.name = name;
     }

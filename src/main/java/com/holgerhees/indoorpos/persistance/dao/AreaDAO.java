@@ -14,25 +14,25 @@ public class AreaDAO extends AbstractBaseDAO<AreaDTO>
         return AreaDTO.class;
     }
 
-    public AreaDTO getAreaById(Long areaId)
+    public AreaDTO getAreaById( Long areaId )
     {
-        return queryForObject("SELECT * FROM area WHERE id = ?", new Object[]{areaId});
+        return queryForObject( "SELECT * FROM area WHERE id = ?", new Object[]{ areaId } );
     }
 
-    public boolean delete(Long areaId)
+    public boolean delete( Long areaId )
     {
-        return update("DELETE FROM area WHERE id = ?", areaId);
+        return update( "DELETE FROM area WHERE id = ?", areaId );
     }
 
     public boolean truncate()
     {
-        update("DELETE FROM area");
-        update("ALTER TABLE area AUTO_INCREMENT = 1");
+        update( "DELETE FROM area" );
+        update( "ALTER TABLE area AUTO_INCREMENT = 1" );
         return true;
     }
 
     public List<AreaDTO> getAreas()
     {
-        return query("SELECT * FROM area");
+        return query( "SELECT * FROM area" );
     }
 }

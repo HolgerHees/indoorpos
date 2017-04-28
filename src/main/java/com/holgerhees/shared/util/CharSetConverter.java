@@ -8,7 +8,7 @@ public class CharSetConverter
     {
     }
 
-    public static String convertToCharset(String orig, String charSet)
+    public static String convertToCharset( String orig, String charSet )
     {
         if( orig == null || charSet == null )
         {
@@ -16,7 +16,7 @@ public class CharSetConverter
         }
         try
         {
-            return new String(orig.getBytes(), charSet);
+            return new String( orig.getBytes(), charSet );
         } catch( Exception e )
         {
             e.printStackTrace();
@@ -24,8 +24,8 @@ public class CharSetConverter
         return orig;
     }
 
-    public static String convertToUTF8(String orig)
+    public static String convertToUTF8( String orig )
     {
-        return convertToCharset(orig, CHARSET_UTF8);
+        return convertToCharset( orig, CHARSET_UTF8 );
     }
 }

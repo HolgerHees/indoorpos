@@ -27,8 +27,8 @@ import java.util.Map;
 @Component
 public class RefreshPosition
 {
-    private static Log LOGGER = LogFactory.getLog(RefreshPosition.class);
-    private static DecimalFormat df = new DecimalFormat("#.###");
+    private static Log LOGGER = LogFactory.getLog( RefreshPosition.class );
+    private static DecimalFormat df = new DecimalFormat( "#.###" );
 
     @Autowired
     BeaconDAO beaconDAO;
@@ -65,14 +65,14 @@ public class RefreshPosition
         // First step: group tracked distances for every beacon
         for( TrackedBeaconDTO trackedBeaconDTO : trackedBeaconDTOS )
         {
-            TrackerDTO trackerDTO = trackerDTOMap.get(trackedBeaconDTO.getTrackerId());
+            TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeaconDTO.getTrackerId() );
 
-            List<TrackerDistance> _trackedDistances = trackedDistances.get(trackedBeaconDTO.getBeaconId());
+            List<TrackerDistance> _trackedDistances = trackedDistances.get( trackedBeaconDTO.getBeaconId() );
 
             if( _trackedDistances == null )
             {
                 _trackedDistances = new ArrayList<>();
-                trackedDistances.put(trackedBeaconDTO.getBeaconId(), _trackedDistances);
+                trackedDistances.put( trackedBeaconDTO.getBeaconId(), _trackedDistances );
             }
 
             TrackerDistance trackerDistance = new TrackerDistance();
@@ -80,9 +80,9 @@ public class RefreshPosition
             trackerDistance.posX = trackerDTO.getPosX();
             trackerDistance.posY = trackerDTO.getPosY();
             // TODO convert to distance
-            trackerDistance.distance = LocationHelper.getDistance(trackedBeaconDTO.getRssi(), trackedBeaconDTO.getTxPower());
+            trackerDistance.distance = LocationHelper.getDistance( trackedBeaconDTO.getRssi(), trackedBeaconDTO.getTxPower() );
 
-            _trackedDistances.add(trackerDistance);
+            _trackedDistances.add( trackerDistance );
         }
 
         List<BeaconDTO> beaconDTOs = beaconDAO.getBeacons();
@@ -90,16 +90,16 @@ public class RefreshPosition
         // Second step: Set current Room
         for( BeaconDTO beaconDTO : beaconDTOs )
         {
-            List<TrackerDistance> _trackerDistances = trackedDistances.get(beaconDTO.getId());
+            List<TrackerDistance> _trackerDistances = trackedDistances.get( beaconDTO.getId() );
             if( _trackerDistances == null || !_trackerDistances.isEmpty() )
             {
                 if( beaconDTO.getRoomId() == null )
                 {
                     continue;
                 }
-                beaconDTO.setPosX(-1);
-                beaconDTO.setPosY(-1);
-                beaconDTO.setRoomId(null);
+                beaconDTO.setPosX( -1 );
+                beaconDTO.setPosY( -1 );
+                beaconDTO.setRoomId( null );
             } else
             {
                 /*Collections.sort(_trackerDistances, (o1, o2) ->
@@ -116,32 +116,32 @@ public class RefreshPosition
 
                 for( int i = 0; i < _trackerDistances.size(); i++ )
                 {
-                    TrackerDistance distance = _trackerDistances.get(i);
+                    TrackerDistance distance = _trackerDistances.get( i );
 
-                    positions[i] = new double[]{distance.posX, distance.posY};
+                    positions[i] = new double[]{ distance.posX, distance.posY };
                     distances[i] = distance.distance;
                 }
 
-                NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances),
-                        new LevenbergMarquardtOptimizer());
+                NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver( new TrilaterationFunction( positions, distances ),
+                                                                                      new LevenbergMarquardtOptimizer() );
                 LeastSquaresOptimizer.Optimum optimum = solver.solve();
 
                 // the answer
                 double[] centroid = optimum.getPoint().toArray();
 
-                beaconDTO.setRoomId(_trackerDistances.get(0).roomId);
-                beaconDTO.setPosX((int) centroid[0]);
-                beaconDTO.setPosY((int) centroid[1]);
+                beaconDTO.setRoomId( _trackerDistances.get( 0 ).roomId );
+                beaconDTO.setPosX( (int) centroid[0] );
+                beaconDTO.setPosY( (int) centroid[1] );
 
                 // error and geometry information; may throw SingularMatrixException depending the threshold argument provided
                 //RealVector standardDeviation = optimum.getSigma(0);
                 //RealMatrix covarianceMatrix = optimum.getCovariances(0);
             }
 
-            beaconDAO.save(beaconDTO);
+            beaconDAO.save( beaconDTO );
         }
 
-        LOGGER.info("Refresh positions in " + df
-                .format(((System.currentTimeMillis() - start) / 1000.0f)) + " seconds");
+        LOGGER.info( "Refresh positions in " + df
+                .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
     }
 }

@@ -7,9 +7,9 @@ public abstract class AbstractKeyDTO extends AbstractBaseDTO
 {
 
     @DbColumn( name = "id",
-            type = "int(11)",
-            insertable = false,
-            updatable = false )
+               type = "int(11)",
+               insertable = false,
+               updatable = false )
     @DbIndex( type = DbIndex.Type.PRIMARY_KEY )
     private Long id;
 
@@ -18,7 +18,7 @@ public abstract class AbstractKeyDTO extends AbstractBaseDTO
         return id;
     }
 
-    public void setId(Long id)
+    public void setId( Long id )
     {
         this.id = id;
     }

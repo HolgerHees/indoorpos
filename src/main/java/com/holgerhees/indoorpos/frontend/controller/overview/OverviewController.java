@@ -15,11 +15,11 @@ public class OverviewController implements Controller
     PageDtoInitService pageDtoInitService;
 
     @Override
-    public View handle(Request request)
+    public View handle( Request request )
     {
-        OverviewPageDTO ctx = pageDtoInitService.getPageDto(new OverviewPageDTO(), request);
+        OverviewPageDTO ctx = pageDtoInitService.getPageDto( new OverviewPageDTO(), request );
 
-        return new JspView("/WEB-INF/jsp/overview.jsp", request);
+        return new JspView( "/WEB-INF/jsp/overview.jsp", request );
     }
 
 }

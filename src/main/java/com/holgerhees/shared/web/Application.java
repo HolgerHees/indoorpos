@@ -6,7 +6,7 @@ import javax.servlet.ServletContext;
 
 public interface Application
 {
-    ApplicationContext initialize(ServletContext servletContext);
+    ApplicationContext initialize( ServletContext servletContext );
 
     void shutdown();
 

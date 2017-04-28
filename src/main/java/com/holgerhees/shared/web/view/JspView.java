@@ -10,17 +10,17 @@ public class JspView extends View
 {
     private String jspFilename;
 
-    public JspView(String jspFilename, Request request)
+    public JspView( String jspFilename, Request request )
     {
-        super(request);
+        super( request );
         this.jspFilename = jspFilename;
     }
 
     @Override
     public void render() throws ServletException, IOException
     {
-        RequestDispatcher dispatcher = getRequest().getServletContext().getRequestDispatcher(jspFilename);
-        dispatcher.forward(getRequest().getHttpRequest(), getRequest().getHttpResponse());
+        RequestDispatcher dispatcher = getRequest().getServletContext().getRequestDispatcher( jspFilename );
+        dispatcher.forward( getRequest().getHttpRequest(), getRequest().getHttpResponse() );
     }
 
     public String getJspFilename()

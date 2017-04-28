@@ -47,7 +47,7 @@ public class TrackerController implements Controller
     private TrackedBeaconDAO trackedBeaconDAO;
 
     @Override
-    final public View handle(Request req)
+    final public View handle( Request req )
     {
         byte[] body = null;
 
@@ -57,9 +57,9 @@ public class TrackerController implements Controller
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte buf[] = new byte[1024];
             int count;
-            while( (count = reader.read(buf)) > 0 )
+            while( ( count = reader.read( buf ) ) > 0 )
             {
-                baos.write(buf, 0, count);
+                baos.write( buf, 0, count );
             }
             body = baos.toByteArray();
         } catch( IOException e )
@@ -69,29 +69,29 @@ public class TrackerController implements Controller
 
         if( body == null || body.length == 0 )
         {
-            return new TextView(req, "empty request");
+            return new TextView( req, "empty request" );
         }
 
-        String json = new String(body, Charset.defaultCharset());
+        String json = new String( body, Charset.defaultCharset() );
 
-        Parameter param = GSonFactory.createGSon().fromJson(json, Parameter.class);
+        Parameter param = GSonFactory.createGSon().fromJson( json, Parameter.class );
 
         Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
-        TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID(param.uuid);
+        TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID( param.uuid );
 
         for( TrackedBeacon beacon : param.trachedBeacon )
         {
-            BeaconDTO beaconDTO = beaconDTOMap.get(beacon.uuid);
+            BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
 
             TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
-            trackedBeaconDTO.setTrackerId(trackerDTO.getId());
-            trackedBeaconDTO.setBeaconId(beaconDTO.getId());
-            trackedBeaconDTO.setTxPower(beacon.txPower);
-            trackedBeaconDTO.setRssi(beacon.rssi);
+            trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
+            trackedBeaconDTO.setBeaconId( beaconDTO.getId() );
+            trackedBeaconDTO.setTxPower( beacon.txPower );
+            trackedBeaconDTO.setRssi( beacon.rssi );
 
-            beaconDAO.save(beaconDTO);
+            beaconDAO.save( beaconDTO );
         }
 
-        return new TextView(req, "tracked");
+        return new TextView( req, "tracked" );
     }
 }

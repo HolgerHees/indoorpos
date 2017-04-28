@@ -21,14 +21,14 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
     private Table table;
 
-    public CustomRowMapper(Class<T> mappedClass, SchemaService schemaService)
+    public CustomRowMapper( Class<T> mappedClass, SchemaService schemaService )
     {
         this.mappedClass = mappedClass;
-        this.table = schemaService.getTable(mappedClass);
+        this.table = schemaService.getTable( mappedClass );
     }
 
     @Override
-    public T mapRow(ResultSet rs, int rowNum) throws SQLException
+    public T mapRow( ResultSet rs, int rowNum ) throws SQLException
     {
 
         try
@@ -41,9 +41,9 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
             for( int index = 1; index <= columnCount; index++ )
             {
-                String columnName = metaData.getColumnName(index);
+                String columnName = metaData.getColumnName( index );
 
-                Column column = table.getColumn(columnName);
+                Column column = table.getColumn( columnName );
 
                 // is unmapped field
                 if( column == null )
@@ -57,14 +57,14 @@ public class CustomRowMapper<T> implements RowMapper<T>
 				System.out.println("3:" + column.getName());
 				System.out.println("4:" + column.getType());*/
 
-                Object value = JdbcUtils.getResultSetValue(rs, index, column.getType());
+                Object value = JdbcUtils.getResultSetValue( rs, index, column.getType() );
 
                 if( column.getSetterConverter() != null )
                 {
-                    value = column.getSetterConverter().invoke(null, value);
+                    value = column.getSetterConverter().invoke( null, value );
                 }
 
-                column.getSetter().invoke(mappedObject, value);
+                column.getSetter().invoke( mappedObject, value );
             }
 
             return mappedObject;
@@ -76,26 +76,26 @@ public class CustomRowMapper<T> implements RowMapper<T>
         return null;
     }
 
-    public T save(JdbcTemplateDAO jdbcTemplateDao, T dto)
+    public T save( JdbcTemplateDAO jdbcTemplateDao, T dto )
     {
-        return save(jdbcTemplateDao, true, dto);
+        return save( jdbcTemplateDao, true, dto );
     }
 
-    public T save(JdbcTemplateDAO jdbcTemplateDao, boolean refreshLastModified, T dto)
+    public T save( JdbcTemplateDAO jdbcTemplateDao, boolean refreshLastModified, T dto )
     {
 
         try
         {
             if( dto instanceof AbstractBaseDTO )
             {
-                Date now = new Date((System.currentTimeMillis() / 1000L) * 1000L);
-                if( ((AbstractBaseDTO) dto).getCreated() == null )
+                Date now = new Date( ( System.currentTimeMillis() / 1000L ) * 1000L );
+                if( ( (AbstractBaseDTO) dto ).getCreated() == null )
                 {
-                    ((AbstractBaseDTO) dto).setCreated(now);
-                    ((AbstractBaseDTO) dto).setLastModified(now);
+                    ( (AbstractBaseDTO) dto ).setCreated( now );
+                    ( (AbstractBaseDTO) dto ).setLastModified( now );
                 } else if( refreshLastModified )
                 {
-                    ((AbstractBaseDTO) dto).setLastModified(now);
+                    ( (AbstractBaseDTO) dto ).setLastModified( now );
                 }
             }
 
@@ -103,11 +103,11 @@ public class CustomRowMapper<T> implements RowMapper<T>
             Object[] primaryValues = new Object[primaryColumns.length];
             for( int i = 0; i < primaryValues.length; i++ )
             {
-                primaryValues[i] = primaryColumns[i].getGetter().invoke(dto);
+                primaryValues[i] = primaryColumns[i].getGetter().invoke( dto );
 
                 if( primaryColumns[i].getGetterConverter() != null )
                 {
-                    primaryValues[i] = primaryColumns[i].getGetterConverter().invoke(primaryValues[i]);
+                    primaryValues[i] = primaryColumns[i].getGetterConverter().invoke( primaryValues[i] );
                 }
             }
 
@@ -120,39 +120,39 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
                 for( Column column : table.getColumns() )
                 {
-                    Object value = column.getGetter().invoke(dto);
+                    Object value = column.getGetter().invoke( dto );
 
                     if( column.getGetterConverter() != null )
                     {
-                        value = column.getGetterConverter().invoke(value);
+                        value = column.getGetterConverter().invoke( value );
                     }
 
-                    if( (!isInsert && !column.isUpdateable()) || (isInsert && !column.isInsertable()) )
+                    if( ( !isInsert && !column.isUpdateable() ) || ( isInsert && !column.isInsertable() ) )
                     {
                         continue;
                     }
 
-                    mappedValueFields.put(column.getName(), value);
+                    mappedValueFields.put( column.getName(), value );
                 }
 
-                String fieldSQL = StringUtils.join(mappedValueFields.keySet(), " = ?, ") + " = ? ";
+                String fieldSQL = StringUtils.join( mappedValueFields.keySet(), " = ?, " ) + " = ? ";
 
                 if( isInsert )
                 {
-                    jdbcTemplateDao.getJdbcTemplate().update("INSERT INTO " + table.getName() + " SET " + fieldSQL,
-                            new ArgumentPreparedStatementSetter(mappedValueFields.values().toArray()));
+                    jdbcTemplateDao.getJdbcTemplate().update( "INSERT INTO " + table.getName() + " SET " + fieldSQL,
+                                                              new ArgumentPreparedStatementSetter( mappedValueFields.values().toArray() ) );
 
-                    Object id = jdbcTemplateDao.getJdbcTemplate().queryForObject("select last_insert_id()", primaryColumns[0].getType());
-                    primaryColumns[0].getSetter().invoke(dto, id);
+                    Object id = jdbcTemplateDao.getJdbcTemplate().queryForObject( "select last_insert_id()", primaryColumns[0].getType() );
+                    primaryColumns[0].getSetter().invoke( dto, id );
                 } else
                 {
                     List<Object> values = new LinkedList<>();
-                    values.addAll(mappedValueFields.values());
-                    values.add(primaryValues[0]);
+                    values.addAll( mappedValueFields.values() );
+                    values.add( primaryValues[0] );
 
                     jdbcTemplateDao.getJdbcTemplate()
-                            .update("UPDATE " + table.getName() + " SET " + fieldSQL + " WHERE " + primaryColumns[0].getName() + " = ? ",
-                                    new ArgumentPreparedStatementSetter(values.toArray()));
+                            .update( "UPDATE " + table.getName() + " SET " + fieldSQL + " WHERE " + primaryColumns[0].getName() + " = ? ",
+                                     new ArgumentPreparedStatementSetter( values.toArray() ) );
                 }
             } else
             {
@@ -161,34 +161,34 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
                 for( Column column : table.getColumns() )
                 {
-                    Object value = column.getGetter().invoke(dto);
+                    Object value = column.getGetter().invoke( dto );
 
                     if( column.getGetterConverter() != null )
                     {
-                        value = column.getGetterConverter().invoke(value);
+                        value = column.getGetterConverter().invoke( value );
                     }
 
                     if( column.isInsertable() )
                     {
-                        mappedInsertValueFields.put(column.getName(), value);
+                        mappedInsertValueFields.put( column.getName(), value );
                     }
 
                     if( column.isUpdateable() )
                     {
-                        mappedUpdateValueFields.put(column.getName(), value);
+                        mappedUpdateValueFields.put( column.getName(), value );
                     }
                 }
 
-                String insertFieldSQL = StringUtils.join(mappedInsertValueFields.keySet(), " = ?, ") + " = ? ";
-                String updateFieldSQL = StringUtils.join(mappedUpdateValueFields.keySet(), " = ?, ") + " = ? ";
+                String insertFieldSQL = StringUtils.join( mappedInsertValueFields.keySet(), " = ?, " ) + " = ? ";
+                String updateFieldSQL = StringUtils.join( mappedUpdateValueFields.keySet(), " = ?, " ) + " = ? ";
 
                 Object[] insertValues = mappedInsertValueFields.values().toArray();
                 Object[] updateValues = mappedUpdateValueFields.values().toArray();
 
                 Object[] values = new Object[insertValues.length + updateValues.length];
-                System.arraycopy(insertValues, 0, values, 0, insertValues.length);
-                System.arraycopy(updateValues, 0, values, insertValues.length, updateValues.length);
-				
+                System.arraycopy( insertValues, 0, values, 0, insertValues.length );
+                System.arraycopy( updateValues, 0, values, insertValues.length, updateValues.length );
+
 				/*LOGGER.error("INSERT INTO " + table.getName() + " SET " + insertFieldSQL + " ON DUPLICATE KEY UPDATE " + updateFieldSQL);
 				for( Object obj: values )
 				{
@@ -196,13 +196,13 @@ public class CustomRowMapper<T> implements RowMapper<T>
 				}*/
 
                 jdbcTemplateDao.getJdbcTemplate()
-                        .update("INSERT INTO " + table.getName() + " SET " + insertFieldSQL + " ON DUPLICATE KEY UPDATE " + updateFieldSQL,
-                                new ArgumentPreparedStatementSetter(values));
+                        .update( "INSERT INTO " + table.getName() + " SET " + insertFieldSQL + " ON DUPLICATE KEY UPDATE " + updateFieldSQL,
+                                 new ArgumentPreparedStatementSetter( values ) );
 
                 StringBuilder whereFieldSQL = new StringBuilder();
                 for( Column column : primaryColumns )
                 {
-                    whereFieldSQL.append(" AND " + column.getName() + " = ? ");
+                    whereFieldSQL.append( " AND " + column.getName() + " = ? " );
                 }
 
                 //LOGGER.error("SELECT * FROM " + table.getName() + " WHERE " + whereFieldSQL.substring(5));
@@ -212,7 +212,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
 				}*/
 
                 return jdbcTemplateDao.getJdbcTemplate()
-                        .queryForObject("SELECT * FROM " + table.getName() + " WHERE " + whereFieldSQL.substring(5), primaryValues, this);
+                        .queryForObject( "SELECT * FROM " + table.getName() + " WHERE " + whereFieldSQL.substring( 5 ), primaryValues, this );
             }
 
         } catch( IllegalAccessException | IllegalArgumentException | InvocationTargetException e )

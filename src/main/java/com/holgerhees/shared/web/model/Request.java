@@ -22,7 +22,7 @@ public class Request
     {
     }
 
-    public Request(HttpServletRequest httpRequest, HttpServletResponse httpResponse, ServletContext servletContext)
+    public Request( HttpServletRequest httpRequest, HttpServletResponse httpResponse, ServletContext servletContext )
     {
         super();
         this.httpRequest = httpRequest;
@@ -50,7 +50,7 @@ public class Request
         return url;
     }
 
-    public void setUrl(String url)
+    public void setUrl( String url )
     {
         this.url = url;
     }
@@ -60,29 +60,29 @@ public class Request
         return servletPath;
     }
 
-    public void setServletPath(String servletPath)
+    public void setServletPath( String servletPath )
     {
         this.servletPath = servletPath;
     }
 
-    public void setValue(String key, Object object)
+    public void setValue( String key, Object object )
     {
-        httpRequest.setAttribute(key, object);
+        httpRequest.setAttribute( key, object );
     }
 
-    public Object getValue(String key)
+    public Object getValue( String key )
     {
-        return httpRequest.getAttribute(key);
+        return httpRequest.getAttribute( key );
     }
 
-    public void setPageDTO(PageDTO ctx)
+    public void setPageDTO( PageDTO ctx )
     {
-        setValue("ctx", ctx);
+        setValue( "ctx", ctx );
     }
 
     public boolean hasPageDTO()
     {
-        return httpRequest.getAttribute("ctx") != null;
+        return httpRequest.getAttribute( "ctx" ) != null;
     }
 
     public Protocol getProtocol()
@@ -90,18 +90,18 @@ public class Request
         return protocol;
     }
 
-    public void setProtocol(Protocol protocol)
+    public void setProtocol( Protocol protocol )
     {
         this.protocol = protocol;
     }
 
-    public void setParts(Map<String, FileItem> parts)
+    public void setParts( Map<String, FileItem> parts )
     {
         this.parts = parts;
     }
 
-    public FileItem getPart(String key)
+    public FileItem getPart( String key )
     {
-        return parts != null ? parts.get(key) : null;
+        return parts != null ? parts.get( key ) : null;
     }
 }

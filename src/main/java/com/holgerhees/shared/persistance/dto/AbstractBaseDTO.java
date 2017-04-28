@@ -8,12 +8,12 @@ public abstract class AbstractBaseDTO
 {
 
     @DbColumn( name = "created",
-            type = "datetime",
-            updatable = false )
+               type = "datetime",
+               updatable = false )
     private Date created;
 
     @DbColumn( name = "lastModified",
-            type = "datetime" )
+               type = "datetime" )
     private Date lastModified;
 
     public Date getCreated()
@@ -21,7 +21,7 @@ public abstract class AbstractBaseDTO
         return created;
     }
 
-    public void setCreated(Date created)
+    public void setCreated( Date created )
     {
         this.created = created;
     }
@@ -31,7 +31,7 @@ public abstract class AbstractBaseDTO
         return lastModified;
     }
 
-    public void setLastModified(Date lastModified)
+    public void setLastModified( Date lastModified )
     {
         this.lastModified = lastModified;
     }

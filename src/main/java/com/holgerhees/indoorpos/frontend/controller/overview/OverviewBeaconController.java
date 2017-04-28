@@ -35,7 +35,7 @@ public class OverviewBeaconController implements Controller
     }
 
     @Override
-    public View handle(Request request)
+    public View handle( Request request )
     {
         Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();
         List<BeaconDTO> beacons = beaconDAO.getBeacons();
@@ -45,15 +45,15 @@ public class OverviewBeaconController implements Controller
         {
             Beacon _beacon = new Beacon();
             _beacon.name = beacon.getName();
-            _beacon.floor = beacon.getRoomId() == null ? -1 : roomDTOMap.get(beacon.getRoomId()).getFloor();
+            _beacon.floor = beacon.getRoomId() == null ? -1 : roomDTOMap.get( beacon.getRoomId() ).getFloor();
             _beacon.posX = beacon.getPosX();
             _beacon.posY = beacon.getPosY();
 
-            result.add(_beacon);
+            result.add( _beacon );
         }
 
-        JsonElement json = GSonFactory.createGSon().toJsonTree(result);
+        JsonElement json = GSonFactory.createGSon().toJsonTree( result );
 
-        return new GsonView(json, request);
+        return new GsonView( json, request );
     }
 }

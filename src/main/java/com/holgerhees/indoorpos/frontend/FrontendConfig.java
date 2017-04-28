@@ -27,7 +27,7 @@ public class FrontendConfig
         return webDomain;
     }
 
-    public void setWebDomain(String webDomain)
+    public void setWebDomain( String webDomain )
     {
         this.webDomain = webDomain;
     }
@@ -37,7 +37,7 @@ public class FrontendConfig
         return webHttpPort;
     }
 
-    public void setWebHttpPort(String webHttpPort)
+    public void setWebHttpPort( String webHttpPort )
     {
         this.webHttpPort = webHttpPort;
     }
@@ -47,7 +47,7 @@ public class FrontendConfig
         return webHttpsPort;
     }
 
-    public void setWebHttpsPort(String webHttpsPort)
+    public void setWebHttpsPort( String webHttpsPort )
     {
         this.webHttpsPort = webHttpsPort;
     }
@@ -57,7 +57,7 @@ public class FrontendConfig
         return webHttpsApi;
     }
 
-    public void setWebHttpsApi(boolean webHttpsApi)
+    public void setWebHttpsApi( boolean webHttpsApi )
     {
         this.webHttpsApi = webHttpsApi;
     }
@@ -67,7 +67,7 @@ public class FrontendConfig
         return staticVersionCss;
     }
 
-    public void setStaticVersionCss(Integer staticVersionCss)
+    public void setStaticVersionCss( Integer staticVersionCss )
     {
         this.staticVersionCss = staticVersionCss;
     }
@@ -77,7 +77,7 @@ public class FrontendConfig
         return staticVersionJs;
     }
 
-    public void setStaticVersionJs(Integer staticVersionJs)
+    public void setStaticVersionJs( Integer staticVersionJs )
     {
         this.staticVersionJs = staticVersionJs;
     }
@@ -87,7 +87,7 @@ public class FrontendConfig
         return staticFolderCss;
     }
 
-    public void setStaticFolderCss(String staticFolderCss)
+    public void setStaticFolderCss( String staticFolderCss )
     {
         this.staticFolderCss = staticFolderCss;
     }
@@ -97,7 +97,7 @@ public class FrontendConfig
         return staticFolderJs;
     }
 
-    public void setStaticFolderJs(String staticFolderJs)
+    public void setStaticFolderJs( String staticFolderJs )
     {
         this.staticFolderJs = staticFolderJs;
     }
@@ -107,7 +107,7 @@ public class FrontendConfig
         return staticFolderImg;
     }
 
-    public void setStaticFolderImg(String staticFolderImg)
+    public void setStaticFolderImg( String staticFolderImg )
     {
         this.staticFolderImg = staticFolderImg;
     }
@@ -117,7 +117,7 @@ public class FrontendConfig
         return staticFolderUpload;
     }
 
-    public void setStaticFolderUpload(String staticFolderUpload)
+    public void setStaticFolderUpload( String staticFolderUpload )
     {
         this.staticFolderUpload = staticFolderUpload;
     }
@@ -127,7 +127,7 @@ public class FrontendConfig
         return staticFolderTemp;
     }
 
-    public void setStaticFolderTemp(String staticFolderTemp)
+    public void setStaticFolderTemp( String staticFolderTemp )
     {
         this.staticFolderTemp = staticFolderTemp;
     }
@@ -137,7 +137,7 @@ public class FrontendConfig
         return uploadMaxMemory;
     }
 
-    public void setUploadMaxMemory(Integer uploadMaxMemory)
+    public void setUploadMaxMemory( Integer uploadMaxMemory )
     {
         this.uploadMaxMemory = uploadMaxMemory;
     }
@@ -147,7 +147,7 @@ public class FrontendConfig
         return uploadMaxFileSize;
     }
 
-    public void setUploadMaxFileSize(Integer uploadMaxFileSize)
+    public void setUploadMaxFileSize( Integer uploadMaxFileSize )
     {
         this.uploadMaxFileSize = uploadMaxFileSize;
     }

@@ -16,36 +16,36 @@ public class TrackerDAO extends AbstractBaseDAO<TrackerDTO>
         return TrackerDTO.class;
     }
 
-    public TrackerDTO getTrackerById(Long trackerId)
+    public TrackerDTO getTrackerById( Long trackerId )
     {
-        return queryForObject("SELECT * FROM tracker WHERE id = ?", new Object[]{trackerId});
+        return queryForObject( "SELECT * FROM tracker WHERE id = ?", new Object[]{ trackerId } );
     }
 
-    public boolean delete(Long trackerId)
+    public boolean delete( Long trackerId )
     {
-        return update("DELETE FROM tracker WHERE id = ?", trackerId);
+        return update( "DELETE FROM tracker WHERE id = ?", trackerId );
     }
 
     public boolean truncate()
     {
-        update("DELETE FROM tracker");
-        update("ALTER TABLE tracker AUTO_INCREMENT = 1");
+        update( "DELETE FROM tracker" );
+        update( "ALTER TABLE tracker AUTO_INCREMENT = 1" );
         return true;
     }
 
-    public TrackerDTO getTrackerByUUID(String uuid)
+    public TrackerDTO getTrackerByUUID( String uuid )
     {
-        return queryForObject("SELECT * FROM tracker WHERE uuid = ?", new Object[]{uuid});
+        return queryForObject( "SELECT * FROM tracker WHERE uuid = ?", new Object[]{ uuid } );
     }
 
     public Map<Long, TrackerDTO> getTrackerIDMap()
     {
-        List<TrackerDTO> tracker = query("SELECT * FROM tracker");
+        List<TrackerDTO> tracker = query( "SELECT * FROM tracker" );
 
         Map<Long, TrackerDTO> trackerMap = new HashMap<>();
         for( TrackerDTO trackerDTO : tracker )
         {
-            trackerMap.put(trackerDTO.getId(), trackerDTO);
+            trackerMap.put( trackerDTO.getId(), trackerDTO );
         }
 
         return trackerMap;
@@ -53,6 +53,6 @@ public class TrackerDAO extends AbstractBaseDAO<TrackerDTO>
 
     public List<TrackerDTO> getTracker()
     {
-        return query("SELECT * FROM tracker");
+        return query( "SELECT * FROM tracker" );
     }
 }

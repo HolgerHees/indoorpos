@@ -15,12 +15,12 @@ public class HomeController implements Controller
     PageDtoInitService pageDtoInitService;
 
     @Override
-    public View handle(Request request)
+    public View handle( Request request )
     {
 
-        HomePageDTO ctx = pageDtoInitService.getPageDto(new HomePageDTO(), request);
+        HomePageDTO ctx = pageDtoInitService.getPageDto( new HomePageDTO(), request );
 
-        return new JspView("/WEB-INF/jsp/home.jsp", request);
+        return new JspView( "/WEB-INF/jsp/home.jsp", request );
     }
 
 }

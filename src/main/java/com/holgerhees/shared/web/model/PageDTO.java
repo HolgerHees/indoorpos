@@ -12,7 +12,7 @@ public class PageDTO
         return cssPrefix;
     }
 
-    public void setCssPrefix(String cssPrefix)
+    public void setCssPrefix( String cssPrefix )
     {
         this.cssPrefix = cssPrefix;
     }
@@ -22,7 +22,7 @@ public class PageDTO
         return jsPrefix;
     }
 
-    public void setJsPrefix(String jsPrefix)
+    public void setJsPrefix( String jsPrefix )
     {
         this.jsPrefix = jsPrefix;
     }
@@ -32,7 +32,7 @@ public class PageDTO
         return imgPrefix;
     }
 
-    public void setImgPrefix(String imgPrefix)
+    public void setImgPrefix( String imgPrefix )
     {
         this.imgPrefix = imgPrefix;
     }

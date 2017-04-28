@@ -20,7 +20,7 @@ public class ApplicationConfig
         return production;
     }
 
-    public void setProduction(Boolean production)
+    public void setProduction( Boolean production )
     {
         this.production = production;
     }

@@ -35,7 +35,7 @@ public class OverviewTrackerController implements Controller
     }
 
     @Override
-    public View handle(Request request)
+    public View handle( Request request )
     {
         Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();
         List<TrackerDTO> trackers = trackerDAO.getTracker();
@@ -45,15 +45,15 @@ public class OverviewTrackerController implements Controller
         {
             Tracker _tracker = new Tracker();
             _tracker.name = tracker.getName();
-            _tracker.floor = roomDTOMap.get(tracker.getRoomId()).getFloor();
+            _tracker.floor = roomDTOMap.get( tracker.getRoomId() ).getFloor();
             _tracker.posX = tracker.getPosX();
             _tracker.posY = tracker.getPosY();
 
-            result.add(_tracker);
+            result.add( _tracker );
         }
 
-        JsonElement json = GSonFactory.createGSon().toJsonTree(result);
+        JsonElement json = GSonFactory.createGSon().toJsonTree( result );
 
-        return new GsonView(json, request);
+        return new GsonView( json, request );
     }
 }

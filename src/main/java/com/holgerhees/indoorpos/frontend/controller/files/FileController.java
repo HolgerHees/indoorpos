@@ -12,8 +12,8 @@ public class FileController implements Controller
 {
 
     @Override
-    public View handle(Request req)
+    public View handle( Request req )
     {
-        return new FileView((DefaultServlet) req.getValue("staticContentServlet"), req);
+        return new FileView( (DefaultServlet) req.getValue( "staticContentServlet" ), req );
     }
 }

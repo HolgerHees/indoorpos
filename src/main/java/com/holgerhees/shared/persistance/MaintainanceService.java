@@ -18,7 +18,7 @@ import java.util.Map;
 @Component( "maintainanceService" )
 public class MaintainanceService
 {
-    private static Log LOGGER = LogFactory.getLog(MaintainanceService.class);
+    private static Log LOGGER = LogFactory.getLog( MaintainanceService.class );
 
     @Autowired
     SchemaService schemaService;
@@ -26,7 +26,7 @@ public class MaintainanceService
     @Autowired
     SchemaDAO schemaDao;
 
-    public void createDatabaseSchema(boolean dropTable)
+    public void createDatabaseSchema( boolean dropTable )
     {
         List<String> existingTables = schemaDao.getExistingTables();
 
@@ -37,13 +37,13 @@ public class MaintainanceService
             for( Table table : dropTableList )
             {
 
-                if( !existingTables.contains(table.getName()) )
+                if( !existingTables.contains( table.getName() ) )
                 {
                     continue;
                 }
 
-                LOGGER.info("DROP TABLE " + table.getName());
-                schemaDao.dropTable(table.getDtoClass());
+                LOGGER.info( "DROP TABLE " + table.getName() );
+                schemaDao.dropTable( table.getDtoClass() );
             }
 
             existingTables = schemaDao.getExistingTables();
@@ -53,8 +53,8 @@ public class MaintainanceService
         for( Table table : createTableList )
         {
 
-            Map<String, String> existingColumns = existingTables.contains(table.getName()) ?
-                    schemaDao.getExistingColumns(table.getName()) :
+            Map<String, String> existingColumns = existingTables.contains( table.getName() ) ?
+                    schemaDao.getExistingColumns( table.getName() ) :
                     new HashMap<>();
             if( existingColumns.size() > 0 )
             {
@@ -64,43 +64,43 @@ public class MaintainanceService
                 String previousColumn = null;
                 for( Column column : table.getColumns() )
                 {
-                    if( !existingColumns.containsKey(column.getName()) )
+                    if( !existingColumns.containsKey( column.getName() ) )
                     {
-                        LOGGER.info("ALTER TABLE " + table.getName() + " ADD COLUMN " + column.getName());
+                        LOGGER.info( "ALTER TABLE " + table.getName() + " ADD COLUMN " + column.getName() );
 
-                        schemaDao.createColumn(table.getName(), column.getDefinition(), previousColumn);
+                        schemaDao.createColumn( table.getName(), column.getDefinition(), previousColumn );
                         skipped = false;
-                    } else if( !existingColumns.get(column.getName()).equals(column.getDefinition()) )
+                    } else if( !existingColumns.get( column.getName() ).equals( column.getDefinition() ) )
                     {
                         LOGGER.error(
-                                "Changing of column definition of column '" + column.getName() + "' in table '" + table.getName() + "' not implemented");
+                                "Changing of column definition of column '" + column.getName() + "' in table '" + table.getName() + "' not implemented" );
                         skipped = false;
                     }
 
                     previousColumn = column.getName();
-                    existingColumns.remove(column.getName());
+                    existingColumns.remove( column.getName() );
                 }
 
                 // REMOVE unused Columns
                 if( existingColumns.size() > 0 )
                 {
-                    LOGGER.error("Removing of unsed column '" + StringUtils.join(existingColumns.keySet(), ", ") + "' in table '" + table.getName()
-                            + "' not implemented");
+                    LOGGER.error( "Removing of unsed column '" + StringUtils.join( existingColumns.keySet(), ", " ) + "' in table '" + table.getName()
+                                          + "' not implemented" );
                     skipped = false;
                 }
 
                 // ADD missing Indexes
-                List<String> existingIndexes = schemaDao.getExistingIndexNames(table.getName());
+                List<String> existingIndexes = schemaDao.getExistingIndexNames( table.getName() );
                 for( Index index : table.getIndexes() )
                 {
-                    if( !existingIndexes.contains(index.getName()) )
+                    if( !existingIndexes.contains( index.getName() ) )
                     {
-                        LOGGER.info("ALTER TABLE " + table.getName() + " ADD INDEX " + index.getName());
-                        schemaDao.createIndex(table.getName(), index.getDefinition());
+                        LOGGER.info( "ALTER TABLE " + table.getName() + " ADD INDEX " + index.getName() );
+                        schemaDao.createIndex( table.getName(), index.getDefinition() );
                         skipped = false;
                     }
 
-                    existingIndexes.remove(index.getName());
+                    existingIndexes.remove( index.getName() );
                 }
 
                 // Remove unused Indexes
@@ -108,14 +108,14 @@ public class MaintainanceService
                 {
                     for( String indexName : existingIndexes )
                     {
-                        LOGGER.info("ALTER TABLE " + table.getName() + " DROP INDEX " + indexName);
-                        schemaDao.dropIndex(table.getName(), indexName);
+                        LOGGER.info( "ALTER TABLE " + table.getName() + " DROP INDEX " + indexName );
+                        schemaDao.dropIndex( table.getName(), indexName );
                         skipped = false;
                     }
                 }
 
                 // ADD missing Constraints
-                List<String> existingConstraints = schemaDao.getExistingConstraintNames(table.getName());
+                List<String> existingConstraints = schemaDao.getExistingConstraintNames( table.getName() );
                 for( Column column : table.getColumns() )
                 {
                     if( column.getConstraint() == null )
@@ -123,14 +123,14 @@ public class MaintainanceService
                         continue;
                     }
 
-                    if( !existingConstraints.contains(column.getConstraint().getName()) )
+                    if( !existingConstraints.contains( column.getConstraint().getName() ) )
                     {
-                        LOGGER.info("ALTER TABLE " + table.getName() + " ADD " + column.getConstraint().getDefinition());
-                        schemaDao.createConstraint(table.getName(), column.getConstraint().getDefinition());
+                        LOGGER.info( "ALTER TABLE " + table.getName() + " ADD " + column.getConstraint().getDefinition() );
+                        schemaDao.createConstraint( table.getName(), column.getConstraint().getDefinition() );
                         skipped = false;
                     }
 
-                    existingConstraints.remove(column.getConstraint().getName());
+                    existingConstraints.remove( column.getConstraint().getName() );
                 }
 
                 // Remove unused Constraints
@@ -138,33 +138,33 @@ public class MaintainanceService
                 {
                     for( String constraintName : existingConstraints )
                     {
-                        LOGGER.info("ALTER TABLE " + table.getName() + " DROP CONSTRAINT " + constraintName);
-                        schemaDao.dropConstraint(table.getName(), constraintName);
+                        LOGGER.info( "ALTER TABLE " + table.getName() + " DROP CONSTRAINT " + constraintName );
+                        schemaDao.dropConstraint( table.getName(), constraintName );
                         skipped = false;
                     }
                 }
 
                 if( skipped )
                 {
-                    LOGGER.info("SKIP unchanged TABLE '" + table.getName() + "'");
+                    LOGGER.info( "SKIP unchanged TABLE '" + table.getName() + "'" );
                 }
             } else
             {
-                LOGGER.info("CREATE TABLE " + table.getName());
-                schemaDao.createTable(table, true);
+                LOGGER.info( "CREATE TABLE " + table.getName() );
+                schemaDao.createTable( table, true );
             }
         }
     }
 
     public void showDatabaseSchema()
     {
-        System.out.println("\n\n");
+        System.out.println( "\n\n" );
 
         LinkedList<Table> createTableList = schemaService.getTablesInCreationOrder();
         for( Table table : createTableList )
         {
 
-            System.out.println(schemaDao.getCreateTableStatement(table, true) + "\n\n");
+            System.out.println( schemaDao.getCreateTableStatement( table, true ) + "\n\n" );
         }
     }
 

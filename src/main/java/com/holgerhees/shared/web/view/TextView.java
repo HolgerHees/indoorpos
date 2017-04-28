@@ -12,26 +12,26 @@ public class TextView extends View
     private int code = HttpServletResponse.SC_OK;
     private String text;
 
-    public TextView(Request request, String text, int code)
+    public TextView( Request request, String text, int code )
     {
-        super(request);
+        super( request );
         this.text = text;
         this.code = code;
     }
 
-    public TextView(Request request, String text)
+    public TextView( Request request, String text )
     {
-        super(request);
+        super( request );
         this.text = text;
     }
 
     @Override
     public void render() throws ServletException, IOException
     {
-        getRequest().getHttpResponse().setStatus(this.code);
-        getRequest().getHttpResponse().setContentType("text/plain");
-        getRequest().getHttpResponse().setCharacterEncoding("utf-8");
-        getRequest().getHttpResponse().getWriter().print(text);
+        getRequest().getHttpResponse().setStatus( this.code );
+        getRequest().getHttpResponse().setContentType( "text/plain" );
+        getRequest().getHttpResponse().setCharacterEncoding( "utf-8" );
+        getRequest().getHttpResponse().getWriter().print( text );
     }
 
     public String getText()

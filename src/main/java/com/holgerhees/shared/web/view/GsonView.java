@@ -12,19 +12,19 @@ public class GsonView extends View
 
     private String gson;
 
-    public GsonView(JsonElement jsonElement, Request req)
+    public GsonView( JsonElement jsonElement, Request req )
     {
-        super(req);
-        this.gson = GSonFactory.createGSon().toJson(jsonElement);
+        super( req );
+        this.gson = GSonFactory.createGSon().toJson( jsonElement );
     }
 
     @Override
     public void render() throws ServletException, IOException
     {
-        getRequest().getHttpResponse().setContentType("application/json");
-        getRequest().getHttpResponse().setCharacterEncoding("utf-8");
+        getRequest().getHttpResponse().setContentType( "application/json" );
+        getRequest().getHttpResponse().setCharacterEncoding( "utf-8" );
 
-        getRequest().getHttpResponse().getWriter().print(gson);
+        getRequest().getHttpResponse().getWriter().print( gson );
     }
 
     public String toJSON()

@@ -20,25 +20,25 @@ import java.io.InputStream;
 @Component( "pictureController" )
 public class PictureController implements Controller
 {
-    private static Log LOGGER = LogFactory.getLog(PictureController.class);
+    private static Log LOGGER = LogFactory.getLog( PictureController.class );
 
     @Autowired
     FrontendConfig frondendConfig;
 
     @Override
-    public View handle(Request req)
+    public View handle( Request req )
     {
-        String[] parts = req.getServletPath().split("/");
+        String[] parts = req.getServletPath().split( "/" );
 
-        File file = new File(frondendConfig.getStaticFolderUpload() + parts[parts.length - 1]);
+        File file = new File( frondendConfig.getStaticFolderUpload() + parts[parts.length - 1] );
         try
         {
-            InputStream input = new FileInputStream(file);
-            return new ImageView(req, file, input, "image/jpeg");
+            InputStream input = new FileInputStream( file );
+            return new ImageView( req, file, input, "image/jpeg" );
         } catch( FileNotFoundException e )
         {
-            LOGGER.error("Imagefile '" + req.getServletPath() + "' not found");
-            return new TextView(req, "Image not found", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            LOGGER.error( "Imagefile '" + req.getServletPath() + "' not found" );
+            return new TextView( req, "Image not found", HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
         }
     }
 }

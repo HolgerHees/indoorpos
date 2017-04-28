@@ -9,29 +9,29 @@ import com.holgerhees.shared.persistance.dto.AbstractBaseDTO;
 public class TrackedBeaconDTO extends AbstractBaseDTO
 {
     @DbColumn( name = "tracker_id",
-            type = "int(11)",
-            updatable = false,
-            foreignKey = {@DbForeignKey( target = TrackerDTO.class,
-                    field = "id",
-                    onUpdate = "CASCADE",
-                    onDelete = "CASCADE" )} )
+               type = "int(11)",
+               updatable = false,
+               foreignKey = { @DbForeignKey( target = TrackerDTO.class,
+                                             field = "id",
+                                             onUpdate = "CASCADE",
+                                             onDelete = "CASCADE" ) } )
     private Long trackerId;
 
     @DbColumn( name = "beacon_id",
-            type = "int(11)",
-            updatable = false,
-            foreignKey = {@DbForeignKey( target = BeaconDTO.class,
-                    field = "id",
-                    onUpdate = "CASCADE",
-                    onDelete = "CASCADE" )} )
+               type = "int(11)",
+               updatable = false,
+               foreignKey = { @DbForeignKey( target = BeaconDTO.class,
+                                             field = "id",
+                                             onUpdate = "CASCADE",
+                                             onDelete = "CASCADE" ) } )
     private Long beaconId;
 
     @DbColumn( name = "tx_power",
-            type = "tinyint(2)" )
+               type = "tinyint(2)" )
     private int txPower;
 
     @DbColumn( name = "rssi",
-            type = "tinyint(2)" )
+               type = "tinyint(2)" )
     private int rssi;
 
     public Long getTrackerId()
@@ -39,7 +39,7 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
         return trackerId;
     }
 
-    public void setTrackerId(Long trackerId)
+    public void setTrackerId( Long trackerId )
     {
         this.trackerId = trackerId;
     }
@@ -49,7 +49,7 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
         return beaconId;
     }
 
-    public void setBeaconId(Long beaconId)
+    public void setBeaconId( Long beaconId )
     {
         this.beaconId = beaconId;
     }
@@ -59,7 +59,7 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
         return txPower;
     }
 
-    public void setTxPower(int txPower)
+    public void setTxPower( int txPower )
     {
         this.txPower = txPower;
     }
@@ -69,7 +69,7 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
         return rssi;
     }
 
-    public void setRssi(int rssi)
+    public void setRssi( int rssi )
     {
         this.rssi = rssi;
     }

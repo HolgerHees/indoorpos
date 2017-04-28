@@ -11,15 +11,15 @@ public class FileView extends View
 
     private DefaultServlet defaultServlet;
 
-    public FileView(DefaultServlet defaultServlet, Request request)
+    public FileView( DefaultServlet defaultServlet, Request request )
     {
-        super(request);
+        super( request );
         this.defaultServlet = defaultServlet;
     }
 
     @Override
     public void render() throws ServletException, IOException
     {
-        defaultServlet.service(getRequest().getHttpRequest(), getRequest().getHttpResponse());
+        defaultServlet.service( getRequest().getHttpRequest(), getRequest().getHttpResponse() );
     }
 }

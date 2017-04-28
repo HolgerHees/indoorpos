@@ -6,5 +6,5 @@ import com.holgerhees.shared.web.view.View;
 public interface Controller
 {
 
-    public View handle(Request request);
+    public View handle( Request request );
 }

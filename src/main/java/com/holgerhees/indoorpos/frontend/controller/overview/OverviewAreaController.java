@@ -36,7 +36,7 @@ public class OverviewAreaController implements Controller
     }
 
     @Override
-    public View handle(Request request)
+    public View handle( Request request )
     {
         Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();
         List<AreaDTO> areas = areaDAO.getAreas();
@@ -49,13 +49,13 @@ public class OverviewAreaController implements Controller
             _area.topLeftY = area.getTopLeftY();
             _area.bottomRightX = area.getBottomRightX();
             _area.bottomRightY = area.getBottomRightY();
-            _area.floor = roomDTOMap.get(area.getRoomId()).getFloor();
+            _area.floor = roomDTOMap.get( area.getRoomId() ).getFloor();
 
-            result.add(_area);
+            result.add( _area );
         }
 
-        JsonElement json = GSonFactory.createGSon().toJsonTree(result);
+        JsonElement json = GSonFactory.createGSon().toJsonTree( result );
 
-        return new GsonView(json, request);
+        return new GsonView( json, request );
     }
 }

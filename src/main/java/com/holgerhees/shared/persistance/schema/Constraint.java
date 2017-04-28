@@ -6,7 +6,7 @@ public class Constraint
     private String definition;
     private Column target;
 
-    public Constraint(String name, String definition)
+    public Constraint( String name, String definition )
     {
         this.name = name;
         this.definition = definition;
@@ -22,7 +22,7 @@ public class Constraint
         return definition;
     }
 
-    public void setTarget(Column target)
+    public void setTarget( Column target )
     {
         this.target = target;
     }

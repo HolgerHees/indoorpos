@@ -8,11 +8,11 @@ import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 public class RoomDTO extends AbstractKeyDTO
 {
     @DbColumn( name = "floor",
-            type = "smallint(8)" )
+               type = "smallint(8)" )
     private int floor;
 
     @DbColumn( name = "name",
-            type = "varchar(255)" )
+               type = "varchar(255)" )
     private String name;
 
     public int getFloor()
@@ -20,7 +20,7 @@ public class RoomDTO extends AbstractKeyDTO
         return floor;
     }
 
-    public void setFloor(int floor)
+    public void setFloor( int floor )
     {
         this.floor = floor;
     }
@@ -30,7 +30,7 @@ public class RoomDTO extends AbstractKeyDTO
         return name;
     }
 
-    public void setName(String name)
+    public void setName( String name )
     {
         this.name = name;
     }

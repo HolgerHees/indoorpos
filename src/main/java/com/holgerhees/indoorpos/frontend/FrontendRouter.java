@@ -19,8 +19,8 @@ import java.text.DecimalFormat;
 @Component( "frontendRouter" )
 public class FrontendRouter implements Router
 {
-    private static Log LOGGER = LogFactory.getLog(Router.class);
-    private static DecimalFormat df = new DecimalFormat("#.###");
+    private static Log LOGGER = LogFactory.getLog( Router.class );
+    private static DecimalFormat df = new DecimalFormat( "#.###" );
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -29,36 +29,36 @@ public class FrontendRouter implements Router
     private PageDtoInitService pageDtoInitService;
 
     @Override
-    public View routeRequest(Request request, boolean isPostRequest, DefaultServlet staticContentServlet) throws ServletException
+    public View routeRequest( Request request, boolean isPostRequest, DefaultServlet staticContentServlet ) throws ServletException
     {
         final long start = System.currentTimeMillis();
 
         Controller controller;
 
-        if( request.getServletPath().startsWith("/tracker/") )
+        if( request.getServletPath().startsWith( "/tracker/" ) )
         {
-            controller = (Controller) applicationContext.getBean("trackerController");
-        } else if( request.getServletPath().startsWith("/test/") )
+            controller = (Controller) applicationContext.getBean( "trackerController" );
+        } else if( request.getServletPath().startsWith( "/test/" ) )
         {
-            controller = (Controller) applicationContext.getBean("testController");
-        } else if( request.getServletPath().startsWith("/overview/") )
+            controller = (Controller) applicationContext.getBean( "testController" );
+        } else if( request.getServletPath().startsWith( "/overview/" ) )
         {
-            controller = (Controller) applicationContext.getBean("overviewController");
-        } else if( request.getServletPath().startsWith("/overviewTracker/") )
+            controller = (Controller) applicationContext.getBean( "overviewController" );
+        } else if( request.getServletPath().startsWith( "/overviewTracker/" ) )
         {
-            controller = (Controller) applicationContext.getBean("overviewTrackerController");
-        } else if( request.getServletPath().startsWith("/overviewBeacon/") )
+            controller = (Controller) applicationContext.getBean( "overviewTrackerController" );
+        } else if( request.getServletPath().startsWith( "/overviewBeacon/" ) )
         {
-            controller = (Controller) applicationContext.getBean("overviewBeaconController");
-        } else if( request.getServletPath().startsWith("/overviewArea/") )
+            controller = (Controller) applicationContext.getBean( "overviewBeaconController" );
+        } else if( request.getServletPath().startsWith( "/overviewArea/" ) )
         {
-            controller = (Controller) applicationContext.getBean("overviewAreaController");
-        } else if( isStaticContent(request) )
+            controller = (Controller) applicationContext.getBean( "overviewAreaController" );
+        } else if( isStaticContent( request ) )
         {
-            controller = getStaticContentController(request, staticContentServlet);
+            controller = getStaticContentController( request, staticContentServlet );
         } else
         {
-            controller = (Controller) applicationContext.getBean("homeController");
+            controller = (Controller) applicationContext.getBean( "homeController" );
         }
 
         View view = null;
@@ -66,40 +66,40 @@ public class FrontendRouter implements Router
         {
             try
             {
-                view = controller.handle(request);
+                view = controller.handle( request );
 
-                LOGGER.info("Handle '" + request.getServletPath() + " with '" + controller.getClass().getSimpleName() + "' in " + df
-                        .format(((System.currentTimeMillis() - start) / 1000.0f)) + " seconds");
+                LOGGER.info( "Handle '" + request.getServletPath() + " with '" + controller.getClass().getSimpleName() + "' in " + df
+                        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
 
                 if( !request.hasPageDTO() )
                 {
-                    pageDtoInitService.getPageDto(new PageDTO(), request);
+                    pageDtoInitService.getPageDto( new PageDTO(), request );
                 }
             } catch( Exception e )
             {
-                throw new ServletException(e);
+                throw new ServletException( e );
             }
         } else
         {
-            LOGGER.info("Handle '" + request.getServletPath() + " not found");
+            LOGGER.info( "Handle '" + request.getServletPath() + " not found" );
         }
 
         return view;
     }
 
-    private Controller getStaticContentController(Request request, DefaultServlet staticContentServlet)
+    private Controller getStaticContentController( Request request, DefaultServlet staticContentServlet )
     {
-        request.getHttpResponse().setDateHeader("Expires", System.currentTimeMillis() + 2764800000L);
-        request.getHttpResponse().setHeader("Vary", "Accept-Encoding");
-        request.getHttpResponse().setHeader("Cache-Control", "public");
-        request.setValue("staticContentServlet", staticContentServlet);
-        return (Controller) applicationContext.getBean("fileController");
+        request.getHttpResponse().setDateHeader( "Expires", System.currentTimeMillis() + 2764800000L );
+        request.getHttpResponse().setHeader( "Vary", "Accept-Encoding" );
+        request.getHttpResponse().setHeader( "Cache-Control", "public" );
+        request.setValue( "staticContentServlet", staticContentServlet );
+        return (Controller) applicationContext.getBean( "fileController" );
     }
 
-    private boolean isStaticContent(Request request)
+    private boolean isStaticContent( Request request )
     {
         final String path = request.getServletPath();
-        return path.startsWith("/css/") || path.startsWith("/img/") || path.startsWith("/js/") || path.endsWith("favicon.ico") || path
-                .endsWith("robots.txt");
+        return path.startsWith( "/css/" ) || path.startsWith( "/img/" ) || path.startsWith( "/js/" ) || path.endsWith( "favicon.ico" ) || path
+                .endsWith( "robots.txt" );
     }
 }
