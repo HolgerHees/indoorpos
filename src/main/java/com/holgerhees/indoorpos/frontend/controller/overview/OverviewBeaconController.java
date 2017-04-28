@@ -9,8 +9,10 @@ import org.springframework.stereotype.Component;
 
 import com.google.gson.JsonElement;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
+import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.RoomDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
+import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.shared.web.model.Request;
@@ -18,16 +20,16 @@ import com.holgerhees.shared.web.util.GSonFactory;
 import com.holgerhees.shared.web.view.GsonView;
 import com.holgerhees.shared.web.view.View;
 
-@Component( "overviewTrackerController" )
-public class OverviewTrackerController implements Controller
+@Component( "overviewBeaconController" )
+public class OverviewBeaconController implements Controller
 {
 	@Autowired
-	TrackerDAO trackerDAO;
+	BeaconDAO beaconDAO;
 
 	@Autowired
 	RoomDAO roomDAO;
 
-	private class Tracker
+	private class Beacon
 	{
 		String name;
 		int floor;
@@ -39,18 +41,18 @@ public class OverviewTrackerController implements Controller
 	public View handle(Request request)
 	{
 		Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();
-		List<TrackerDTO> trackers = trackerDAO.getTracker();
+		List<BeaconDTO> beacons = beaconDAO.getBeacons();
 
-		List<Tracker> result = new ArrayList<>();
-		for( TrackerDTO tracker: trackers )
+		List<Beacon> result = new ArrayList<>();
+		for( BeaconDTO beacon: beacons )
 		{
-			Tracker _tracker = new Tracker();
-			_tracker.name = tracker.getName();
-			_tracker.floor = roomDTOMap.get( tracker.getRoomId() ).getFloor();
-			_tracker.posX = tracker.getPosX();
-			_tracker.posY = tracker.getPosY();
+			Beacon _beacon = new Beacon();
+			_beacon.name = beacon.getName();
+			_beacon.floor = roomDTOMap.get( beacon.getRoomId() ).getFloor();
+			_beacon.posX = beacon.getPosX();
+			_beacon.posY = beacon.getPosY();
 
-			result.add(_tracker);
+			result.add(_beacon);
 		}
 
 		JsonElement json = GSonFactory.createGSon().toJsonTree(result);

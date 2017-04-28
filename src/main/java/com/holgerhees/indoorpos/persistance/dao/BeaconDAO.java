@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
+import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.shared.persistance.dao.AbstractBaseDAO;
 
 @Component( "beaconDAO" )
@@ -63,5 +64,10 @@ public class BeaconDAO extends AbstractBaseDAO<BeaconDTO>
 		}
 
 		return beaconMap;
+	}
+
+	public List<BeaconDTO> getBeacons()
+	{
+		return query("SELECT * FROM beacon");
 	}
 }

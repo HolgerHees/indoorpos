@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.shared.persistance.dao.AbstractBaseDAO;
 
@@ -32,6 +33,11 @@ public class TrackerDAO extends AbstractBaseDAO<TrackerDTO>
 		update("DELETE FROM tracker");
 		update("ALTER TABLE tracker AUTO_INCREMENT = 1");
 		return true;
+	}
+
+	public TrackerDTO getTrackerByUUID( String uuid )
+	{
+		return queryForObject("SELECT * FROM tracker WHERE uuid = ?", new Object[] { uuid });
 	}
 
 	public Map<Long, TrackerDTO> getTrackerIDMap()

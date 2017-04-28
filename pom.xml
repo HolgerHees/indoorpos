@@ -114,6 +114,12 @@
 			<artifactId>reflections</artifactId>
 			<version>0.9.9</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.lemmingapex.trilateration</groupId>
+			<artifactId>trilateration</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

@@ -55,6 +55,10 @@ public class FrontendRouter implements Router
 		{
 			controller = (Controller) applicationContext.getBean("overviewTrackerController");
 		}
+		else if( request.getServletPath().startsWith("/overviewBeacon/") )
+		{
+			controller = (Controller) applicationContext.getBean("overviewBeaconController");
+		}
 		else if( isStaticContent(request) )
 		{
 			controller = getStaticContentController(request, staticContentServlet);

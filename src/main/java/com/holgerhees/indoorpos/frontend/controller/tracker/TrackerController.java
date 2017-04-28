@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
 import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackedBeaconDAO;
+import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
+import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.shared.web.model.Request;
 import com.holgerhees.shared.web.util.GSonFactory;
 import com.holgerhees.shared.web.view.TextView;
@@ -32,12 +34,15 @@ public class TrackerController implements Controller
 
 	private class Parameter
 	{
-		private Long trackerId;
+		private String uuid;
 		private List<TrackedBeacon> trachedBeacon;
 	}
 
 	@Autowired
 	private BeaconDAO beaconDAO;
+
+	@Autowired
+	private TrackerDAO trackerDAO;
 
 	@Autowired
 	private TrackedBeaconDAO trackedBeaconDAO;
@@ -74,13 +79,14 @@ public class TrackerController implements Controller
 		Parameter param = GSonFactory.createGSon().fromJson(json, Parameter.class);
 
 		Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
+		TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID( param.uuid );
 
 		for( TrackedBeacon beacon : param.trachedBeacon )
 		{
 			BeaconDTO beaconDTO = beaconDTOMap.get(beacon.uuid);
 
 			TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
-			trackedBeaconDTO.setTrackerId(param.trackerId);
+			trackedBeaconDTO.setTrackerId(trackerDTO.getId());
 			trackedBeaconDTO.setBeaconId(beaconDTO.getId());
 			trackedBeaconDTO.setTxPower(beacon.txPower);
 			trackedBeaconDTO.setRssi(beacon.rssi);

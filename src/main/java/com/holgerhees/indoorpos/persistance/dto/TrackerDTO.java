@@ -1,12 +1,26 @@
 package com.holgerhees.indoorpos.persistance.dto;
 
 import com.holgerhees.shared.persistance.annotations.DbColumn;
+import com.holgerhees.shared.persistance.annotations.DbForeignKey;
 import com.holgerhees.shared.persistance.annotations.DbTable;
 import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 
 @DbTable( name = "tracker" )
 public class TrackerDTO extends AbstractKeyDTO
 {
+	@DbColumn( name = "uuid",
+	           type = "varchar(255)" )
+	private String uuid;
+
+	@DbColumn( name = "room_id",
+	           type = "int(11)",
+	           updatable = false,
+	           foreignKey = { @DbForeignKey( target = RoomDTO.class,
+	                                         field = "id",
+	                                         onUpdate = "CASCADE",
+	                                         onDelete = "CASCADE" ) } )
+	private Long roomId;
+
 	@DbColumn( name = "pos_x",
 	           type = "smallint(8)" )
 	private int posX;
@@ -19,18 +33,24 @@ public class TrackerDTO extends AbstractKeyDTO
 	           type = "varchar(255)" )
 	private String name;
 
-	@DbColumn( name = "room",
-	           type = "varchar(255)" )
-	private String room;
-
-	public String getName()
+	public String getUuid()
 	{
-		return name;
+		return uuid;
 	}
 
-	public void setName(String name)
+	public void setUuid(String uuid)
 	{
-		this.name = name;
+		this.uuid = uuid;
+	}
+
+	public Long getRoomId()
+	{
+		return roomId;
+	}
+
+	public void setRoomId(Long roomId)
+	{
+		this.roomId = roomId;
 	}
 
 	public int getPosX()
@@ -53,13 +73,13 @@ public class TrackerDTO extends AbstractKeyDTO
 		this.posY = posY;
 	}
 
-	public String getRoom()
+	public String getName()
 	{
-		return room;
+		return name;
 	}
 
-	public void setRoom(String room)
+	public void setName(String name)
 	{
-		this.room = room;
+		this.name = name;
 	}
 }
