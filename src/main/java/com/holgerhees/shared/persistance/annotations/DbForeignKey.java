@@ -9,11 +9,11 @@ import java.lang.annotation.Target;
 @Target( ElementType.ANNOTATION_TYPE )
 public @interface DbForeignKey
 {
-	Class<?> target();
+    Class<?> target();
 
-	String field();
+    String field();
 
-	String onUpdate();
+    String onUpdate();
 
-	String onDelete();
+    String onDelete();
 }

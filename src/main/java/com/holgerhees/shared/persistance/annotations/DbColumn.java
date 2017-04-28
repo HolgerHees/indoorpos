@@ -10,15 +10,15 @@ import java.lang.annotation.Target;
 public @interface DbColumn
 {
 
-	String name();
+    String name();
 
-	String type();
+    String type();
 
-	boolean nullable() default false;
+    boolean nullable() default false;
 
-	boolean insertable() default true;
+    boolean insertable() default true;
 
-	boolean updatable() default true;
+    boolean updatable() default true;
 
-	DbForeignKey[] foreignKey() default {};
+    DbForeignKey[] foreignKey() default {};
 }

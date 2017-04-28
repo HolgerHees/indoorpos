@@ -1,87 +1,86 @@
 package com.holgerhees.shared.web.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.holgerhees.indoorpos.ApplicationConfig;
 import com.holgerhees.indoorpos.frontend.FrontendConfig;
 import com.holgerhees.shared.web.model.Protocol;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service( "urlPrefixService" )
 public class UrlPrefixService
 {
 
-	protected final static String COLON = ":";
-	protected final static String DOT = ".";
-	protected final static String SLASH = "/";
-	protected final static String SLASHSLASH = SLASH + SLASH;
+    protected final static String COLON = ":";
+    protected final static String DOT = ".";
+    protected final static String SLASH = "/";
+    protected final static String SLASHSLASH = SLASH + SLASH;
 
-	@Autowired
-	private ApplicationConfig applicationConfig;
-	@Autowired
-	private FrontendConfig frontendConfig;
+    @Autowired
+    private ApplicationConfig applicationConfig;
+    @Autowired
+    private FrontendConfig frontendConfig;
 
-	public String getUrlPrefix(Protocol protocol)
-	{
-		StringBuilder sb = new StringBuilder();
+    public String getUrlPrefix(Protocol protocol)
+    {
+        StringBuilder sb = new StringBuilder();
 
-		if( protocol != null && protocol != Protocol.NONE )
-		{
-			sb.append(protocol.getUrlName());
-			sb.append(COLON);
-		}
-		sb.append(SLASHSLASH);
+        if( protocol != null && protocol != Protocol.NONE )
+        {
+            sb.append(protocol.getUrlName());
+            sb.append(COLON);
+        }
+        sb.append(SLASHSLASH);
 
-		sb.append(frontendConfig.getWebDomain());
+        sb.append(frontendConfig.getWebDomain());
 
-		if( !applicationConfig.isProduction() )
-		{
-			sb.append(COLON);
-			sb.append(protocol == Protocol.HTTPS ? frontendConfig.getWebHttpsPort() : frontendConfig.getWebHttpPort());
-		}
+        if( !applicationConfig.isProduction() )
+        {
+            sb.append(COLON);
+            sb.append(protocol == Protocol.HTTPS ? frontendConfig.getWebHttpsPort() : frontendConfig.getWebHttpPort());
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	public String getCssUrlPrefix(Protocol protocol)
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(getUrlPrefix(protocol));
-		sb.append(SLASH);
-		sb.append(frontendConfig.getStaticFolderCss());
+    public String getCssUrlPrefix(Protocol protocol)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getUrlPrefix(protocol));
+        sb.append(SLASH);
+        sb.append(frontendConfig.getStaticFolderCss());
 
-		if( applicationConfig.isProduction() )
-		{
-			sb.append(SLASH);
-			sb.append(frontendConfig.getStaticVersionCss());
-		}
+        if( applicationConfig.isProduction() )
+        {
+            sb.append(SLASH);
+            sb.append(frontendConfig.getStaticVersionCss());
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	public String getJavaScriptUrlPrefix(Protocol protocol)
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(getUrlPrefix(protocol));
-		sb.append(SLASH);
-		sb.append(frontendConfig.getStaticFolderJs());
+    public String getJavaScriptUrlPrefix(Protocol protocol)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getUrlPrefix(protocol));
+        sb.append(SLASH);
+        sb.append(frontendConfig.getStaticFolderJs());
 
-		if( applicationConfig.isProduction() )
-		{
-			sb.append(SLASH);
-			sb.append(frontendConfig.getStaticVersionJs());
-		}
+        if( applicationConfig.isProduction() )
+        {
+            sb.append(SLASH);
+            sb.append(frontendConfig.getStaticVersionJs());
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
-	public String getImageUrlPrefix(Protocol protocol)
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(getUrlPrefix(protocol));
-		sb.append(SLASH);
-		sb.append(frontendConfig.getStaticFolderImg());
+    public String getImageUrlPrefix(Protocol protocol)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getUrlPrefix(protocol));
+        sb.append(SLASH);
+        sb.append(frontendConfig.getStaticFolderImg());
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

@@ -2,22 +2,22 @@ package com.holgerhees.shared.persistance.schema;
 
 public class Index
 {
-	private String name;
-	private String definition;
+    private String name;
+    private String definition;
 
-	public Index(String name, String definition)
-	{
-		this.name = name;
-		this.definition = definition;
-	}
+    public Index(String name, String definition)
+    {
+        this.name = name;
+        this.definition = definition;
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    public String getName()
+    {
+        return name;
+    }
 
-	public String getDefinition()
-	{
-		return definition;
-	}
+    public String getDefinition()
+    {
+        return definition;
+    }
 }

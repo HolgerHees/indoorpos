@@ -7,60 +7,60 @@ import java.util.Map;
 
 public class Table
 {
-	private Class<?> dtoClass;
-	private String name;
-	private Map<String, Column> columns = new LinkedHashMap<>();
-	private Map<String, Index> indexes = new LinkedHashMap<>();
-	private Column[] primaryColumns;
+    private Class<?> dtoClass;
+    private String name;
+    private Map<String, Column> columns = new LinkedHashMap<>();
+    private Map<String, Index> indexes = new LinkedHashMap<>();
+    private Column[] primaryColumns;
 
-	public Table(Class<?> dtoClass, String name)
-	{
-		this.dtoClass = dtoClass;
-		this.name = name;
-	}
+    public Table(Class<?> dtoClass, String name)
+    {
+        this.dtoClass = dtoClass;
+        this.name = name;
+    }
 
-	public Class<?> getDtoClass()
-	{
-		return dtoClass;
-	}
+    public Class<?> getDtoClass()
+    {
+        return dtoClass;
+    }
 
-	public String getName()
-	{
-		return name;
-	}
+    public String getName()
+    {
+        return name;
+    }
 
-	public List<Column> getColumns()
-	{
-		return new ArrayList<>(columns.values());
-	}
+    public List<Column> getColumns()
+    {
+        return new ArrayList<>(columns.values());
+    }
 
-	public Column getColumn(String name)
-	{
-		return columns.get(name);
-	}
+    public Column getColumn(String name)
+    {
+        return columns.get(name);
+    }
 
-	public void addColumn(Column column)
-	{
-		columns.put(column.getName(), column);
-	}
+    public void addColumn(Column column)
+    {
+        columns.put(column.getName(), column);
+    }
 
-	public List<Index> getIndexes()
-	{
-		return new ArrayList<>(indexes.values());
-	}
+    public List<Index> getIndexes()
+    {
+        return new ArrayList<>(indexes.values());
+    }
 
-	public void addIndex(Index index)
-	{
-		indexes.put(index.getName(), index);
-	}
+    public void addIndex(Index index)
+    {
+        indexes.put(index.getName(), index);
+    }
 
-	public Column[] getPrimaryColumns()
-	{
-		return primaryColumns;
-	}
+    public Column[] getPrimaryColumns()
+    {
+        return primaryColumns;
+    }
 
-	public void setPrimaryColumns(Column[] columns)
-	{
-		primaryColumns = columns;
-	}
+    public void setPrimaryColumns(Column[] columns)
+    {
+        primaryColumns = columns;
+    }
 }

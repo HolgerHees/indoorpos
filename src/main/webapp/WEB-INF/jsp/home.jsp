@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width">
-	<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="${ctx.cssPrefix}/main.css">
+    <meta name="viewport" content="width=device-width">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="${ctx.cssPrefix}/main.css">
 </head>
 <body>
 <div class="box">
-	<div>
-		<h1>Indoorpos</h1>
-		<span class="hint">Track your indoor position</span>
-		<div style="float:clear"></div>
-	</div>
-	<div>
-		<a href="/overview/">Try out the overview.</a>
-	</div>
+    <div>
+        <h1>Indoorpos</h1>
+        <span class="hint">Track your indoor position</span>
+        <div style="float:clear"></div>
+    </div>
+    <div>
+        <a href="/overview/">Try out the overview.</a>
+    </div>
 </div>
 <footer>&copy; 2017 by Holger Hees</footer>
 </body>

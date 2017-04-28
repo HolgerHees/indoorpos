@@ -1,19 +1,19 @@
 <html>
 <head>
-	<script src="${ctx.jsPrefix}/jquery-2.1.3.js"></script>
-	<script>
-		function send(button) {
-			$.ajax({
-				type: "POST",
-				url: "/tracker/",
-				data: $(button.form.call).val(),
-				success: function(data) {
-					$('#result').html('<pre>' + data + '</pre>');
-				},
-				dataType: "text"
-			});
-		}
-	</script>
+    <script src="${ctx.jsPrefix}/jquery-2.1.3.js"></script>
+    <script>
+        function send(button) {
+            $.ajax({
+                type: "POST",
+                url: "/tracker/",
+                data: $(button.form.call).val(),
+                success: function (data) {
+                    $('#result').html('<pre>' + data + '</pre>');
+                },
+                dataType: "text"
+            });
+        }
+    </script>
 </head>
 <body>
 <form>
@@ -31,7 +31,7 @@
 	]
 }
 		</textarea>
-	<button type="button" onclick="send(this);return false;">Submit</button>
+    <button type="button" onclick="send(this);return false;">Submit</button>
 </form>
 <div id="result" style="height:300px;"></div>
 </body>

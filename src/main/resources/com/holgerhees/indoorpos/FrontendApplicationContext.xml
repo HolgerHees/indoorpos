@@ -10,58 +10,58 @@
        					   http://www.springframework.org/schema/task
                            http://www.springframework.org/schema/task/spring-task-3.1.xsd">
 
-	<import resource="classpath:DefaultApplicationContext.xml"/>
+    <import resource="classpath:DefaultApplicationContext.xml"/>
 
-	<context:component-scan base-package="com.holgerhees.indoorpos"/>
-	<context:component-scan base-package="com.holgerhees.shared.web"/>
+    <context:component-scan base-package="com.holgerhees.indoorpos"/>
+    <context:component-scan base-package="com.holgerhees.shared.web"/>
 
-	<task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
+    <task:annotation-driven executor="taskExecutor" scheduler="taskScheduler"/>
 
-	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-		<property name="corePoolSize" value="2"/>
-		<property name="maxPoolSize" value="5"/>
-		<property name="queueCapacity" value="5"/>
-		<property name="waitForTasksToCompleteOnShutdown" value="false"/>
-		<property name="rejectedExecutionHandler">
-			<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
-		</property>
-	</bean>
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="2"/>
+        <property name="maxPoolSize" value="5"/>
+        <property name="queueCapacity" value="5"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="false"/>
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
+        </property>
+    </bean>
 
-	<bean id="taskScheduler" class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
-		<property name="poolSize" value="10"/>
-		<property name="waitForTasksToCompleteOnShutdown" value="false"/>
-		<property name="rejectedExecutionHandler">
-			<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
-		</property>
-	</bean>
+    <bean id="taskScheduler" class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
+        <property name="poolSize" value="10"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="false"/>
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
+        </property>
+    </bean>
 
-	<bean id="frontendPlaceholderConfig" class="com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer">
-		<property name="order" value="0"/>
-		<property name="locations">
-			<list>
-				<value>classpath:com/holgerhees/indoorpos/config/application.properties</value>
-				<value>classpath:com/holgerhees/indoorpos/config/shared.properties</value>
-				<value>classpath:com/holgerhees/indoorpos/config/version.properties</value>
-			</list>
-		</property>
-	</bean>
+    <bean id="frontendPlaceholderConfig" class="com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer">
+        <property name="order" value="0"/>
+        <property name="locations">
+            <list>
+                <value>classpath:com/holgerhees/indoorpos/config/application.properties</value>
+                <value>classpath:com/holgerhees/indoorpos/config/shared.properties</value>
+                <value>classpath:com/holgerhees/indoorpos/config/version.properties</value>
+            </list>
+        </property>
+    </bean>
 
-	<bean id="frontendConfig" class="com.holgerhees.indoorpos.frontend.FrontendConfig">
-		<property name="webDomain" value="${web.domain}"/>
-		<property name="webHttpPort" value="${web.http_port}"/>
-		<property name="webHttpsPort" value="${web.https_port}"/>
-		<property name="webHttpsApi" value="${web.https_api}"/>
+    <bean id="frontendConfig" class="com.holgerhees.indoorpos.frontend.FrontendConfig">
+        <property name="webDomain" value="${web.domain}"/>
+        <property name="webHttpPort" value="${web.http_port}"/>
+        <property name="webHttpsPort" value="${web.https_port}"/>
+        <property name="webHttpsApi" value="${web.https_api}"/>
 
-		<property name="staticFolderCss" value="${static.folder.css}"/>
-		<property name="staticFolderJs" value="${static.folder.js}"/>
-		<property name="staticFolderImg" value="${static.folder.img}"/>
-		<property name="staticFolderUpload" value="${static.folder.upload}"/>
-		<property name="staticFolderTemp" value="${static.folder.temp}"/>
+        <property name="staticFolderCss" value="${static.folder.css}"/>
+        <property name="staticFolderJs" value="${static.folder.js}"/>
+        <property name="staticFolderImg" value="${static.folder.img}"/>
+        <property name="staticFolderUpload" value="${static.folder.upload}"/>
+        <property name="staticFolderTemp" value="${static.folder.temp}"/>
 
-		<property name="staticVersionCss" value="${static.version.css}"/>
-		<property name="staticVersionJs" value="${static.version.js}"/>
+        <property name="staticVersionCss" value="${static.version.css}"/>
+        <property name="staticVersionJs" value="${static.version.js}"/>
 
-		<property name="uploadMaxMemory" value="${upload.maxMemory}"/>
-		<property name="uploadMaxFileSize" value="${upload.maxFileSize}"/>
-	</bean>
+        <property name="uploadMaxMemory" value="${upload.maxMemory}"/>
+        <property name="uploadMaxFileSize" value="${upload.maxFileSize}"/>
+    </bean>
 </beans>

@@ -1,25 +1,24 @@
 package com.holgerhees.shared.web.view;
 
-import java.io.IOException;
+import com.holgerhees.shared.web.model.Request;
 
 import javax.servlet.ServletException;
-
-import com.holgerhees.shared.web.model.Request;
+import java.io.IOException;
 
 public abstract class View
 {
 
-	private Request request;
+    private Request request;
 
-	public View(Request request)
-	{
-		this.request = request;
-	}
+    public View(Request request)
+    {
+        this.request = request;
+    }
 
-	public abstract void render() throws ServletException, IOException;
+    public abstract void render() throws ServletException, IOException;
 
-	public Request getRequest()
-	{
-		return request;
-	}
+    public Request getRequest()
+    {
+        return request;
+    }
 }

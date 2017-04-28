@@ -2,34 +2,34 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
           http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-	<description>waywise frontend server</description>
-	<display-name>waywise</display-name>
+    <description>waywise frontend server</description>
+    <display-name>waywise</display-name>
 
-	<servlet>
-		<servlet-name>RouterServlet</servlet-name>
-		<servlet-class>com.holgerhees.shared.web.RouterServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RouterServlet</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>RouterServlet</servlet-name>
+        <servlet-class>com.holgerhees.shared.web.RouterServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RouterServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
-	<context-param>
-		<param-name>applicationClass</param-name>
-		<param-value>com.holgerhees.indoorpos.frontend.FrontendApplication</param-value>
-	</context-param>
+    <context-param>
+        <param-name>applicationClass</param-name>
+        <param-value>com.holgerhees.indoorpos.frontend.FrontendApplication</param-value>
+    </context-param>
 
-	<error-page>
-		<error-code>404</error-code>
-		<location>/WEB-INF/jsp/404.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>500</error-code>
-		<location>/WEB-INF/jsp/500.jsp</location>
-	</error-page>
-	<error-page>
-		<error-code>503</error-code>
-		<location>/WEB-INF/jsp/503.jsp</location>
-	</error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/jsp/404.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/jsp/500.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>503</error-code>
+        <location>/WEB-INF/jsp/503.jsp</location>
+    </error-page>
 </web-app>

@@ -7,10 +7,10 @@
        					   http://www.springframework.org/schema/context
        					   http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<import resource="classpath:DefaultApplicationContext.xml"/>
+    <import resource="classpath:DefaultApplicationContext.xml"/>
 
-	<context:component-scan base-package="com.holgerhees.indoorpos.cron"/>
-	<context:component-scan base-package="com.holgerhees.indoorpos.maintainance"/>
-	<context:component-scan base-package="com.holgerhees.indoorpos.persistance"/>
-	<context:component-scan base-package="com.holgerhees.indoorpos.util"/>
+    <context:component-scan base-package="com.holgerhees.indoorpos.cron"/>
+    <context:component-scan base-package="com.holgerhees.indoorpos.maintainance"/>
+    <context:component-scan base-package="com.holgerhees.indoorpos.persistance"/>
+    <context:component-scan base-package="com.holgerhees.indoorpos.util"/>
 </beans>

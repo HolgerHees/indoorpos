@@ -1,14 +1,14 @@
 package com.holgerhees.shared.web;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.context.ApplicationContext;
+
+import javax.servlet.ServletContext;
 
 public interface Application
 {
-	ApplicationContext initialize(ServletContext servletContext);
+    ApplicationContext initialize(ServletContext servletContext);
 
-	void shutdown();
+    void shutdown();
 
-	Router getRouter();
+    Router getRouter();
 }

@@ -8,69 +8,69 @@ import com.holgerhees.shared.persistance.dto.AbstractBaseDTO;
 @DbTable( name = "tracked_beacon" )
 public class TrackedBeaconDTO extends AbstractBaseDTO
 {
-	@DbColumn( name = "tracker_id",
-	           type = "int(11)",
-	           updatable = false,
-	           foreignKey = { @DbForeignKey( target = TrackerDTO.class,
-	                                         field = "id",
-	                                         onUpdate = "CASCADE",
-	                                         onDelete = "CASCADE" ) } )
-	private Long trackerId;
+    @DbColumn( name = "tracker_id",
+            type = "int(11)",
+            updatable = false,
+            foreignKey = {@DbForeignKey( target = TrackerDTO.class,
+                    field = "id",
+                    onUpdate = "CASCADE",
+                    onDelete = "CASCADE" )} )
+    private Long trackerId;
 
-	@DbColumn( name = "beacon_id",
-	           type = "int(11)",
-	           updatable = false,
-	           foreignKey = { @DbForeignKey( target = BeaconDTO.class,
-	                                         field = "id",
-	                                         onUpdate = "CASCADE",
-	                                         onDelete = "CASCADE" ) } )
-	private Long beaconId;
+    @DbColumn( name = "beacon_id",
+            type = "int(11)",
+            updatable = false,
+            foreignKey = {@DbForeignKey( target = BeaconDTO.class,
+                    field = "id",
+                    onUpdate = "CASCADE",
+                    onDelete = "CASCADE" )} )
+    private Long beaconId;
 
-	@DbColumn( name = "tx_power",
-	           type = "tinyint(2)" )
-	private int txPower;
+    @DbColumn( name = "tx_power",
+            type = "tinyint(2)" )
+    private int txPower;
 
-	@DbColumn( name = "rssi",
-	           type = "tinyint(2)" )
-	private int rssi;
+    @DbColumn( name = "rssi",
+            type = "tinyint(2)" )
+    private int rssi;
 
-	public Long getTrackerId()
-	{
-		return trackerId;
-	}
+    public Long getTrackerId()
+    {
+        return trackerId;
+    }
 
-	public void setTrackerId(Long trackerId)
-	{
-		this.trackerId = trackerId;
-	}
+    public void setTrackerId(Long trackerId)
+    {
+        this.trackerId = trackerId;
+    }
 
-	public Long getBeaconId()
-	{
-		return beaconId;
-	}
+    public Long getBeaconId()
+    {
+        return beaconId;
+    }
 
-	public void setBeaconId(Long beaconId)
-	{
-		this.beaconId = beaconId;
-	}
+    public void setBeaconId(Long beaconId)
+    {
+        this.beaconId = beaconId;
+    }
 
-	public int getTxPower()
-	{
-		return txPower;
-	}
+    public int getTxPower()
+    {
+        return txPower;
+    }
 
-	public void setTxPower(int txPower)
-	{
-		this.txPower = txPower;
-	}
+    public void setTxPower(int txPower)
+    {
+        this.txPower = txPower;
+    }
 
-	public int getRssi()
-	{
-		return rssi;
-	}
+    public int getRssi()
+    {
+        return rssi;
+    }
 
-	public void setRssi(int rssi)
-	{
-		this.rssi = rssi;
-	}
+    public void setRssi(int rssi)
+    {
+        this.rssi = rssi;
+    }
 }

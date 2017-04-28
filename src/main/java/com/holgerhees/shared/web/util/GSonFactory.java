@@ -5,21 +5,21 @@ import com.google.gson.GsonBuilder;
 
 public class GSonFactory
 {
-	private static Gson gson = null;
+    private static Gson gson = null;
 
-	static
-	{
-		GsonBuilder builder = new GsonBuilder();
-		//gson = builder.setPrettyPrinting().serializeNulls().create();
-		gson = builder.serializeNulls().create();
-	}
+    static
+    {
+        GsonBuilder builder = new GsonBuilder();
+        //gson = builder.setPrettyPrinting().serializeNulls().create();
+        gson = builder.serializeNulls().create();
+    }
 
-	private GSonFactory()
-	{
-	}
+    private GSonFactory()
+    {
+    }
 
-	public static final Gson createGSon()
-	{
-		return gson;
-	}
+    public static final Gson createGSon()
+    {
+        return gson;
+    }
 }
