@@ -2,7 +2,6 @@ package com.holgerhees.indoorpos.cron;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class RefreshPosition
 			trackerDistance.posX = trackerDTO.getPosX();
 			trackerDistance.posY = trackerDTO.getPosY();
 			// TODO convert to distance
-			trackerDistance.distance = LocationHelper.getDistance(trackedBeaconDTO.getRssi(), trackedBeaconDTO.getTxPower() );
+			trackerDistance.distance = LocationHelper.getDistance(trackedBeaconDTO.getRssi(), trackedBeaconDTO.getTxPower());
 
 			_trackedDistances.add(trackerDistance);
 		}
@@ -106,32 +105,35 @@ public class RefreshPosition
 			{
 				Collections.sort(_trackerDistances, (o1, o2) ->
 				{
-					if( o1.distance > o2.distance ) return 1;
-					if( o1.distance < o2.distance ) return -1;
+					if( o1.distance > o2.distance )
+					{ return 1; }
+					if( o1.distance < o2.distance )
+					{ return -1; }
 					return 0;
 				});
 
-				double[][] positions = new double[ _trackerDistances.size() ][ 2 ];
-				double[] distances = new double[ _trackerDistances.size() ];
+				double[][] positions = new double[_trackerDistances.size()][2];
+				double[] distances = new double[_trackerDistances.size()];
 
 				for( int i = 0; i < _trackerDistances.size(); i++ )
 				{
 					TrackerDistance distance = _trackerDistances.get(i);
 
-					positions[i] = new double[]{ distance.posX, distance.posY };
+					positions[i] = new double[] { distance.posX, distance.posY };
 					distances[i] = distance.distance;
 				}
 
-				NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances), new LevenbergMarquardtOptimizer());
+				NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances),
+					new LevenbergMarquardtOptimizer());
 				LeastSquaresOptimizer.Optimum optimum = solver.solve();
 
 				// the answer
 				double[] centroid = optimum.getPoint().toArray();
 
-				RoomDTO roomDTO = roomDTOMap.get(_trackerDistances.get(0).roomId );
-				beaconDTO.setRoomId( roomDTO.getId() );
-				beaconDTO.setPosX( (int) centroid[0] );
-				beaconDTO.setPosY( (int) centroid[1] );
+				RoomDTO roomDTO = roomDTOMap.get(_trackerDistances.get(0).roomId);
+				beaconDTO.setRoomId(roomDTO.getId());
+				beaconDTO.setPosX((int) centroid[0]);
+				beaconDTO.setPosY((int) centroid[1]);
 
 				// error and geometry information; may throw SingularMatrixException depending the threshold argument provided
 				//RealVector standardDeviation = optimum.getSigma(0);

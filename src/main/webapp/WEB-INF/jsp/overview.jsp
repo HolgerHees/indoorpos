@@ -60,6 +60,11 @@
 			drawPoints(data,"#c82124");
 		});
 
+		/*$.get( "/overviewArea/", function( data )
+		{
+			drawArea( data,"#000066");
+		});*/
+
 		function refreshBeacons()
 		{
 			$.get( "/overviewBeacon/", function( data )

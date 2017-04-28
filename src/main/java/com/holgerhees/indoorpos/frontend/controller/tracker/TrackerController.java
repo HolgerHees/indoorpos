@@ -79,7 +79,7 @@ public class TrackerController implements Controller
 		Parameter param = GSonFactory.createGSon().fromJson(json, Parameter.class);
 
 		Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
-		TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID( param.uuid );
+		TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID(param.uuid);
 
 		for( TrackedBeacon beacon : param.trachedBeacon )
 		{

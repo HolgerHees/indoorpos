@@ -12,9 +12,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 import com.holgerhees.shared.web.Application;
 import com.holgerhees.shared.web.Router;
-import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 
 public class FrontendApplication implements Application
 {

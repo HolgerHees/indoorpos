@@ -8,7 +8,7 @@ body {
 	display: block;
 	padding: 0;
 	border: 0;
-	background-color: #eee;
+	background-color: #EEE;
 	font-family: helvetica, arial, sans-serif;
 	margin: 10px;
 	color: #444;
@@ -22,7 +22,7 @@ BODY > * {
 
 div {
 	display: block;
-	background-color: #fff;
+	background-color: #FFF;
 	padding: 15px;
 }
 
@@ -60,17 +60,17 @@ p {
 }
 
 A {
-	color: #33b5e5;
+	color: #33B5E5;
 	text-decoration: none;
 }
 
 A {
-	color: #33b5e5;
+	color: #33B5E5;
 	text-decoration: none;
 }
 
 a:-webkit-any-link {
-	color: #33b5e5;
+	color: #33B5E5;
 	text-decoration: underline;
 	cursor: auto;
 }

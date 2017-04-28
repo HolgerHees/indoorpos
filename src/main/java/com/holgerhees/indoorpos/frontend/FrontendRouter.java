@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.holgerhees.indoorpos.ApplicationConfig;
-import com.holgerhees.shared.web.Router;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.shared.web.service.PageDtoInitService;
+import com.holgerhees.shared.web.Router;
 import com.holgerhees.shared.web.model.PageDTO;
 import com.holgerhees.shared.web.model.Request;
+import com.holgerhees.shared.web.service.PageDtoInitService;
 import com.holgerhees.shared.web.view.View;
 
 @Component( "frontendRouter" )
@@ -27,17 +26,13 @@ public class FrontendRouter implements Router
 	private ApplicationContext applicationContext;
 
 	@Autowired
-	private ApplicationConfig config;
-
-	@Autowired
 	private PageDtoInitService pageDtoInitService;
 
 	public View routeRequest(Request request, boolean isPostRequest, DefaultServlet staticContentServlet)
 	{
-
 		final long start = System.currentTimeMillis();
 
-		Controller controller = null;
+		Controller controller;
 
 		if( request.getServletPath().startsWith("/tracker/") )
 		{
@@ -58,6 +53,10 @@ public class FrontendRouter implements Router
 		else if( request.getServletPath().startsWith("/overviewBeacon/") )
 		{
 			controller = (Controller) applicationContext.getBean("overviewBeaconController");
+		}
+		else if( request.getServletPath().startsWith("/overviewArea/") )
+		{
+			controller = (Controller) applicationContext.getBean("overviewAreaController");
 		}
 		else if( isStaticContent(request) )
 		{
@@ -80,6 +79,10 @@ public class FrontendRouter implements Router
 			{
 				pageDtoInitService.getPageDto(new PageDTO(), request);
 			}
+		}
+		else
+		{
+			LOGGER.info("Handle '" + request.getServletPath() + " not found");
 		}
 
 		return view;

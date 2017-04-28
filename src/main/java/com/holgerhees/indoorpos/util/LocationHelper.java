@@ -6,8 +6,9 @@ public class LocationHelper
 	{
 	}
 
-	public static double getDistance(int rssi, int txPower) {
-    /*
+	public static double getDistance(int rssi, int txPower)
+	{
+	/*
      * RSSI = TxPower - 10 * n * lg(d)
      * n = 2 (in free space)
      *

@@ -1,5 +1,4 @@
-function drawSVG( canvasId, image )
-{
+function drawSVG(canvasId, image) {
 	var can = document.getElementById(canvasId);
 	var ctx = can.getContext('2d');
 
@@ -12,23 +11,21 @@ function drawSVG( canvasId, image )
 
 	can.height = canvasHeight;
 
-	can.setAttribute("_originalWidth",imageWidth);
-	can.setAttribute("_originalHeight",imageHeight);
+	can.setAttribute("_originalWidth", imageWidth);
+	can.setAttribute("_originalHeight", imageHeight);
 
 	ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 }
 
-function convertX( originalWidth, currentWidth, x )
-{
+function convertX(originalWidth, currentWidth, x) {
 	return x * currentWidth / originalWidth;
 }
 
-function convertY( originalHeight, currentHeight, y )
-{
+function convertY(originalHeight, currentHeight, y) {
 	return currentHeight - ( y * currentHeight / originalHeight );
 }
 
-function drawPoints( data, color )
+function drawArea( data, color )
 {
 	for( var i = 0; i < data.length; i++ )
 	{
@@ -36,8 +33,7 @@ function drawPoints( data, color )
 
 		var canvas = null;
 
-		switch( element.floor )
-		{
+		switch (element.floor) {
 			case 0:
 				canvas = document.getElementById('firstFloorCtx');
 				break;
@@ -60,14 +56,54 @@ function drawPoints( data, color )
 		var currentWidth = canvas.width;
 		var currentHeight = canvas.height;
 
-		var posX = convertX( originalWidth, currentWidth, element.posX );
-		var posY = convertY( originalHeight, currentHeight, element.posY );
+		var topLeftX = convertX( originalWidth, currentWidth, element.topLeftX );
+		var topLeftY = convertY( originalHeight, currentHeight, element.topLeftY );
+		var bottomRightX = convertX( originalWidth, currentWidth, element.bottomRightX );
+		var bottomRightY = convertY( originalHeight, currentHeight, element.bottomRightY );
 
-		console.log( element.name + " "  + posX + " " + posY );
+		ctx.fillStyle = color;
+		ctx.rect(topLeftX,topLeftY,bottomRightX-topLeftX,bottomRightY-topLeftY);
+		ctx.fill();
+		//ctx.stroke();
+	}
+}
+function drawPoints(data, color) {
+	for (var i = 0; i < data.length; i++) {
+		var element = data[i];
+
+		var canvas = null;
+
+		switch (element.floor) {
+			case 0:
+				canvas = document.getElementById('firstFloorCtx');
+				break;
+			case 1:
+				canvas = document.getElementById('secondFloorCtx');
+				break;
+			case 2:
+				canvas = document.getElementById('thirdFloorCtx');
+				break;
+			default:
+				// inactive point
+				continue;
+		}
+
+		var ctx = canvas.getContext('2d');
+
+		var originalWidth = canvas.getAttribute("_originalWidth");
+		var originalHeight = canvas.getAttribute("_originalHeight");
+
+		var currentWidth = canvas.width;
+		var currentHeight = canvas.height;
+
+		var posX = convertX(originalWidth, currentWidth, element.posX);
+		var posY = convertY(originalHeight, currentHeight, element.posY);
+
+		console.log(element.name + " " + posX + " " + posY);
 
 		ctx.fillStyle = color
 		ctx.beginPath();
-		ctx.arc( posX, posY, 10, 0, Math.PI*2, true);
+		ctx.arc(posX, posY, 10, 0, Math.PI * 2, true);
 		ctx.closePath();
 		ctx.fill();
 	}

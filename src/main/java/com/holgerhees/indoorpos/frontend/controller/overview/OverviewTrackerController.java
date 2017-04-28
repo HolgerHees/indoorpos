@@ -42,11 +42,11 @@ public class OverviewTrackerController implements Controller
 		List<TrackerDTO> trackers = trackerDAO.getTracker();
 
 		List<Tracker> result = new ArrayList<>();
-		for( TrackerDTO tracker: trackers )
+		for( TrackerDTO tracker : trackers )
 		{
 			Tracker _tracker = new Tracker();
 			_tracker.name = tracker.getName();
-			_tracker.floor = roomDTOMap.get( tracker.getRoomId() ).getFloor();
+			_tracker.floor = roomDTOMap.get(tracker.getRoomId()).getFloor();
 			_tracker.posX = tracker.getPosX();
 			_tracker.posY = tracker.getPosY();
 
