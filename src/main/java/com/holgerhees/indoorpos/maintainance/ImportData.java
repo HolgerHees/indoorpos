@@ -37,14 +37,34 @@ public class ImportData
 			TrackerDAO trackerDAO = applicationContext.getBean(TrackerDAO.class);
 			trackerDAO.truncate();
 
-			String[] tracker = new String[] { "Livingroom", "Kitchen", "Guestroom", "Floor" };
-			for( String name : tracker )
-			{
-				TrackerDTO trackerDTO = new TrackerDTO();
-				trackerDTO.setName(name);
-				trackerDTO.setRoom(name);
-				trackerDAO.save(trackerDTO);
-			}
+			// First Floor - 1000 x 736
+			TrackerDTO trackerDTO = new TrackerDTO();
+			trackerDTO.setName("Wohnzimmer");
+			trackerDTO.setRoom("livingroom");
+			trackerDTO.setPosX(980);
+			trackerDTO.setPosY(720);
+			trackerDAO.save(trackerDTO);
+
+			trackerDTO = new TrackerDTO();
+			trackerDTO.setName("Küche");
+			trackerDTO.setRoom("kitchen");
+			trackerDTO.setPosX(200);
+			trackerDTO.setPosY(550);
+			trackerDAO.save(trackerDTO);
+
+			trackerDTO = new TrackerDTO();
+			trackerDTO.setName("HWR");
+			trackerDTO.setRoom("hwr");
+			trackerDTO.setPosX(200);
+			trackerDTO.setPosY(400);
+			trackerDAO.save(trackerDTO);
+
+			trackerDTO = new TrackerDTO();
+			trackerDTO.setName("Flur");
+			trackerDTO.setRoom("floor");
+			trackerDTO.setPosX(400);
+			trackerDTO.setPosY(400);
+			trackerDAO.save(trackerDTO);
 
 			BeaconDTO beaconDTO = new BeaconDTO();
 			beaconDTO.setName("Holger");

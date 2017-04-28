@@ -36,7 +36,7 @@ public class TrackerDAO extends AbstractBaseDAO<TrackerDTO>
 
 	public Map<Long, TrackerDTO> getTrackerIDMap()
 	{
-		List<TrackerDTO> tracker = query("SELECT * FROM beacon");
+		List<TrackerDTO> tracker = query("SELECT * FROM tracker");
 
 		Map<Long, TrackerDTO> trackerMap = new HashMap<>();
 		for( TrackerDTO trackerDTO : tracker )
@@ -47,4 +47,8 @@ public class TrackerDAO extends AbstractBaseDAO<TrackerDTO>
 		return trackerMap;
 	}
 
+	public List<TrackerDTO> getTracker()
+	{
+		return query("SELECT * FROM tracker");
+	}
 }
