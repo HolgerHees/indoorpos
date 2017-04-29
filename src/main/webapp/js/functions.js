@@ -1,108 +1,174 @@
-function drawSVG(canvasId, image) {
-    var can = document.getElementById(canvasId);
-    var ctx = can.getContext('2d');
+function calculateSVGSizes(svgId, image)
+{
+    var svg = document.getElementById(svgId);
 
     var imageWidth = image.width;
     var imageHeight = image.height;
 
-    var canvasWidth = can.width;
+    var canvasWidth = svg.width;
 
     var canvasHeight = imageHeight * canvasWidth / imageWidth;
 
-    can.height = canvasHeight;
+    svg.height = canvasHeight;
 
-    can.setAttribute("_originalWidth", imageWidth);
-    can.setAttribute("_originalHeight", imageHeight);
-
-    ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+    svg.setAttribute("_originalWidth", imageWidth);
+    svg.setAttribute("_originalHeight", imageHeight);
 }
 
-function convertX(originalWidth, currentWidth, x) {
-    return x * currentWidth / originalWidth;
+function convertX(originalWidth, currentWidth, x)
+{
+    return x;// * currentWidth / originalWidth;
 }
 
-function convertY(originalHeight, currentHeight, y) {
-    return currentHeight - ( y * currentHeight / originalHeight );
+function convertY(originalHeight, currentHeight, y)
+{
+    return originalHeight - y;//( y * currentHeight / originalHeight );
 }
 
-function drawArea(data, color) {
+function drawAreas( currentRects, data, color )
+{
+    var foundRects = {};
+
     for (var i = 0; i < data.length; i++) {
         var element = data[i];
 
-        var canvas = null;
+        var object = null;
 
         switch (element.floor) {
             case 0:
-                canvas = document.getElementById('firstFloorCtx');
+                object = document.getElementById('firstFloorCtx');
                 break;
             case 1:
-                canvas = document.getElementById('secondFloorCtx');
+                object = document.getElementById('secondFloorCtx');
                 break;
             case 2:
-                canvas = document.getElementById('thirdFloorCtx');
+                object = document.getElementById('thirdFloorCtx');
                 break;
             default:
                 // inactive point
                 continue;
         }
 
-        var ctx = canvas.getContext('2d');
+        var originalWidth = object.getAttribute("_originalWidth");
+        var originalHeight = object.getAttribute("_originalHeight");
 
-        var originalWidth = canvas.getAttribute("_originalWidth");
-        var originalHeight = canvas.getAttribute("_originalHeight");
-
-        var currentWidth = canvas.width;
-        var currentHeight = canvas.height;
+        var currentWidth = object.width;
+        var currentHeight = object.height;
 
         var topLeftX = convertX(originalWidth, currentWidth, element.topLeftX);
         var topLeftY = convertY(originalHeight, currentHeight, element.topLeftY);
         var bottomRightX = convertX(originalWidth, currentWidth, element.bottomRightX);
         var bottomRightY = convertY(originalHeight, currentHeight, element.bottomRightY);
 
-        ctx.fillStyle = color;
-        ctx.rect(topLeftX, topLeftY, bottomRightX - topLeftX, bottomRightY - topLeftY);
-        ctx.fill();
-        //ctx.stroke();
+        if( currentRects[element.key] )
+        {
+            //console.log("update " + element.key );
+            var rect = currentRects[element.key];
+            rect.setAttribute("x", topLeftX);
+            rect.setAttribute("y", topLeftY);
+            rect.setAttribute("width", bottomRightX - topLeftX);
+            rect.setAttribute("height", bottomRightY - topLeftY);
+        }
+        else
+        {
+            //console.log("create " + element.key);
+            var rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
+            rect.setAttribute("x", topLeftX);
+            rect.setAttribute("y", topLeftY);
+            rect.setAttribute("width", bottomRightX - topLeftX);
+            rect.setAttribute("height", bottomRightY - topLeftY);
+            rect.setAttribute("style", "fill: " + color + ";");
+
+            var svg = object.contentDocument.getElementsByTagName("svg")[0];
+            //console.log(rect);
+            svg.insertBefore(rect, svg.childNodes[0]);
+
+            currentRects[element.key] = rect;
+        }
+
+        foundRects[element.key] = element.key;
     }
+
+    cleanElements( currentRects, foundRects );
 }
-function drawPoints(data, color) {
-    for (var i = 0; i < data.length; i++) {
+
+function drawPoints( currentCircles, data, color )
+{
+    var foundCircles = {};
+
+    for (var i = 0; i < data.length; i++)
+    {
         var element = data[i];
 
-        var canvas = null;
+        var object = null;
 
-        switch (element.floor) {
+        switch (element.floor)
+        {
             case 0:
-                canvas = document.getElementById('firstFloorCtx');
+                object = document.getElementById('firstFloorCtx');
                 break;
             case 1:
-                canvas = document.getElementById('secondFloorCtx');
+                object = document.getElementById('secondFloorCtx');
                 break;
             case 2:
-                canvas = document.getElementById('thirdFloorCtx');
+                object = document.getElementById('thirdFloorCtx');
                 break;
             default:
                 // inactive point
                 continue;
         }
 
-        var ctx = canvas.getContext('2d');
+        var originalWidth = object.getAttribute("_originalWidth");
+        var originalHeight = object.getAttribute("_originalHeight");
 
-        var originalWidth = canvas.getAttribute("_originalWidth");
-        var originalHeight = canvas.getAttribute("_originalHeight");
-
-        var currentWidth = canvas.width;
-        var currentHeight = canvas.height;
+        var currentWidth = object.width;
+        var currentHeight = object.height;
 
         var posX = convertX(originalWidth, currentWidth, element.posX);
         var posY = convertY(originalHeight, currentHeight, element.posY);
 
-        //console.log(element.name + " " + posX + " " + posY);
+        if( currentCircles[element.key] )
+        {
+            //console.log("update " + element.key );
+            var circle = currentCircles[element.key];
+            circle.setAttribute("cx", posX);
+            circle.setAttribute("cy", posY);
+        }
+        else
+        {
+            //console.log("create " + element.key );
+            var circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
+            circle.setAttribute("cx", posX);
+            circle.setAttribute("cy", posY);
+            circle.setAttribute("r", 10);
+            circle.setAttribute("style", "fill: " + color + ";");
 
-        ctx.fillStyle = color
-        ctx.beginPath();
-        ctx.arc(posX, posY, 10, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fill();
+            var svg = object.contentDocument.getElementsByTagName("svg")[0];
+            //console.log(circle);
+            svg.appendChild(circle);
+
+            currentCircles[element.key] = circle;
+        }
+
+        foundCircles[element.key] = element.key;
+    }
+
+    cleanElements( currentCircles, foundCircles );
+}
+
+function cleanElements( currentElements, usedElements )
+{
+    for (var key in currentElements)
+    {
+        // skip loop if the property is from prototype
+        if (!currentElements.hasOwnProperty(key)) continue;
+
+        if( usedElements[key] ) continue;
+
+        //console.log("remove " + currentCircles[key] );
+
+        currentElements[key].parentNode.removeChild( currentElements[key] );
+
+        delete currentElements[key];
     }
 }

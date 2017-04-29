@@ -9,13 +9,13 @@
 <div class="box">
     <div>
         <h2>First Floor</h2>
-        <canvas id="firstFloorCtx" width="600"></canvas>
+        <object id="firstFloorCtx" data="${ctx.imgPrefix}/overview/floor_first.svg" width="600" type="image/svg+xml"></object>
 
         <h2>Second Floor</h2>
-        <canvas id="secondFloorCtx" width="600"></canvas>
+        <object id="secondFloorCtx" data="${ctx.imgPrefix}/overview/floor_second.svg" width="600" type="image/svg+xml"></object>
 
         <h2>Attic</h2>
-        <canvas id="thirdFloorCtx" width="600"></canvas>
+        <object id="thirdFloorCtx" data="${ctx.imgPrefix}/overview/floor_attic.svg" width="600" type="image/svg+xml"></object>
 
     </div>
 </div>
@@ -28,23 +28,27 @@
     var firstFloorSVG = new Image();
     firstFloorSVG.src = "${ctx.imgPrefix}/overview/floor_first.svg";
     firstFloorSVG.onload = function () {
-        drawSVG('firstFloorCtx', firstFloorSVG);
+        calculateSVGSizes('firstFloorCtx', firstFloorSVG);
         loadData();
     }
 
     var secondFloorSVG = new Image();
     secondFloorSVG.src = "${ctx.imgPrefix}/overview/floor_second.svg";
     secondFloorSVG.onload = function () {
-        drawSVG('secondFloorCtx', secondFloorSVG);
+        calculateSVGSizes('secondFloorCtx', secondFloorSVG);
         loadData();
     }
 
     var thirdFloorSVG = new Image();
     thirdFloorSVG.src = "${ctx.imgPrefix}/overview/floor_attic.svg";
     thirdFloorSVG.onload = function () {
-        drawSVG('thirdFloorCtx', thirdFloorSVG);
+        calculateSVGSizes('thirdFloorCtx', thirdFloorSVG);
         loadData();
     }
+
+    areaRects = {};
+    trackerCircles = {};
+    beaconCircles = {};
 
     function loadData() {
         openSVGRequests--;
@@ -52,20 +56,20 @@
         if (openSVGRequests > 0) return;
 
         $.get("/overviewTracker/", function (data) {
-            drawPoints(data, "#c82124");
+            drawPoints( trackerCircles, data, "#c82124" );
         });
 
-        /*$.get( "/overviewArea/", function( data )
-         {
-         drawArea( data,"#000066");
-         });*/
-
         function refreshBeacons() {
-            $.get("/overviewBeacon/", function (data) {
-                drawPoints(data, "#006600");
-
-                window.setTimeout(refreshBeacons, 1000)
+            $.get( "/overviewArea/", function( data )
+            {
+                drawAreas( areaRects, data, "#000066");
+                window.setTimeout(refreshBeacons, 5000)
             });
+
+            /*$.get("/overviewBeacon/", function (data) {
+                drawPoints( beaconCircles, data, "#006600" );
+                window.setTimeout(refreshBeacons, 5000)
+            });*/
         }
 
         refreshBeacons();

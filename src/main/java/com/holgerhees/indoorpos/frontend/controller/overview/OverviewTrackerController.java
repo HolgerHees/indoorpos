@@ -28,6 +28,7 @@ public class OverviewTrackerController implements Controller
 
     private class Tracker
     {
+        String key;
         String name;
         int floor;
         int posX;
@@ -44,6 +45,7 @@ public class OverviewTrackerController implements Controller
         for( TrackerDTO tracker : trackers )
         {
             Tracker _tracker = new Tracker();
+            _tracker.key = "tracker" + tracker.getId();
             _tracker.name = tracker.getName();
             _tracker.floor = roomDTOMap.get( tracker.getRoomId() ).getFloor();
             _tracker.posX = tracker.getPosX();

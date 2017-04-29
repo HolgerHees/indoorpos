@@ -38,25 +38,32 @@ public class FrontendRouter implements Router
         if( request.getServletPath().startsWith( "/tracker/" ) )
         {
             controller = (Controller) applicationContext.getBean( "trackerController" );
-        } else if( request.getServletPath().startsWith( "/test/" ) )
+        }
+        else if( request.getServletPath().startsWith( "/test/" ) )
         {
             controller = (Controller) applicationContext.getBean( "testController" );
-        } else if( request.getServletPath().startsWith( "/overview/" ) )
+        }
+        else if( request.getServletPath().startsWith( "/overview/" ) )
         {
             controller = (Controller) applicationContext.getBean( "overviewController" );
-        } else if( request.getServletPath().startsWith( "/overviewTracker/" ) )
+        }
+        else if( request.getServletPath().startsWith( "/overviewTracker/" ) )
         {
             controller = (Controller) applicationContext.getBean( "overviewTrackerController" );
-        } else if( request.getServletPath().startsWith( "/overviewBeacon/" ) )
+        }
+        else if( request.getServletPath().startsWith( "/overviewBeacon/" ) )
         {
             controller = (Controller) applicationContext.getBean( "overviewBeaconController" );
-        } else if( request.getServletPath().startsWith( "/overviewArea/" ) )
+        }
+        else if( request.getServletPath().startsWith( "/overviewArea/" ) )
         {
             controller = (Controller) applicationContext.getBean( "overviewAreaController" );
-        } else if( isStaticContent( request ) )
+        }
+        else if( isStaticContent( request ) )
         {
             controller = getStaticContentController( request, staticContentServlet );
-        } else
+        }
+        else
         {
             controller = (Controller) applicationContext.getBean( "homeController" );
         }
@@ -79,7 +86,8 @@ public class FrontendRouter implements Router
             {
                 throw new ServletException( e );
             }
-        } else
+        }
+        else
         {
             LOGGER.info( "Handle '" + request.getServletPath() + " not found" );
         }

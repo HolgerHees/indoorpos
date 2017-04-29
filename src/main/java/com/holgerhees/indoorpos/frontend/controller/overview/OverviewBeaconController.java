@@ -28,6 +28,7 @@ public class OverviewBeaconController implements Controller
 
     private class Beacon
     {
+        String key;
         String name;
         int floor;
         int posX;
@@ -44,12 +45,13 @@ public class OverviewBeaconController implements Controller
         for( BeaconDTO beacon : beacons )
         {
             Beacon _beacon = new Beacon();
+            _beacon.key = "beacon" + beacon.getId();
             _beacon.name = beacon.getName();
-            _beacon.floor = beacon.getRoomId() == null ? -1 : roomDTOMap.get( beacon.getRoomId() ).getFloor();
-            _beacon.posX = beacon.getPosX();
-            _beacon.posY = beacon.getPosY();
+            //_beacon.floor = beacon.getRoomId() == null ? -1 : roomDTOMap.get( beacon.getRoomId() ).getFloor();
+            //_beacon.posX = beacon.getPosX();
+            //_beacon.posY = beacon.getPosY();
 
-            result.add( _beacon );
+            //result.add( _beacon );
         }
 
         JsonElement json = GSonFactory.createGSon().toJsonTree( result );

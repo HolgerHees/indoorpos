@@ -165,10 +165,7 @@ public class ImportData
 
             // Holgers Phone
             BeaconDTO beaconDTO = new BeaconDTO();
-            beaconDTO.setUuid( "abcd" );
-            beaconDTO.setRoomId( roomDTO.getId() );
-            beaconDTO.setPosX( 100 );
-            beaconDTO.setPosY( 100 );
+            beaconDTO.setUuid( "c45927d1606f4242b273c52a294489a6" );
             beaconDTO.setName( "Holger" );
             beaconDAO.save( beaconDTO );
 

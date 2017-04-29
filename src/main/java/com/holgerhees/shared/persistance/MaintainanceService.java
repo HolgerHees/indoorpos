@@ -70,7 +70,8 @@ public class MaintainanceService
 
                         schemaDao.createColumn( table.getName(), column.getDefinition(), previousColumn );
                         skipped = false;
-                    } else if( !existingColumns.get( column.getName() ).equals( column.getDefinition() ) )
+                    }
+                    else if( !existingColumns.get( column.getName() ).equals( column.getDefinition() ) )
                     {
                         LOGGER.error(
                                 "Changing of column definition of column '" + column.getName() + "' in table '" + table.getName() + "' not implemented" );
@@ -148,7 +149,8 @@ public class MaintainanceService
                 {
                     LOGGER.info( "SKIP unchanged TABLE '" + table.getName() + "'" );
                 }
-            } else
+            }
+            else
             {
                 LOGGER.info( "CREATE TABLE " + table.getName() );
                 schemaDao.createTable( table, true );

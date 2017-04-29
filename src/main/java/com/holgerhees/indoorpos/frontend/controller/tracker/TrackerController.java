@@ -11,6 +11,8 @@ import com.holgerhees.shared.web.model.Request;
 import com.holgerhees.shared.web.util.GSonFactory;
 import com.holgerhees.shared.web.view.TextView;
 import com.holgerhees.shared.web.view.View;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,17 +26,20 @@ import java.util.Map;
 @Component( "trackerController" )
 public class TrackerController implements Controller
 {
+    private static Log LOGGER = LogFactory.getLog( TrackerController.class );
+
     private class TrackedBeacon
     {
         private String uuid;
-        private int txPower;
+        private int txpower;
         private int rssi;
+        private int samples;
     }
 
     private class Parameter
     {
         private String uuid;
-        private List<TrackedBeacon> trachedBeacon;
+        private List<TrackedBeacon> trackedBeacons;
     }
 
     @Autowired
@@ -79,17 +84,31 @@ public class TrackerController implements Controller
         Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
         TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID( param.uuid );
 
-        for( TrackedBeacon beacon : param.trachedBeacon )
+        if( trackerDTO == null )
         {
-            BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
+            LOGGER.info( "Skip unknown tracker with 'uuid': " + param.uuid );
+        }
+        else
+        {
+            for( TrackedBeacon beacon : param.trackedBeacons )
+            {
+                BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
 
-            TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
-            trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
-            trackedBeaconDTO.setBeaconId( beaconDTO.getId() );
-            trackedBeaconDTO.setTxPower( beacon.txPower );
-            trackedBeaconDTO.setRssi( beacon.rssi );
+                if( beaconDTO == null )
+                {
+                    LOGGER.info( "Skip unknown beacon with 'uuid': " + beacon.uuid );
+                    continue;
+                }
 
-            beaconDAO.save( beaconDTO );
+                TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
+                trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
+                trackedBeaconDTO.setBeaconId( beaconDTO.getId() );
+                trackedBeaconDTO.setTxPower( beacon.txpower );
+                trackedBeaconDTO.setRssi( beacon.rssi );
+                trackedBeaconDTO.setSamples(  beacon.samples );
+
+                trackedBeaconDAO.save( trackedBeaconDTO );
+            }
         }
 
         return new TextView( req, "tracked" );

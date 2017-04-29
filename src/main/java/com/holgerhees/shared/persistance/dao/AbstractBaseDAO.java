@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractBaseDAO<T>
@@ -54,7 +55,7 @@ public abstract class AbstractBaseDAO<T>
             return jdbcTemplateDao.getJdbcTemplate().query( sql, args, rowMapper );
         } catch( EmptyResultDataAccessException e )
         {
-            return null;
+            return new ArrayList<>();
         }
     }
 

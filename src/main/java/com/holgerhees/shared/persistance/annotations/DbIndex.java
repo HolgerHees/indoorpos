@@ -60,10 +60,12 @@ public @interface DbIndex
             if( type.equals( DbIndex.Type.PRIMARY_KEY ) )
             {
                 return "PRIMARY";
-            } else if( type.equals( DbIndex.Type.UNIQUE ) )
+            }
+            else if( type.equals( DbIndex.Type.UNIQUE ) )
             {
                 return split( columnNames, "_" ) + "_unique";
-            } else
+            }
+            else
             {
                 return split( columnNames, "_" ) + "_key";
             }

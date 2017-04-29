@@ -27,9 +27,6 @@ public class TrackedBeaconDAO extends AbstractBaseDAO<TrackedBeaconDTO>
 
     public List<TrackedBeaconDTO> getTrackedBeacons()
     {
-        Date date = new Date();
-        date.setTime( date.getTime() - 1000 * 2 );
-
-        return query( "SELECT * FROM tracked_beacon ORDER BY created DESC" );
+        return query( "SELECT * FROM tracked_beacon WHERE lastModified >= DATE_SUB( NOW(), INTERVAL 10 SECOND ) ORDER BY created DESC" );
     }
 }

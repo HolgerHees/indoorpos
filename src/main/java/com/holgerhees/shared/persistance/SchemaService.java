@@ -120,7 +120,8 @@ public class SchemaService
                     column.setSetterConverter( field.getType().getMethod( "fromPersistenceID", Integer.class ) );
                     column.setGetterConverter( field.getType().getMethod( "getPersistenceID" ) );
                     column.setType( Integer.class );
-                } else
+                }
+                else
                 {
                     column.setType( field.getType() );
                 }
@@ -146,7 +147,8 @@ public class SchemaService
                     if( index.type() == DbIndex.Type.PRIMARY_KEY )
                     {
                         primaryColumns.add( column );
-                    } else if( index.type() == DbIndex.Type.UNIQUE )
+                    }
+                    else if( index.type() == DbIndex.Type.UNIQUE )
                     {
                         uniqueColumns.add( column );
                     }
@@ -165,7 +167,8 @@ public class SchemaService
             if( !primaryColumns.isEmpty() )
             {
                 table.setPrimaryColumns( primaryColumns.toArray( new Column[primaryColumns.size()] ) );
-            } else if( !uniqueColumns.isEmpty() )
+            }
+            else if( !uniqueColumns.isEmpty() )
             {
                 table.setPrimaryColumns( uniqueColumns.toArray( new Column[uniqueColumns.size()] ) );
             }
@@ -189,10 +192,12 @@ public class SchemaService
         if( index.type() == DbIndex.Type.PRIMARY_KEY )
         {
             groupId = DbIndex.Type.PRIMARY_KEY.name();
-        } else if( !index.group().isEmpty() )
+        }
+        else if( !index.group().isEmpty() )
         {
             groupId = index.group();
-        } else
+        }
+        else
         {
             groupId = "group_" + i;
         }

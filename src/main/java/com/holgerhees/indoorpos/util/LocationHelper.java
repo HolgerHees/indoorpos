@@ -8,14 +8,18 @@ public class LocationHelper
 
     public static double getDistance( int rssi, int txPower )
     {
-    /*
-     * RSSI = TxPower - 10 * n * lg(d)
-     * n = 2 (in free space)
-     *
-     * d = 10 ^ ((TxPower - RSSI) / (10 * n))
-     */
+        /*
+         * RSSI = TxPower - 10 * n * lg(d)
+         * n = 2 (in free space)
+         *
+         * d = 10 ^ ((TxPower - RSSI) / (10 * n))
+         */
 
-        return Math.pow( 10d, ( (double) txPower - rssi ) / ( 10 * 2 ) );
+        //d = 10 ^ ((TxPower - RSSI) / 20)
+
+        double result = Math.pow( 10d, ( (double) txPower - rssi ) / ( 10 * 2 ) );
+
+        return result;
     }
 
     public static double getDistance( double _lat1, double _lon1, double _lat2, double _lon2 )

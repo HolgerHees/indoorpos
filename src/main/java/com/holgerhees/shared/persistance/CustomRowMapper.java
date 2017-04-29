@@ -93,7 +93,8 @@ public class CustomRowMapper<T> implements RowMapper<T>
                 {
                     ( (AbstractBaseDTO) dto ).setCreated( now );
                     ( (AbstractBaseDTO) dto ).setLastModified( now );
-                } else if( refreshLastModified )
+                }
+                else if( refreshLastModified )
                 {
                     ( (AbstractBaseDTO) dto ).setLastModified( now );
                 }
@@ -144,7 +145,8 @@ public class CustomRowMapper<T> implements RowMapper<T>
 
                     Object id = jdbcTemplateDao.getJdbcTemplate().queryForObject( "select last_insert_id()", primaryColumns[0].getType() );
                     primaryColumns[0].getSetter().invoke( dto, id );
-                } else
+                }
+                else
                 {
                     List<Object> values = new LinkedList<>();
                     values.addAll( mappedValueFields.values() );
@@ -154,7 +156,8 @@ public class CustomRowMapper<T> implements RowMapper<T>
                             .update( "UPDATE " + table.getName() + " SET " + fieldSQL + " WHERE " + primaryColumns[0].getName() + " = ? ",
                                      new ArgumentPreparedStatementSetter( values.toArray() ) );
                 }
-            } else
+            }
+            else
             {
                 Map<String, Object> mappedInsertValueFields = new HashMap<>();
                 Map<String, Object> mappedUpdateValueFields = new HashMap<>();
@@ -190,7 +193,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
                 System.arraycopy( updateValues, 0, values, insertValues.length, updateValues.length );
 
 				/*LOGGER.error("INSERT INTO " + table.getName() + " SET " + insertFieldSQL + " ON DUPLICATE KEY UPDATE " + updateFieldSQL);
-				for( Object obj: values )
+                for( Object obj: values )
 				{
 					LOGGER.error(obj);
 				}*/

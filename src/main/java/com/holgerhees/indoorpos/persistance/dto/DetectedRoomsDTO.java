@@ -5,19 +5,20 @@ import com.holgerhees.shared.persistance.annotations.DbForeignKey;
 import com.holgerhees.shared.persistance.annotations.DbIndex;
 import com.holgerhees.shared.persistance.annotations.DbTable;
 import com.holgerhees.shared.persistance.dto.AbstractBaseDTO;
+import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 
-@DbTable( name = "tracked_beacon" )
-public class TrackedBeaconDTO extends AbstractBaseDTO
+@DbTable( name = "detected_rooms" )
+public class DetectedRoomsDTO extends AbstractKeyDTO
 {
-    @DbColumn( name = "tracker_id",
+    @DbColumn( name = "room_id",
                type = "int(11)",
                updatable = false,
-               foreignKey = { @DbForeignKey( target = TrackerDTO.class,
+               foreignKey = { @DbForeignKey( target = RoomDTO.class,
                                              field = "id",
                                              onUpdate = "CASCADE",
                                              onDelete = "CASCADE" ) } )
     @DbIndex( type = DbIndex.Type.UNIQUE, group = "primary" )
-    private Long trackerId;
+    private Long roomId;
 
     @DbColumn( name = "beacon_id",
                type = "int(11)",
@@ -29,26 +30,18 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
     @DbIndex( type = DbIndex.Type.UNIQUE, group = "primary" )
     private Long beaconId;
 
-    @DbColumn( name = "tx_power",
-               type = "tinyint(2)" )
-    private int txPower;
+    @DbColumn( name = "distance",
+               type = "int(11)" )
+    private int distance;
 
-    @DbColumn( name = "rssi",
-               type = "tinyint(2)" )
-    private int rssi;
-
-    @DbColumn( name = "samples",
-               type = "tinyint(2)" )
-    private int samples;
-
-    public Long getTrackerId()
+    public Long getRoomId()
     {
-        return trackerId;
+        return roomId;
     }
 
-    public void setTrackerId( Long trackerId )
+    public void setRoomId( Long roomId )
     {
-        this.trackerId = trackerId;
+        this.roomId = roomId;
     }
 
     public Long getBeaconId()
@@ -61,33 +54,13 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
         this.beaconId = beaconId;
     }
 
-    public int getTxPower()
+    public int getDistance()
     {
-        return txPower;
+        return distance;
     }
 
-    public void setTxPower( int txPower )
+    public void setDistance( int distance )
     {
-        this.txPower = txPower;
-    }
-
-    public int getRssi()
-    {
-        return rssi;
-    }
-
-    public void setRssi( int rssi )
-    {
-        this.rssi = rssi;
-    }
-
-    public int getSamples()
-    {
-        return samples;
-    }
-
-    public void setSamples( int samples )
-    {
-        this.samples = samples;
+        this.distance = distance;
     }
 }
