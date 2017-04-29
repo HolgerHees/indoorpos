@@ -93,7 +93,7 @@ public class OverviewAreaController implements Controller
         }
 
         Result result = new Result();
-        result.age = ( new Date().getTime() - lastModified.getTime() );
+        result.age = lastModified == null ? 0 : ( new Date().getTime() - lastModified.getTime() );
         result.entries = entries;
 
         JsonElement json = GSonFactory.createGSon().toJsonTree( result );
