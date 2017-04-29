@@ -62,8 +62,14 @@
         function refreshBeacons() {
             $.get( "/overviewArea/", function( data )
             {
-                drawAreas( areaRects, data, "#000066");
-                window.setTimeout(refreshBeacons, 5000)
+                drawAreas( areaRects, data.entries, "#000066");
+
+                var duration = 8000 - data.age;
+                if( duration < 2000 ) duration = 2000;
+
+                //console.log( "age: " + data.age + ", sleep: " + duration);
+
+                window.setTimeout(refreshBeacons, duration);
             });
 
             /*$.get("/overviewBeacon/", function (data) {

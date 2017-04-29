@@ -25,7 +25,7 @@ public class TrackedBeaconDAO extends AbstractBaseDAO<TrackedBeaconDTO>
         return update( "DELETE FROM tracked_beacon WHERE id = ?", trackedBeaconId );
     }
 
-    public List<TrackedBeaconDTO> getTrackedBeacons()
+    public List<TrackedBeaconDTO> getActiveTrackedBeacons()
     {
         return query( "SELECT * FROM tracked_beacon WHERE lastModified >= DATE_SUB( NOW(), INTERVAL 10 SECOND ) ORDER BY created DESC" );
     }

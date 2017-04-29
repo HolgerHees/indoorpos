@@ -51,7 +51,7 @@ public class RefreshPosition
         private double posY;
     }
 
-    @Scheduled( cron = "*/5 * * * * *" ) // every second
+    //@Scheduled( cron = "*/5 * * * * *" ) // every second
     public void run()
     {
         final long start = System.currentTimeMillis();
@@ -59,7 +59,7 @@ public class RefreshPosition
         Map<Long, TrackerDTO> trackerDTOMap = trackerDAO.getTrackerIDMap();
 
         // TODO limit to last 10 seconds?
-        List<TrackedBeaconDTO> trackedBeaconDTOS = trackedBeaconDAO.getTrackedBeacons();
+        List<TrackedBeaconDTO> trackedBeaconDTOS = trackedBeaconDAO.getActiveTrackedBeacons();
 
         Map<Long, List<TrackerDistance>> trackedDistances = new HashMap<>();
 
