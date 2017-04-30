@@ -50,7 +50,8 @@
     trackerCircles = {};
     beaconCircles = {};
 
-    function loadData() {
+    function loadData()
+    {
         openSVGRequests--;
 
         if (openSVGRequests > 0) return;
@@ -59,17 +60,15 @@
             drawPoints( trackerCircles, data, "#c82124" );
         });
 
-        function refreshBeacons() {
+        function refreshBeacons()
+        {
             $.get( "/overviewArea/", function( data )
             {
                 drawAreas( areaRects, data.entries, "#000066");
 
-                var duration = 8000 - data.age;
-                if( duration < 2000 ) duration = 2000;
+                console.log("sleep " + data.nextWakeup + ", age: " + data.age + ", interval: " + data.interval );
 
-                //console.log( "age: " + data.age + ", sleep: " + duration);
-
-                window.setTimeout(refreshBeacons, duration);
+                window.setTimeout(refreshBeacons, data.nextWakeup);
             });
 
             /*$.get("/overviewBeacon/", function (data) {

@@ -27,6 +27,7 @@ public class TrackedBeaconDAO extends AbstractBaseDAO<TrackedBeaconDTO>
 
     public List<TrackedBeaconDTO> getActiveTrackedBeacons()
     {
-        return query( "SELECT * FROM tracked_beacon WHERE lastModified >= DATE_SUB( NOW(), INTERVAL 10 SECOND ) ORDER BY created DESC" );
+        // 2 x ~3 second interval
+        return query( "SELECT * FROM tracked_beacon WHERE lastModified >= DATE_SUB( NOW(), INTERVAL 8 SECOND ) ORDER BY created DESC" );
     }
 }

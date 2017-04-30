@@ -2,6 +2,7 @@ package com.holgerhees.indoorpos.frontend.controller.overview;
 
 import com.google.gson.JsonElement;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
+import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.persistance.dao.*;
 import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
 import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
@@ -22,6 +23,8 @@ import java.util.Map;
 @Component( "overviewAreaController" )
 public class OverviewAreaController implements Controller
 {
+    private static int MIN_INTERVAL = 2000;
+
     @Autowired
     AreaDAO areaDAO;
 
@@ -33,6 +36,9 @@ public class OverviewAreaController implements Controller
 
     @Autowired
     TrackedBeaconDAO trackedBeaconDAO;
+
+    @Autowired
+    CacheService cacheService;
 
     private class Area
     {
@@ -46,7 +52,9 @@ public class OverviewAreaController implements Controller
 
     private class Result
     {
-        Long age;
+        int nextWakeup;
+        int age;
+        int interval;
         List<Area> entries;
     }
 
@@ -57,16 +65,10 @@ public class OverviewAreaController implements Controller
 
         List<TrackedBeaconDTO> trackedBeaconDTOs = trackedBeaconDAO.getActiveTrackedBeacons();
         List<Long> detectedRooms = new ArrayList<>();
-        Date lastModified = null;
         for( TrackedBeaconDTO trackedBeaconDTO: trackedBeaconDTOs )
         {
             TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeaconDTO.getTrackerId() );
             detectedRooms.add( trackerDTO.getRoomId() );
-
-            if( lastModified == null || lastModified.before( trackedBeaconDTO.getLastModified() ) )
-            {
-                lastModified = trackedBeaconDTO.getLastModified();
-            }
         }
 
         Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();
@@ -93,7 +95,28 @@ public class OverviewAreaController implements Controller
         }
 
         Result result = new Result();
-        result.age = lastModified == null ? 0 : ( new Date().getTime() - lastModified.getTime() );
+
+        int interval = cacheService.getTrackerInterval();
+        long age = new Date().getTime() - cacheService.getLastTrackerUpdate();
+
+        result.interval = interval;
+        result.age = (int) age;
+
+        if( interval > 0 )
+        {
+            // allways 10% ~300ms later
+            result.nextWakeup = (int) ( ( interval * 1.1 ) - age );
+
+            if( result.nextWakeup < MIN_INTERVAL )
+            {
+                result.nextWakeup = MIN_INTERVAL;
+            }
+        }
+        else
+        {
+            result.nextWakeup = MIN_INTERVAL;
+        }
+
         result.entries = entries;
 
         JsonElement json = GSonFactory.createGSon().toJsonTree( result );

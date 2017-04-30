@@ -1,6 +1,7 @@
 package com.holgerhees.indoorpos.frontend.controller.tracker;
 
 import com.holgerhees.indoorpos.frontend.controller.Controller;
+import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackedBeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
@@ -50,6 +51,9 @@ public class TrackerController implements Controller
 
     @Autowired
     private TrackedBeaconDAO trackedBeaconDAO;
+
+    @Autowired
+    private CacheService cacheService;
 
     @Override
     final public View handle( Request req )
@@ -110,6 +114,8 @@ public class TrackerController implements Controller
                 trackedBeaconDAO.save( trackedBeaconDTO );
             }
         }
+
+        cacheService.trackerUdate();
 
         return new TextView( req, "tracked" );
     }
