@@ -23,8 +23,6 @@ import java.util.Map;
 @Component( "overviewAreaController" )
 public class OverviewAreaController implements Controller
 {
-    private static int MIN_INTERVAL = 2000;
-
     @Autowired
     AreaDAO areaDAO;
 
@@ -107,14 +105,14 @@ public class OverviewAreaController implements Controller
             // allways 10% ~300ms later
             result.nextWakeup = (int) ( ( interval * 1.1 ) - age );
 
-            if( result.nextWakeup < MIN_INTERVAL )
+            if( result.nextWakeup < CacheService.MIN_INTERVAL )
             {
-                result.nextWakeup = MIN_INTERVAL;
+                result.nextWakeup = CacheService.MIN_INTERVAL;
             }
         }
         else
         {
-            result.nextWakeup = MIN_INTERVAL;
+            result.nextWakeup = CacheService.MIN_INTERVAL;
         }
 
         result.entries = entries;

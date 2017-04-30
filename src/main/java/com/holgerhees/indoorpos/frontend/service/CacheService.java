@@ -25,19 +25,36 @@ import java.util.Map;
 @Component( "cacheService" )
 public class CacheService
 {
+    public static int MIN_SAMPLES = 3;
+    public static int MIN_RSSI = -88;
+
+    public static int MIN_INTERVAL = 2000;
+    private static int MAX_INTERVAL = 10000;
+
     private int interval = 0;
     private long lastTrackerUpdate = 0;
+    private long lastTrackerId = 0;
 
-    public void trackerUdate()
+    public void trackerUdate( TrackerDTO trackerDTO )
     {
         long currentTrackerUpdate = System.currentTimeMillis();
 
-        if( lastTrackerUpdate > 0 )
+        if( lastTrackerUpdate > 0 && lastTrackerId == trackerDTO.getId() )
         {
             interval = (int) ( currentTrackerUpdate - lastTrackerUpdate );
+
+            if( interval > MAX_INTERVAL )
+            {
+                interval = MAX_INTERVAL;
+            }
+        }
+        else
+        {
+            interval = 0;
         }
 
         lastTrackerUpdate = currentTrackerUpdate;
+        lastTrackerId = trackerDTO.getId();
     }
 
     public int getTrackerInterval()

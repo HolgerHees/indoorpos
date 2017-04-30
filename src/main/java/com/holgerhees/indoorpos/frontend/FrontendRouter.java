@@ -75,8 +75,8 @@ public class FrontendRouter implements Router
             {
                 view = controller.handle( request );
 
-                LOGGER.info( "Handle '" + request.getServletPath() + " with '" + controller.getClass().getSimpleName() + "' in " + df
-                        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
+                //LOGGER.info( "Handle '" + request.getServletPath() + " with '" + controller.getClass().getSimpleName() + "' in " + df
+                //        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
 
                 if( !request.hasPageDTO() )
                 {

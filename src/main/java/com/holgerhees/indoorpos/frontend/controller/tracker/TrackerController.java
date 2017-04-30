@@ -94,15 +94,33 @@ public class TrackerController implements Controller
         }
         else
         {
+            boolean found = false;
+
+            List<Long> activeTrackedBeaconIds = trackedBeaconDAO.getActiveTrackedBeaconIds( trackerDTO.getId() );
+
             for( TrackedBeacon beacon : param.trackedBeacons )
             {
                 BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
 
                 if( beaconDTO == null )
                 {
-                    LOGGER.info( "Skip unknown beacon with 'uuid': " + beacon.uuid );
+                    //LOGGER.info( "Skip unknown beacon with 'uuid': " + beacon.uuid );
                     continue;
                 }
+
+                if( !activeTrackedBeaconIds.contains( beaconDTO.getId() ) && beacon.samples <= CacheService.MIN_SAMPLES )
+                {
+                    LOGGER.info( "Skip known beacon with 'uuid': " + beacon.uuid + ". Low samples." );
+                    continue;
+                }
+
+                /*if( beacon.rssi <= CacheService.MIN_RSSI )
+                {
+                    LOGGER.info( "Skip known beacon with 'uuid': " + beacon.uuid + ". Low rssi." );
+                    continue;
+                }*/
+
+                LOGGER.info("Track " + trackerDTO.getName() + " " + beacon.rssi + " (" + beacon.samples + ")" );
 
                 TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
                 trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
@@ -112,10 +130,15 @@ public class TrackerController implements Controller
                 trackedBeaconDTO.setSamples(  beacon.samples );
 
                 trackedBeaconDAO.save( trackedBeaconDTO );
+
+                found = true;
+            }
+
+            if( found )
+            {
+                cacheService.trackerUdate( trackerDTO );
             }
         }
-
-        cacheService.trackerUdate();
 
         return new TextView( req, "tracked" );
     }
