@@ -23,9 +23,9 @@ public class TrackedBeaconDAO extends AbstractBaseDAO<TrackedBeaconDTO>
         return queryForObject( "SELECT * FROM tracked_beacon WHERE id = ?", new Object[]{ trackedBeaconId } );
     }
 
-    public boolean delete( Long trackedBeaconId )
+    public boolean delete( Long trackerId, Long beaconId )
     {
-        return update( "DELETE FROM tracked_beacon WHERE id = ?", trackedBeaconId );
+        return update( "DELETE FROM tracked_beacon WHERE tracker_id = ? AND beacon_id = ?", trackerId, beaconId );
     }
 
     public List<TrackedBeaconDTO> getActiveTrackedBeacons()

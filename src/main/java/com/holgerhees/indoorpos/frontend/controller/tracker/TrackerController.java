@@ -108,29 +108,23 @@ public class TrackerController implements Controller
                     continue;
                 }
 
-                if( !activeTrackedBeaconIds.contains( beaconDTO.getId() ) )
+                boolean isActive = activeTrackedBeaconIds.contains( beaconDTO.getId() );
+                int referenceRSSI = isActive ? -84 : -78;
+                switch( beacon.samples )
                 {
-                    switch( beacon.samples )
-                    {
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                            int minRSSI =  ( -78 - ( 2 * beacon.samples ) );
-                            if( beacon.rssi <= minRSSI )
-                            {
-                                LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip inactive beacon " + beacon.uuid );
-                                continue;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                else if( beacon.rssi <= -92 )
-                {
-                    LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip active beacon " + beacon.uuid );
-                    continue;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        int minRSSI =  ( referenceRSSI - ( 2 * beacon.samples ) );
+                        if( beacon.rssi <= minRSSI )
+                        {
+                            LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip inactive beacon " + beacon.uuid );
+                            continue;
+                        }
+                        break;
+                    default:
+                        break;
                 }
 
                 LOGGER.info("Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples );
@@ -141,7 +135,6 @@ public class TrackerController implements Controller
                 trackedBeaconDTO.setTxPower( beacon.txpower );
                 trackedBeaconDTO.setRssi( beacon.rssi );
                 trackedBeaconDTO.setSamples(  beacon.samples );
-
                 trackedBeaconDAO.save( trackedBeaconDTO );
 
                 found = true;
