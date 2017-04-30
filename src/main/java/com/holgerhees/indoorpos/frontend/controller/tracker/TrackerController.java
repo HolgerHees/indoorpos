@@ -110,20 +110,30 @@ public class TrackerController implements Controller
 
                 if( !activeTrackedBeaconIds.contains( beaconDTO.getId() ) )
                 {
-                    if( beacon.samples <= CacheService.MIN_SAMPLES )
+                    switch( beacon.samples )
                     {
-                        LOGGER.info( "Tracker " + trackerDTO.getName() + ". Skip beacon with 'uuid': " + beacon.uuid + ". Low samples." );
-                        continue;
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                            int minRSSI =  ( -78 - ( 2 * beacon.samples ) );
+                            if( beacon.rssi <= minRSSI )
+                            {
+                                LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip inactive beacon " + beacon.uuid );
+                                continue;
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
-
-                /*if( beacon.rssi <= CacheService.MIN_RSSI )
+                else if( beacon.rssi <= -92 )
                 {
-                    LOGGER.info( "Skip known beacon with 'uuid': " + beacon.uuid + ". Low rssi." );
+                    LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip active beacon " + beacon.uuid );
                     continue;
-                }*/
+                }
 
-                LOGGER.info("Tracker " + trackerDTO.getName() + " " + beacon.rssi + " (" + beacon.samples + ")" );
+                LOGGER.info("Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples );
 
                 TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
                 trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
