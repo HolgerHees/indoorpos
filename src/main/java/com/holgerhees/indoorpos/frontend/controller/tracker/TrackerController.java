@@ -113,6 +113,11 @@ public class TrackerController implements Controller
                 switch( beacon.samples )
                 {
                     case 1:
+                        if( !isActive )
+                        {
+                            LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low samples. Skip inactive beacon " + beacon.uuid );
+                            continue;
+                        }
                     case 2:
                     case 3:
                     case 4:
