@@ -112,7 +112,7 @@ public class TrackerController implements Controller
                 {
                     if( beacon.samples <= CacheService.MIN_SAMPLES )
                     {
-                        LOGGER.info( "Skip beacon with 'uuid': " + beacon.uuid + ". Low samples." );
+                        LOGGER.info( "Tracker " + trackerDTO.getName() + ". Skip beacon with 'uuid': " + beacon.uuid + ". Low samples." );
                         continue;
                     }
                 }
@@ -123,7 +123,7 @@ public class TrackerController implements Controller
                     continue;
                 }*/
 
-                LOGGER.info("Track " + trackerDTO.getName() + " " + beacon.rssi + " (" + beacon.samples + ")" );
+                LOGGER.info("Tracker " + trackerDTO.getName() + " " + beacon.rssi + " (" + beacon.samples + ")" );
 
                 TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
                 trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
