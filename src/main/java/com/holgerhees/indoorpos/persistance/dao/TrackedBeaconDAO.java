@@ -30,14 +30,14 @@ public class TrackedBeaconDAO extends AbstractBaseDAO<TrackedBeaconDTO>
 
     public List<TrackedBeaconDTO> getActiveTrackedBeacons()
     {
-        // 5 x ~3 second interval
-        return query( "SELECT * FROM tracked_beacon WHERE lastModified >= DATE_SUB( NOW(), INTERVAL 16 SECOND ) ORDER BY created DESC" );
+        // 3 x ~3 second interval
+        return query( "SELECT * FROM tracked_beacon WHERE lastModified >= DATE_SUB( NOW(), INTERVAL 10 SECOND ) ORDER BY created DESC" );
     }
 
     public List<Long> getActiveTrackedBeaconIds( Long trackerId )
     {
-        // 5 x ~3 second interval
-        return query( "SELECT beacon_id FROM tracked_beacon WHERE tracker_id = ? AND lastModified >= DATE_SUB( NOW(), INTERVAL 16 SECOND ) ORDER BY created DESC", new Object[]{ trackerId }, new RowMapper<Long>()
+        // 3 x ~3 second interval
+        return query( "SELECT beacon_id FROM tracked_beacon WHERE tracker_id = ? AND lastModified >= DATE_SUB( NOW(), INTERVAL 10 SECOND ) ORDER BY created DESC", new Object[]{ trackerId }, new RowMapper<Long>()
         {
             @Override
             public Long mapRow( ResultSet resultSet, int i ) throws SQLException

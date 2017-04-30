@@ -108,10 +108,13 @@ public class TrackerController implements Controller
                     continue;
                 }
 
-                if( !activeTrackedBeaconIds.contains( beaconDTO.getId() ) && beacon.samples <= CacheService.MIN_SAMPLES )
+                if( !activeTrackedBeaconIds.contains( beaconDTO.getId() ) )
                 {
-                    LOGGER.info( "Skip known beacon with 'uuid': " + beacon.uuid + ". Low samples." );
-                    continue;
+                    if( beacon.samples <= CacheService.MIN_SAMPLES )
+                    {
+                        LOGGER.info( "Skip beacon with 'uuid': " + beacon.uuid + ". Low samples." );
+                        continue;
+                    }
                 }
 
                 /*if( beacon.rssi <= CacheService.MIN_RSSI )
