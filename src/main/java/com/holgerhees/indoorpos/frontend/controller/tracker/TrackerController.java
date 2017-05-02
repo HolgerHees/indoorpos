@@ -33,7 +33,7 @@ public class TrackerController implements Controller
 	{
 		private int txpower;
 		private int rssi;
-		private long timestamp;
+		private double timestamp;
 	}
 
 	private class TrackedBeacon
@@ -48,7 +48,6 @@ public class TrackerController implements Controller
     private class Parameter
     {
         private String uuid;
-	    private int interval;
         private List<TrackedBeacon> trackedBeacons;
     }
 
@@ -80,7 +79,8 @@ public class TrackerController implements Controller
                 baos.write( buf, 0, count );
             }
             body = baos.toByteArray();
-        } catch( IOException e )
+        }
+        catch( IOException e )
         {
 
         }
@@ -94,7 +94,6 @@ public class TrackerController implements Controller
 
         Parameter param = GSonFactory.createGSon().fromJson( json, Parameter.class );
 
-        Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
         TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID( param.uuid );
 
         if( trackerDTO == null )
@@ -105,7 +104,8 @@ public class TrackerController implements Controller
         {
             boolean found = false;
 
-            //List<Long> activeTrackedBeaconIds = trackedBeaconDAO.getActiveTrackedBeaconIds( trackerDTO.getId() );
+	        Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
+            List<Long> trackedBeaconIds = trackedBeaconDAO.getTrackedBeaconIds( trackerDTO.getId() );
 
             for( TrackedBeacon beacon : param.trackedBeacons )
             {
@@ -160,10 +160,17 @@ public class TrackerController implements Controller
                 trackedBeaconDTO.setTxPower( txpower );
                 trackedBeaconDTO.setRssi( rssi );
                 trackedBeaconDTO.setSamples( size );
-	            trackedBeaconDTO.setInterval(  param.interval );
                 trackedBeaconDAO.save( trackedBeaconDTO );
 
+	            trackedBeaconIds.remove( beaconDTO.getId() );
+
                 found = true;
+            }
+
+            // delete unreachable beacons
+            for( Long beaconId: trackedBeaconIds )
+            {
+				trackedBeaconDAO.delete( trackerDTO.getId(), beaconId );
             }
 
             if( found )

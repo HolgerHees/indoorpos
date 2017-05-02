@@ -17,91 +17,81 @@ server_url = "http://precision:8080/tracker/"
 interval = 2.0
 
 def signal_handler(signal, frame):
-	print 'ble thread stopped'
-	blescan.finalizeScan(sock,oldFilter)
-	sys.exit(0)
+    print 'ble thread stopped'
+    blescan.finalizeScan(sock,oldFilter)
+    sys.exit(0)
 
 signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
 
 try:
-	sock = bluez.hci_open_dev(dev_id)
-	print "ble thread started"
+    sock = bluez.hci_open_dev(dev_id)
+    print "ble thread started"
 except:
-	print "error accessing bluetooth device..."
-	sys.exit(1)
+    print "error accessing bluetooth device..."
+    sys.exit(1)
 
 blescan.hci_le_set_scan_parameters(sock)
 blescan.hci_enable_le_scan(sock)
 
-hasError = None
+lastJson = None
 
 oldFilter = blescan.prepareScan(sock)
-start = time.time()
 
 while True:
-	returnedList = blescan.scanBeacons(sock,interval)
-	
-	end = time.time()
-	interval = ( end - start )
-	start = time.time()
-
-	json = "{"
-	json += "\"uuid\":\"" + uuid + "\","
-	json += "\"interval\":"+interval+","
+    returnedList = blescan.scanBeacons(sock,interval)
+    
+    json = "{"
+    json += "\"uuid\":\"" + uuid + "\","
     json += "\"trackedBeacons\":["
 
-	devices = []
+    devices = []
 
-	for key in returnedList:
-		
-		beacon = returnedList[key]
-		
-		device = "{"
-		device += "\"mac\":\""+beacon["mac"]+"\","
-		device += "\"uuid\":\""+beacon["uuid"]+"\","
-		device += "\"major\":\""+beacon["major"]+"\","
-		device += "\"minor\":\""+beacon["minor"]+"\","
-		device += "\"samples\":["
+    for key in returnedList:
+        
+        beacon = returnedList[key]
+        
+        device = "{"
+        device += "\"mac\":\""+beacon["mac"]+"\","
+        device += "\"uuid\":\""+beacon["uuid"]+"\","
+        device += "\"major\":\""+beacon["major"]+"\","
+        device += "\"minor\":\""+beacon["minor"]+"\","
+        device += "\"samples\":["
 
         samples = []
-        for i in beacon["samples"]:
-            
-            beaconSample = beacon["samples"][i]
+        for beaconSample in beacon["samples"]:
             
             sample = "{"
-            sample += "\"txpower\":" + beaconSample['txpower'] + ","
-            sample += "\"rssi\":" + beaconSample['rssi'] + ","
-            sample += "\"timestamp\":" + beaconSample['timestamp'] + ","
+            sample += "\"txpower\":" + str(beaconSample['txpower']) + ","
+            sample += "\"rssi\":" + str(beaconSample['rssi']) + ","
+            sample += "\"timestamp\":" + str(beaconSample['timestamp']) + ","
             sample += "}"
             samples.append(sample)
             
         device += ",".join(samples)
-		device += "]}"
+        device += "]}"
 
-		devices.append(device)
-		
-	json += ",".join(devices)
-	
-	#ts = time.time()
-	#st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-	#print st + " " + json
+        devices.append(device)
+        
+    json += ",".join(devices)
+    
+    json += "]}"
 
-	json += "]}"
-
-	req = urllib2.Request(server_url, json)
-	try:
-		response = urllib2.urlopen(req)
-		
-		if hasError:
-			print 'ble thread resumed'
-			hasError = None
-	except urllib2.HTTPError, e:
-		print 'http error: ' + str( e.code )
-		hasError = True
-	except urllib2.URLError, e:
-		print 'url error: ' + str(e.args)
-		hasError = True
-	except socket.error, e:
-		print 'socket error: ' + str(e.args)
-		hasError = True
+    req = urllib2.Request(server_url, json)
+    try:
+        if json != lastJson:
+            st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+            print st + " " + json
+            #response = urllib2.urlopen(req)
+            lastJson = json
+        else:
+            print 'json not changed'
+    except urllib2.HTTPError, e:
+        print 'http error: ' + str( e.code )
+        hasError = True
+    except urllib2.URLError, e:
+        print 'url error: ' + str(e.args)
+        hasError = True
+    except socket.error, e:
+        print 'socket error: ' + str(e.args)
+        hasError = True

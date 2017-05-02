@@ -28,16 +28,14 @@ public class TrackedBeaconDAO extends AbstractBaseDAO<TrackedBeaconDTO>
         return update( "DELETE FROM tracked_beacon WHERE tracker_id = ? AND beacon_id = ?", trackerId, beaconId );
     }
 
-    public List<TrackedBeaconDTO> getActiveTrackedBeacons()
+    public List<TrackedBeaconDTO> getTrackedBeacons()
     {
-        // 3 x ~3 second interval
-        return query( "SELECT * FROM tracked_beacon WHERE lastModified >= DATE_SUB( NOW(), INTERVAL 10 SECOND ) ORDER BY created DESC" );
+        return query( "SELECT * FROM tracked_beacon" );
     }
 
-    public List<Long> getActiveTrackedBeaconIds( Long trackerId )
+    public List<Long> getTrackedBeaconIds( Long trackerId)
     {
-        // 3 x ~3 second interval
-        return query( "SELECT beacon_id FROM tracked_beacon WHERE tracker_id = ? AND lastModified >= DATE_SUB( NOW(), INTERVAL 10 SECOND ) ORDER BY created DESC", new Object[]{ trackerId }, new RowMapper<Long>()
+        return query( "SELECT beacon_id FROM tracked_beacon WHERE tracker_id = ?", new Object[]{ trackerId }, new RowMapper<Long>()
         {
             @Override
             public Long mapRow( ResultSet resultSet, int i ) throws SQLException

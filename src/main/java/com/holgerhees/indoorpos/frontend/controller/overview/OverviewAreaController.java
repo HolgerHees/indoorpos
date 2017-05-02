@@ -61,7 +61,7 @@ public class OverviewAreaController implements Controller
     {
         Map<Long, TrackerDTO> trackerDTOMap = trackerDAO.getTrackerIDMap();
 
-        List<TrackedBeaconDTO> trackedBeaconDTOs = trackedBeaconDAO.getActiveTrackedBeacons();
+        List<TrackedBeaconDTO> trackedBeaconDTOs = trackedBeaconDAO.getTrackedBeacons();
         List<Long> detectedRooms = new ArrayList<>();
         for( TrackedBeaconDTO trackedBeaconDTO: trackedBeaconDTOs )
         {

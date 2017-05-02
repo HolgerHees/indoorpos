@@ -41,10 +41,6 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
                type = "tinyint(2)" )
     private int samples;
 
-	@DbColumn( name = "interval",
-	           type = "smallint(6)" )
-	private int interval;
-
     public Long getTrackerId()
     {
         return trackerId;
@@ -94,14 +90,4 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
     {
         this.samples = samples;
     }
-
-	public int getInterval()
-	{
-		return interval;
-	}
-
-	public void setInterval(int interval)
-	{
-		this.interval = interval;
-	}
 }
