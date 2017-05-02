@@ -58,15 +58,28 @@ while True:
 		beacon = returnedList[key]
 		
 		device = "{"
+		device += "\"mac\":\""+beacon["mac"]+"\","
 		device += "\"uuid\":\""+beacon["uuid"]+"\","
-		device += "\"txpower\":"+str(beacon["txpower"])+","
-		device += "\"rssi\":"+str(beacon["rssi"])+","
-		device += "\"samples\":"+str(beacon["samples"])+","
-		device += "}"
+		device += "\"major\":\""+beacon["major"]+"\","
+		device += "\"minor\":\""+beacon["minor"]+"\","
+		device += "\"samples\":["
+
+        samples = []
+        for i in beacon["samples"]:
+            
+            beaconSample = beacon["samples"][i]
+            
+            sample = "{"
+            sample += "\"txpower\":" + beaconSample['txpower'] + ","
+            sample += "\"rssi\":" + beaconSample['rssi'] + ","
+            sample += "\"timestamp\":" + beaconSample['timestamp'] + ","
+            sample += "}"
+            samples.append(sample)
+            
+        device += ",".join(samples)
+		device += "]}"
+
 		devices.append(device)
-		#adstring += "MAC: " + beacon["mac"]
-		#adstring += ", MAJOR: " + beacon["major"]
-		#adstring += ", MINOR: " + beacon["minor"]
 		
 	json += ",".join(devices)
 	

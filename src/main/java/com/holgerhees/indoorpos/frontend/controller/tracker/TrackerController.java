@@ -29,12 +29,20 @@ public class TrackerController implements Controller
 {
     private static Log LOGGER = LogFactory.getLog( TrackerController.class );
 
-    private class TrackedBeacon
+	private class TrackedBeaconSample
+	{
+		private int txpower;
+		private int rssi;
+		private long timestamp;
+	}
+
+	private class TrackedBeacon
     {
-        private String uuid;
-        private int txpower;
-        private int rssi;
-        private int samples;
+        private String mac;
+	    private String uuid;
+	    private String major;
+	    private String minor;
+        private List<TrackedBeaconSample> samples;
     }
 
     private class Parameter
@@ -133,14 +141,25 @@ public class TrackerController implements Controller
                         break;
                 }*/
 
-                LOGGER.info("Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples );
+                int txpower = 0;
+	            int rssi = 0;
+                for( TrackedBeaconSample sample: beacon.samples )
+                {
+	                txpower += sample.txpower;
+	                rssi += sample.rssi;
+                }
+                int size = beacon.samples.size();
+	            txpower = txpower / size;
+	            rssi = rssi / size;
+
+                LOGGER.info("Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
 
                 TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
                 trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
                 trackedBeaconDTO.setBeaconId( beaconDTO.getId() );
-                trackedBeaconDTO.setTxPower( beacon.txpower );
-                trackedBeaconDTO.setRssi( beacon.rssi );
-                trackedBeaconDTO.setSamples(  beacon.samples );
+                trackedBeaconDTO.setTxPower( txpower );
+                trackedBeaconDTO.setRssi( rssi );
+                trackedBeaconDTO.setSamples( size );
 	            trackedBeaconDTO.setInterval(  param.interval );
                 trackedBeaconDAO.save( trackedBeaconDTO );
 

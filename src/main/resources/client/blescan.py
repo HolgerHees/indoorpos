@@ -164,24 +164,13 @@ def scanBeacons(sock,timeout):
                     txpower = struct.unpack("b", pkt[report_pkt_offset -2])
                     rssi = struct.unpack("b", pkt[report_pkt_offset -1])
 
-                    if uuid in myFullList:
-                        myFullList[uuid]['txpower'].append(txpower[0])
-                        myFullList[uuid]['rssi'].append(rssi[0])
-                        myFullList[uuid]['samples'] = myFullList[uuid]['samples'] + 1
-                    else:
-                        myFullList[uuid] = {"mac":mac,"uuid":uuid,"major":major,"minor":minor,"txpower":[txpower[0]],"rssi":[rssi[0]],"samples":1}
+                    if not uuid in myFullList:
+                        myFullList[uuid] = {"mac":mac,"uuid":uuid,"major":major,"minor":minor,"samples":[]}
 
-                    #print {"mac":mac,"uuid":uuid,"major":major,"minor":minor,"txpower":txpower,"rssi":rssi}
+                    myFullList[uuid]['samples'].append({"txpower":txpower[0],"rssi":rssi[0],"timestamp":time.time()})
                     
         end = time.time()
         if ( end - start ) >= timeout:
             break
-                    
-    for uuid in myFullList:
-        txpower = reduce(lambda x, y: x + y, myFullList[uuid]['txpower']) / len(myFullList[uuid]['txpower'])
-        myFullList[uuid]['txpower'] = "%i" % txpower
-
-        rssi = reduce(lambda x, y: x + y, myFullList[uuid]['rssi']) / len(myFullList[uuid]['rssi'])
-        myFullList[uuid]['rssi'] = "%i" % rssi
 
     return myFullList
