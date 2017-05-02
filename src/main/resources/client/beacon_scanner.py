@@ -37,15 +37,19 @@ blescan.hci_enable_le_scan(sock)
 hasError = None
 
 oldFilter = blescan.prepareScan(sock)
+start = time.time()
 
 while True:
-	start = time.time()
-	
 	returnedList = blescan.scanBeacons(sock,interval)
 	
+	end = time.time()
+	interval = ( end - start )
+	start = time.time()
+
 	json = "{"
 	json += "\"uuid\":\"" + uuid + "\","
-	json += "\"trackedBeacons\":["
+	json += "\"interval\":"+interval+","
+    json += "\"trackedBeacons\":["
 
 	devices = []
 
@@ -57,7 +61,7 @@ while True:
 		device += "\"uuid\":\""+beacon["uuid"]+"\","
 		device += "\"txpower\":"+str(beacon["txpower"])+","
 		device += "\"rssi\":"+str(beacon["rssi"])+","
-		device += "\"samples\":"+str(beacon["samples"])
+		device += "\"samples\":"+str(beacon["samples"])+","
 		device += "}"
 		devices.append(device)
 		#adstring += "MAC: " + beacon["mac"]
@@ -65,11 +69,12 @@ while True:
 		#adstring += ", MINOR: " + beacon["minor"]
 		
 	json += ",".join(devices)
-	json += "]}"
 	
 	#ts = time.time()
 	#st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 	#print st + " " + json
+
+	json += "]}"
 
 	req = urllib2.Request(server_url, json)
 	try:
@@ -79,21 +84,11 @@ while True:
 			print 'ble thread resumed'
 			hasError = None
 	except urllib2.HTTPError, e:
-		print 'ble thread suspended for 10 seconds. http error: ' + str( e.code )
+		print 'http error: ' + str( e.code )
 		hasError = True
-		time.sleep(10.0)
 	except urllib2.URLError, e:
-		print 'ble thread suspended for 10 seconds. url error: ' + str(e.args)
+		print 'url error: ' + str(e.args)
 		hasError = True
-		time.sleep(10.0)
 	except socket.error, e:
-		print 'ble thread suspended for 10 seconds. socket error: ' + str(e.args)
+		print 'socket error: ' + str(e.args)
 		hasError = True
-		time.sleep(10.0)
-
-	end = time.time()
-	duration = ( end - start )
-	if duration < 1:
-		diff = 1.0 - duration
-		#print "sleep: %f" % diff
-		time.sleep(diff)

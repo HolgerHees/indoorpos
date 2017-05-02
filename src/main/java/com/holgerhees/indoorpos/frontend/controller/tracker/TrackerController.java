@@ -40,6 +40,7 @@ public class TrackerController implements Controller
     private class Parameter
     {
         private String uuid;
+	    private int interval;
         private List<TrackedBeacon> trackedBeacons;
     }
 
@@ -140,6 +141,7 @@ public class TrackerController implements Controller
                 trackedBeaconDTO.setTxPower( beacon.txpower );
                 trackedBeaconDTO.setRssi( beacon.rssi );
                 trackedBeaconDTO.setSamples(  beacon.samples );
+	            trackedBeaconDTO.setInterval(  param.interval );
                 trackedBeaconDAO.save( trackedBeaconDTO );
 
                 found = true;

@@ -44,6 +44,7 @@ public class SamplesUpdateController implements Controller
 	    String beaconName;
         int rssi;
         int samples;
+	    int interval;
     }
 
     @Override
@@ -66,6 +67,7 @@ public class SamplesUpdateController implements Controller
 	        _area.beaconName = beaconDTO.getName();
             _area.rssi = trackedBeaconDTO.getRssi();
 	        _area.samples = trackedBeaconDTO.getSamples();
+	        _area.interval = trackedBeaconDTO.getInterval();
 
             entries.add( _area );
         }

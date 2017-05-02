@@ -8,7 +8,7 @@ import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 public class RoomDTO extends AbstractKeyDTO
 {
     @DbColumn( name = "floor",
-               type = "smallint(8)" )
+               type = "tinyint(1)" )
     private int floor;
 
     @DbColumn( name = "name",

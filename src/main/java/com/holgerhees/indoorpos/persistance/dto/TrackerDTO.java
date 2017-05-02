@@ -22,11 +22,11 @@ public class TrackerDTO extends AbstractKeyDTO
     private Long roomId;
 
     @DbColumn( name = "pos_x",
-               type = "smallint(8)" )
+               type = "smallint(4)" )
     private int posX;
 
     @DbColumn( name = "pos_y",
-               type = "smallint(8)" )
+               type = "smallint(4)" )
     private int posY;
 
     @DbColumn( name = "name",

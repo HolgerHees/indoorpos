@@ -30,16 +30,20 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
     private Long beaconId;
 
     @DbColumn( name = "tx_power",
-               type = "tinyint(2)" )
+               type = "tinyint(3)" )
     private int txPower;
 
     @DbColumn( name = "rssi",
-               type = "tinyint(2)" )
+               type = "tinyint(3)" )
     private int rssi;
 
     @DbColumn( name = "samples",
                type = "tinyint(2)" )
     private int samples;
+
+	@DbColumn( name = "interval",
+	           type = "smallint(6)" )
+	private int interval;
 
     public Long getTrackerId()
     {
@@ -90,4 +94,14 @@ public class TrackedBeaconDTO extends AbstractBaseDTO
     {
         this.samples = samples;
     }
+
+	public int getInterval()
+	{
+		return interval;
+	}
+
+	public void setInterval(int interval)
+	{
+		this.interval = interval;
+	}
 }

@@ -18,19 +18,19 @@ public class AreaDTO extends AbstractKeyDTO
     private Long roomId;
 
     @DbColumn( name = "top_left_x",
-               type = "smallint(8)" )
+               type = "smallint(4)" )
     private int topLeftX;
 
     @DbColumn( name = "top_left_y",
-               type = "smallint(8)" )
+               type = "smallint(4)" )
     private int topLeftY;
 
     @DbColumn( name = "bottom_right_x",
-               type = "smallint(8)" )
+               type = "smallint(4)" )
     private int bottomRightX;
 
     @DbColumn( name = "bottom_right_y",
-               type = "smallint(8)" )
+               type = "smallint(4)" )
     private int bottomRightY;
 
     public Long getRoomId()
