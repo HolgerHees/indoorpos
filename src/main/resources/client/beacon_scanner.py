@@ -39,6 +39,8 @@ lastJson = None
 oldFilter = blescan.prepareScan(sock)
 
 while True:
+    start = time.time()
+    
     returnedList = blescan.scanBeacons(sock,interval)
     
     json = "{"
@@ -46,7 +48,8 @@ while True:
     json += "\"trackedBeacons\":["
 
     devices = []
-
+    
+    maxSamples = 0
     for key in returnedList:
         
         beacon = returnedList[key]
@@ -68,6 +71,9 @@ while True:
             sample += "}"
             samples.append(sample)
             
+            if maxSamples < len(samples):
+                maxSamples = len(samples)
+            
         device += ",".join(samples)
         device += "]}"
 
@@ -80,8 +86,11 @@ while True:
     req = urllib2.Request(server_url, json)
     try:
         if json != lastJson:
-            st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            #print st + " " + json
+            if maxSamples > 25:
+                end = time.time()
+                st = datetime.datetime.fromtimestamp(end).strftime('%Y-%m-%d %H:%M:%S')
+                print st + " - CNT: " + str(maxSamples) + " - TIME: " + str(end - start) + " - JSON: " + json + "\n"
+
             response = urllib2.urlopen(req)
             lastJson = json
         else:
