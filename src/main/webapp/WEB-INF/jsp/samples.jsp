@@ -23,13 +23,24 @@
         $.get( "/samplesUpdate/", function( data )
         {
         	var content = "";
+            content += "<div class=\"row\">";
+            content += "<span class=\"column\">Tracker</span>";
+            content += "<span class=\"column\">Beacon</span>";
+            content += "<span class=\"column\">RSSI</span>";
+            content += "<span class=\"column\">Count</span>";
+            content += "</div>";
+
 			for( var i = 0; i < data.length; i++ )
 	        {
 		        var sample = data[i];
 
-		        content += "<div class=\"row\">";
+		        content += "<div class=\"row";
+		        if( sample.isActive )
+                {
+                    content += " active";
+                }
+		        content += "\">";
 		        content += "<span class=\"column\">" + sample.trackerName + "</span>";
-				content += "<span class=\"column\">" + sample.trackerName + "</span>";
 		        content += "<span class=\"column\">" + sample.beaconName + "</span>";
 		        content += "<span class=\"column\">" + sample.rssi + "</span>";
 		        content += "<span class=\"column\">" + sample.samples + "</span>";
@@ -39,11 +50,11 @@
 	        var box = document.getElementById("samples");
 			box.innerHTML = content;
 
-            window.setTimeout(refreshSamples, 500);
+            window.setTimeout(refreshSamples, 1000);
         });
     }
 
-    refreshBeacons();
+    refreshSamples();
 </script>
 <footer>&copy; 2017 by Holger Hees</footer>
 </body>

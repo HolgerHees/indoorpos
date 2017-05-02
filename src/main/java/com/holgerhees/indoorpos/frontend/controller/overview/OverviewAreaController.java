@@ -4,10 +4,8 @@ import com.google.gson.JsonElement;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.persistance.dao.*;
-import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
-import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
+import com.holgerhees.indoorpos.persistance.dto.*;
+import com.holgerhees.indoorpos.util.TrackingHelper;
 import com.holgerhees.shared.web.model.Request;
 import com.holgerhees.shared.web.util.GSonFactory;
 import com.holgerhees.shared.web.view.GsonView;
@@ -28,6 +26,9 @@ public class OverviewAreaController implements Controller
 
     @Autowired
     RoomDAO roomDAO;
+
+    @Autowired
+    BeaconDAO beaconDAO;
 
     @Autowired
     TrackerDAO trackerDAO;
@@ -61,12 +62,26 @@ public class OverviewAreaController implements Controller
     {
         Map<Long, TrackerDTO> trackerDTOMap = trackerDAO.getTrackerIDMap();
 
-        List<TrackedBeaconDTO> trackedBeaconDTOs = trackedBeaconDAO.getTrackedBeacons();
+        List<BeaconDTO> beaconDTOs = beaconDAO.getBeacons();
+
         List<Long> detectedRooms = new ArrayList<>();
-        for( TrackedBeaconDTO trackedBeaconDTO: trackedBeaconDTOs )
+
+        for( BeaconDTO beaconDTO: beaconDTOs )
         {
-            TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeaconDTO.getTrackerId() );
-            detectedRooms.add( trackerDTO.getRoomId() );
+            List<TrackedBeaconDTO> trackedBeaconDTOs = trackedBeaconDAO.getTrackedBeacons( beaconDTO.getId() );
+            TrackedBeaconDTO activeTracker = null;
+            for( TrackedBeaconDTO trackedBeaconDTO: trackedBeaconDTOs )
+            {
+                if( activeTracker == null || TrackingHelper.compareTracker( activeTracker, trackedBeaconDTO ) > 0 )
+                {
+                    activeTracker = trackedBeaconDTO;
+                }
+            }
+            if( activeTracker != null )
+            {
+                TrackerDTO trackerDTO = trackerDTOMap.get( activeTracker.getTrackerId() );
+                detectedRooms.add( trackerDTO.getRoomId() );
+            }
         }
 
         Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();

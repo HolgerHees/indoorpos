@@ -170,6 +170,7 @@ public class TrackerController implements Controller
             // delete unreachable beacons
             for( Long beaconId: trackedBeaconIds )
             {
+                LOGGER.info("Tracker " + trackerDTO.getName() + " removed" );
 				trackedBeaconDAO.delete( trackerDTO.getId(), beaconId );
             }
 

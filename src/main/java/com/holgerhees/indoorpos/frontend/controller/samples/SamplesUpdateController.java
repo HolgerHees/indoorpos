@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.holgerhees.indoorpos.util.TrackingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,9 +37,9 @@ public class SamplesUpdateController implements Controller
     {
         String trackerName;
 	    String beaconName;
+	    boolean isActive;
         int rssi;
         int samples;
-	    int interval;
     }
 
     @Override
@@ -51,19 +52,33 @@ public class SamplesUpdateController implements Controller
         Map<Long, BeaconDTO> beaconDTOs = beaconDAO.getBeaconIDMap();
 
         List<Samples> entries = new ArrayList<>();
-        for( TrackedBeaconDTO trackedBeaconDTO : trackedBeaconDTOs )
+        TrackedBeaconDTO activeTracker = null;
+        int activeIndex = -1;
+        for( int i = 0; i < trackedBeaconDTOs.size(); i++ )
         {
+            TrackedBeaconDTO trackedBeaconDTO = trackedBeaconDTOs.get( i );
+
 	        TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeaconDTO.getTrackerId() );
 	        BeaconDTO beaconDTO = beaconDTOs.get( trackedBeaconDTO.getBeaconId() );
 
-	        Samples _area = new Samples();
-            _area.trackerName = trackerDTO.getName();
-	        _area.beaconName = beaconDTO.getName();
-            _area.rssi = trackedBeaconDTO.getRssi();
-	        _area.samples = trackedBeaconDTO.getSamples();
-	        _area.interval = trackedBeaconDTO.getInterval();
+            if( activeTracker == null || TrackingHelper.compareTracker( activeTracker, trackedBeaconDTO ) > 0 )
+            {
+                activeTracker = trackedBeaconDTO;
+                activeIndex = i;
+            }
 
-            entries.add( _area );
+	        Samples _sample = new Samples();
+            _sample.trackerName = trackerDTO.getName();
+            _sample.beaconName = beaconDTO.getName();
+            _sample.rssi = trackedBeaconDTO.getRssi();
+            _sample.samples = trackedBeaconDTO.getSamples();
+
+            entries.add( _sample );
+        }
+
+        if( activeIndex >= 0 )
+        {
+            entries.get( activeIndex ).isActive = true;
         }
 
         JsonElement json = GSonFactory.createGSon().toJsonTree( entries );

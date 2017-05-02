@@ -64,7 +64,7 @@ while True:
             sample = "{"
             sample += "\"txpower\":" + str(beaconSample['txpower']) + ","
             sample += "\"rssi\":" + str(beaconSample['rssi']) + ","
-            sample += "\"timestamp\":" + str(beaconSample['timestamp']) + ","
+            sample += "\"timestamp\":" + str(beaconSample['timestamp'])
             sample += "}"
             samples.append(sample)
             
@@ -81,8 +81,8 @@ while True:
     try:
         if json != lastJson:
             st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            print st + " " + json
-            #response = urllib2.urlopen(req)
+            #print st + " " + json
+            response = urllib2.urlopen(req)
             lastJson = json
         else:
             print 'json not changed'
