@@ -97,7 +97,7 @@ public class TrackerController implements Controller
         {
             boolean found = false;
 
-            List<Long> activeTrackedBeaconIds = trackedBeaconDAO.getActiveTrackedBeaconIds( trackerDTO.getId() );
+            //List<Long> activeTrackedBeaconIds = trackedBeaconDAO.getActiveTrackedBeaconIds( trackerDTO.getId() );
 
             for( TrackedBeacon beacon : param.trackedBeacons )
             {
