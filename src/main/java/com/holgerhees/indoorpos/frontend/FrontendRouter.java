@@ -59,6 +59,14 @@ public class FrontendRouter implements Router
         {
             controller = (Controller) applicationContext.getBean( "overviewAreaController" );
         }
+        else if( request.getServletPath().startsWith( "/samples/" ) )
+        {
+	        controller = (Controller) applicationContext.getBean( "samplesController" );
+        }
+        else if( request.getServletPath().startsWith( "/samplesUpdate/" ) )
+        {
+	        controller = (Controller) applicationContext.getBean( "samplesUpdateController" );
+        }
         else if( isStaticContent( request ) )
         {
             controller = getStaticContentController( request, staticContentServlet );

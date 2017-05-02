@@ -108,7 +108,7 @@ public class TrackerController implements Controller
                     continue;
                 }
 
-                boolean isActive = activeTrackedBeaconIds.contains( beaconDTO.getId() );
+                /*boolean isActive = activeTrackedBeaconIds.contains( beaconDTO.getId() );
                 int referenceRSSI = isActive ? -84 : -78;
                 switch( beacon.samples )
                 {
@@ -130,7 +130,7 @@ public class TrackerController implements Controller
                         break;
                     default:
                         break;
-                }
+                }*/
 
                 LOGGER.info("Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples );
 

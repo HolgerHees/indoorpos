@@ -1,6 +1,7 @@
 package com.holgerhees.indoorpos.persistance.dao;
 
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
+import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.shared.persistance.dao.AbstractBaseDAO;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +51,19 @@ public class BeaconDAO extends AbstractBaseDAO<BeaconDTO>
 
         return beaconMap;
     }
+
+	public Map<Long, BeaconDTO> getBeaconIDMap()
+	{
+		List<BeaconDTO> beacons = query( "SELECT * FROM beacon" );
+
+		Map<Long, BeaconDTO> beaconMap = new HashMap<>();
+		for( BeaconDTO beaconDTO : beacons )
+		{
+			beaconMap.put( beaconDTO.getId(), beaconDTO );
+		}
+
+		return beaconMap;
+	}
 
     public List<BeaconDTO> getBeacons()
     {
