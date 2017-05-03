@@ -46,7 +46,6 @@ ADV_SCAN_IND=0x02
 ADV_NONCONN_IND=0x03
 ADV_SCAN_RSP=0x04
 
-
 def returnnumberpacket(pkt):
     myInteger = 0
     multiple = 256
@@ -85,7 +84,6 @@ def hci_disable_le_scan(sock):
 def hci_toggle_le_scan(sock, enable):
     cmd_pkt = struct.pack("<BB", enable, 0x00)
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_ENABLE, cmd_pkt)
-    print "sent toggle enable"
 
 #    pkt = sock.recv(255)
 ##    print "socked recieved"
@@ -108,7 +106,6 @@ def hci_le_set_scan_parameters(sock):
     cmd_pkt = struct.pack("<BBBBBBB", SCAN_TYPE, 0x0, INTERVAL, 0x0, WINDOW, OWN_TYPE, FILTER)
     #print "packed up: \"", str( cmd_pkt ) , "\""
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_PARAMETERS, cmd_pkt)
-    print "sent scan parameters command"
 
 def prepareScan(sock):
     return sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)

@@ -6,32 +6,59 @@ import sys
 import time
 import datetime
 import socket
+import commands
 
 import urllib2
 
 import bluetooth._bluetooth as bluez
 
 dev_id = 0
-uuid = "livingroom"
-server_url = "http://precision:8080/tracker/"
 interval = 2.0
+server_url = "http://precision:8080/tracker/"
+ip_map = {
+    '192.168.0.125': 'livingroom',
+    '192.168.0.127': 'floor',
+    '192.168.0.128': 'kitchen',
+}
+
+def getUUID():
+    ip = commands.getoutput('hostname -I').strip()
+    try:
+        return ip_map[ip]
+    except KeyError, e:
+        return None
+
+def log(line):
+    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    print st + " - " + line
 
 def signal_handler(signal, frame):
-    print 'ble thread stopped'
+    log( 'ble thread stopped' )
     blescan.finalizeScan(sock,oldFilter)
     sys.exit(0)
 
 signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
 
+uuid = getUUID()
+
+if uuid == None:
+    log( "no uuid detected" )
+    exit(1)
+else:
+    log( uuid + " detected" )
+
 try:
     sock = bluez.hci_open_dev(dev_id)
-    print "ble thread started"
+    log( "ble thread started" )
 except:
-    print "error accessing bluetooth device..."
+    log( "error accessing bluetooth device..." )
     sys.exit(1)
 
+log( "set le parameter" )
 blescan.hci_le_set_scan_parameters(sock)
+
+log( "enable le scanning" )
 blescan.hci_enable_le_scan(sock)
 
 lastJson = None
@@ -87,20 +114,18 @@ while True:
     try:
         if json != lastJson:
             if maxSamples > 25:
-                end = time.time()
-                st = datetime.datetime.fromtimestamp(end).strftime('%Y-%m-%d %H:%M:%S')
-                print st + " - CNT: " + str(maxSamples) + " - TIME: " + str(end - start) + " - JSON: " + json + "\n"
+                log( "CNT: " + str(maxSamples) + " - TIME: " + str(time.time() - start) + " - JSON: " + json + "\n" )
 
             response = urllib2.urlopen(req)
             lastJson = json
         else:
-            print 'json not changed'
+            log( 'json not changed' )
     except urllib2.HTTPError, e:
-        print 'http error: ' + str( e.code )
+        log( 'http error: ' + str( e.code ) )
         hasError = True
     except urllib2.URLError, e:
-        print 'url error: ' + str(e.args)
+        log( 'url error: ' + str(e.args) )
         hasError = True
     except socket.error, e:
-        print 'socket error: ' + str(e.args)
+        log( 'socket error: ' + str(e.args) )
         hasError = True

@@ -29,6 +29,8 @@ public class TrackerController implements Controller
 {
     private static Log LOGGER = LogFactory.getLog( TrackerController.class );
 
+    private static final int MAX_SAMPLES = 20;
+
 	private class TrackedBeaconSample
 	{
 		private int txpower;
@@ -140,6 +142,14 @@ public class TrackerController implements Controller
                     default:
                         break;
                 }*/
+
+                // grep last MAX_SAMPLES samples
+	            // normally we get MAX_SAMPLES with every interval
+                int sampleSize = beacon.samples.size();
+                if( sampleSize > MAX_SAMPLES )
+                {
+                	beacon.samples.subList( sampleSize - MAX_SAMPLES, sampleSize );
+                }
 
                 int txpower = 0;
 	            int rssi = 0;

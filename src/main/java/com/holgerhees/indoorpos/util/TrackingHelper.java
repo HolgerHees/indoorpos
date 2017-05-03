@@ -5,8 +5,6 @@ import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
 
 public class TrackingHelper
 {
-    private static int SAMPLES_THRESHOLD = 20;
-
     private TrackingHelper()
     {
     }
@@ -24,10 +22,10 @@ public class TrackingHelper
         return 0;*/
 
         int signalStrengh1 = 100 + t1.getRssi();
-        int priority1 = signalStrengh1 * ( t1.getSamples() > SAMPLES_THRESHOLD ? SAMPLES_THRESHOLD : t1.getSamples() ) ;
+        int priority1 = signalStrengh1 * t1.getSamples();
 
         int signalStrengh2 = 100 + t2.getRssi();
-        int priority2 = signalStrengh2 * ( t2.getSamples() > SAMPLES_THRESHOLD ? SAMPLES_THRESHOLD : t2.getSamples() );
+        int priority2 = signalStrengh2 * t2.getSamples();
 
         if( priority1 > priority2 ) return -1;
         if( priority1 < priority2 ) return 1;
