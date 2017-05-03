@@ -6,7 +6,6 @@ import com.holgerhees.shared.web.model.PageDTO;
 import com.holgerhees.shared.web.model.Request;
 import com.holgerhees.shared.web.service.PageDtoInitService;
 import com.holgerhees.shared.web.view.View;
-import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -15,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import java.text.DecimalFormat;
 
 @Component( "frontendRouter" )
@@ -30,7 +30,7 @@ public class FrontendRouter implements Router
     private PageDtoInitService pageDtoInitService;
 
     @Override
-    public View routeRequest( Request request, boolean isPostRequest, DefaultServlet staticContentServlet ) throws ServletException
+    public View routeRequest( Request request, boolean isPostRequest, HttpServlet staticContentServlet ) throws ServletException
     {
         final long start = System.currentTimeMillis();
 
@@ -81,7 +81,7 @@ public class FrontendRouter implements Router
         return view;
     }
 
-    private Controller getStaticContentController( Request request, DefaultServlet staticContentServlet )
+    private Controller getStaticContentController( Request request, HttpServlet staticContentServlet )
     {
         request.getHttpResponse().setDateHeader( "Expires", System.currentTimeMillis() + 2764800000L );
         request.getHttpResponse().setHeader( "Vary", "Accept-Encoding" );

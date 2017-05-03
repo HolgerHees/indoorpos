@@ -1,5 +1,6 @@
 package com.holgerhees.indoorpos.frontend;
 
+import com.holgerhees.indoorpos.frontend.controller.samples.SamplesServerEndPoint;
 import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 import com.holgerhees.shared.web.Application;
 import com.holgerhees.shared.web.Router;
@@ -25,11 +26,9 @@ public class FrontendApplication implements Application
     @Override
     public ApplicationContext initialize( ServletContext servletContext )
     {
-
         final long start = System.currentTimeMillis();
         try
         {
-
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             URL url = cl.getResource( ProfileBasedPropertyPlaceholderConfigurer.replaceName( "com/holgerhees/indoorpos/config/application.properties" ) );
             PropertyConfigurator.configure( url );
@@ -40,6 +39,9 @@ public class FrontendApplication implements Application
             //classpathSetupHelper.setup(servletContext.getRealPath("."), DevClasspathDirectory.getFrontendSet());
 
             router = (FrontendRouter) applicationContext.getBean( "frontendRouter" );
+
+            //javax.websocket.server.ServerContainer serverContainer = (javax.websocket.server.ServerContainer) servletContext.getAttribute( "javax.websocket.server.ServerContainer");
+            //serverContainer.addEndpoint(SamplesServerEndPoint.class);
 
             //applicationConfig = (ApplicationConfig) applicationContext.getBean("applicationConfig");
         } catch( Exception e )

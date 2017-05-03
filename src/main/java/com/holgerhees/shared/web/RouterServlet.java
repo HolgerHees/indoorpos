@@ -27,7 +27,7 @@ public class RouterServlet extends HttpServlet
     private ApplicationContext applicationContext;
     private Application application;
     private Router router = null;
-    private static DefaultServlet staticContentServlet = new DefaultServlet();
+    private static HttpServlet staticContentServlet = new DefaultServlet();
 
     @Override
     public void init( ServletConfig config ) throws ServletException
