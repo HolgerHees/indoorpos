@@ -56,7 +56,7 @@
 
     refreshSamples();
 
-    var webSocket = new WebSocket("ws://localhost:8080/SamplesServerEndPoint/samplesUpdateTest");
+    /*var webSocket = new WebSocket("ws://localhost:8080/SamplesServerEndPoint/samplesUpdateTest");
     webSocket.onopen = function(message){ wsOpen(message);};
     webSocket.onmessage = function(message){ wsGetMessage(message);};
     webSocket.onclose = function(message){ wsClose(message);};
@@ -81,7 +81,7 @@
 
     function wsError(message){
 	    console.log("wsError " + message.data );
-    }
+    }*/
 
 </script>
 <footer>&copy; 2017 by Holger Hees</footer>

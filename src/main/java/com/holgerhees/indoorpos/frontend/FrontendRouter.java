@@ -62,7 +62,7 @@ public class FrontendRouter implements Router
                 view = controller.handle( request );
 
                 //LOGGER.info( "Handle '" + request.getServletPath() + " with '" + controller.getClass().getSimpleName() + "' in " + df
-                //        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
+	            //        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
 
                 if( !request.hasPageDTO() )
                 {

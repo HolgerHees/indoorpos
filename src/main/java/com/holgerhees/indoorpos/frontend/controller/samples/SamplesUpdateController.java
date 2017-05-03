@@ -45,10 +45,9 @@ public class SamplesUpdateController implements Controller
     public View handle( Request request )
     {
         Map<Long, TrackerDTO> trackerDTOMap = trackerDAO.getTrackerIDMap();
+	    Map<Long, BeaconDTO> beaconDTOs = beaconDAO.getBeaconIDMap();
 
-        List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
-
-        Map<Long, BeaconDTO> beaconDTOs = beaconDAO.getBeaconIDMap();
+	    List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
 
         List<Samples> entries = new ArrayList<>();
 	    CacheService.TrackedBeacon activeTracker = null;
