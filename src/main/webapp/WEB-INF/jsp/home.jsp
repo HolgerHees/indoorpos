@@ -13,7 +13,9 @@
         <div style="float:clear"></div>
     </div>
     <div>
-        <a href="/overview/">Try out the overview.</a>
+        <a href="/overview/">Room overview</a>
+        <br><br>
+        <a href="/samples/">Detected devices</a>
     </div>
 </div>
 <footer>&copy; 2017 by Holger Hees</footer>
