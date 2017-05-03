@@ -42,16 +42,15 @@ public class FrontendRouter implements Router
         }
         else
         {
-        	try
-	        {
-	        	int length = request.getServletPath().length();
-		        String name = length <= 2 ? "homeController" : request.getServletPath().substring(1, length - 1) + "Controller";
-		        controller = (Controller) applicationContext.getBean(name);
-	        }
-	        catch( BeansException e )
-	        {
-		        controller = (Controller) applicationContext.getBean( "homeController" );
-	        }
+            try
+            {
+                int length = request.getServletPath().length();
+                String name = length <= 2 ? "homeController" : request.getServletPath().substring( 1, length - 1 ) + "Controller";
+                controller = (Controller) applicationContext.getBean( name );
+            } catch( BeansException e )
+            {
+                controller = (Controller) applicationContext.getBean( "homeController" );
+            }
         }
 
         View view = null;
@@ -61,8 +60,8 @@ public class FrontendRouter implements Router
             {
                 view = controller.handle( request );
 
-                //LOGGER.info( "Handle '" + request.getServletPath() + " with '" + controller.getClass().getSimpleName() + "' in " + df
-	            //        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
+                LOGGER.info( "Handle '" + request.getServletPath() + " with '" + controller.getClass().getSimpleName() + "' in " + df
+                        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
 
                 if( !request.hasPageDTO() )
                 {

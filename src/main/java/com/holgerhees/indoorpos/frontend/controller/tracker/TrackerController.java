@@ -30,19 +30,19 @@ public class TrackerController implements Controller
 
     private static final int MAX_SAMPLES = 20;
 
-	private class TrackedBeaconSample
-	{
-		private int txpower;
-		private int rssi;
-		private double timestamp;
-	}
+    private class TrackedBeaconSample
+    {
+        private int txpower;
+        private int rssi;
+        private double timestamp;
+    }
 
-	private class TrackedBeacon
+    private class TrackedBeacon
     {
         private String mac;
-	    private String uuid;
-	    private String major;
-	    private String minor;
+        private String uuid;
+        private String major;
+        private String minor;
         private List<TrackedBeaconSample> samples;
     }
 
@@ -77,8 +77,7 @@ public class TrackerController implements Controller
                 baos.write( buf, 0, count );
             }
             body = baos.toByteArray();
-        }
-        catch( IOException e )
+        } catch( IOException e )
         {
 
         }
@@ -100,9 +99,9 @@ public class TrackerController implements Controller
         }
         else
         {
-	        Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
+            Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
 
-	        List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
+            List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
 
             for( TrackedBeacon beacon : param.trackedBeacons )
             {
@@ -139,34 +138,34 @@ public class TrackerController implements Controller
                 }*/
 
                 // grep last MAX_SAMPLES samples
-	            // normally we get MAX_SAMPLES with every interval
+                // normally we get MAX_SAMPLES with every interval
                 int sampleSize = beacon.samples.size();
                 if( sampleSize > MAX_SAMPLES )
                 {
-                	beacon.samples.subList( sampleSize - MAX_SAMPLES, sampleSize );
+                    beacon.samples.subList( sampleSize - MAX_SAMPLES, sampleSize );
                 }
 
                 int txpower = 0;
-	            int rssi = 0;
-                for( TrackedBeaconSample sample: beacon.samples )
+                int rssi = 0;
+                for( TrackedBeaconSample sample : beacon.samples )
                 {
-	                txpower += sample.txpower;
-	                rssi += sample.rssi;
+                    txpower += sample.txpower;
+                    rssi += sample.rssi;
                 }
                 int size = beacon.samples.size();
-	            txpower = txpower / size;
-	            rssi = rssi / size;
+                txpower = txpower / size;
+                rssi = rssi / size;
 
-                LOGGER.info("Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
+                //LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
 
                 CacheService.TrackedBeacon trackedBeacon = new CacheService.TrackedBeacon();
-	            trackedBeacon.setTrackerId( trackerDTO.getId() );
-	            trackedBeacon.setBeaconId( beaconDTO.getId() );
-	            trackedBeacon.setTxPower( txpower );
-	            trackedBeacon.setRssi( rssi );
-	            trackedBeacon.setSamples( size );
+                trackedBeacon.setTrackerId( trackerDTO.getId() );
+                trackedBeacon.setBeaconId( beaconDTO.getId() );
+                trackedBeacon.setTxPower( txpower );
+                trackedBeacon.setRssi( rssi );
+                trackedBeacon.setSamples( size );
 
-	            trackedBeacons.add( trackedBeacon );
+                trackedBeacons.add( trackedBeacon );
             }
 
             cacheService.storeTrackerList( trackerDTO.getId(), trackedBeacons );

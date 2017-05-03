@@ -209,7 +209,7 @@ public class CustomRowMapper<T> implements RowMapper<T>
                 }
 
                 //LOGGER.error("SELECT * FROM " + table.getName() + " WHERE " + whereFieldSQL.substring(5));
-				/*for( Object obj: primaryValues )
+                /*for( Object obj: primaryValues )
 				{
 					LOGGER.error(obj);
 				}*/

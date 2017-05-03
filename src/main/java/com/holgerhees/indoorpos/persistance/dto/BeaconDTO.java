@@ -1,7 +1,6 @@
 package com.holgerhees.indoorpos.persistance.dto;
 
 import com.holgerhees.shared.persistance.annotations.DbColumn;
-import com.holgerhees.shared.persistance.annotations.DbForeignKey;
 import com.holgerhees.shared.persistance.annotations.DbTable;
 import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 

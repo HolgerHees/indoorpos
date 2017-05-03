@@ -1,6 +1,5 @@
 package com.holgerhees.indoorpos.frontend;
 
-import com.holgerhees.indoorpos.frontend.controller.samples.SamplesServerEndPoint;
 import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 import com.holgerhees.shared.web.Application;
 import com.holgerhees.shared.web.Router;
@@ -41,7 +40,7 @@ public class FrontendApplication implements Application
             router = (FrontendRouter) applicationContext.getBean( "frontendRouter" );
 
             //javax.websocket.server.ServerContainer serverContainer = (javax.websocket.server.ServerContainer) servletContext.getAttribute( "javax.websocket.server.ServerContainer");
-            //serverContainer.addEndpoint(SamplesServerEndPoint.class);
+            //serverContainer.addEndpoint(SamplesEndPoint.class);
 
             //applicationConfig = (ApplicationConfig) applicationContext.getBean("applicationConfig");
         } catch( Exception e )

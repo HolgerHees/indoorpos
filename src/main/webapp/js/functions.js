@@ -1,5 +1,4 @@
-function calculateSVGSizes(svgId, image)
-{
+function calculateSVGSizes(svgId, image) {
     var svg = document.getElementById(svgId);
 
     var imageWidth = image.width;
@@ -15,18 +14,15 @@ function calculateSVGSizes(svgId, image)
     svg.setAttribute("_originalHeight", imageHeight);
 }
 
-function convertX(originalWidth, currentWidth, x)
-{
+function convertX(originalWidth, currentWidth, x) {
     return x;// * currentWidth / originalWidth;
 }
 
-function convertY(originalHeight, currentHeight, y)
-{
+function convertY(originalHeight, currentHeight, y) {
     return originalHeight - y;//( y * currentHeight / originalHeight );
 }
 
-function drawAreas( currentRects, data, color )
-{
+function drawAreas(currentRects, data, color) {
     var foundRects = {};
 
     for (var i = 0; i < data.length; i++) {
@@ -60,8 +56,7 @@ function drawAreas( currentRects, data, color )
         var bottomRightX = convertX(originalWidth, currentWidth, element.bottomRightX);
         var bottomRightY = convertY(originalHeight, currentHeight, element.bottomRightY);
 
-        if( currentRects[element.key] )
-        {
+        if (currentRects[element.key]) {
             //console.log("update " + element.key );
             var rect = currentRects[element.key];
             rect.setAttribute("x", topLeftX);
@@ -69,8 +64,7 @@ function drawAreas( currentRects, data, color )
             rect.setAttribute("width", bottomRightX - topLeftX);
             rect.setAttribute("height", bottomRightY - topLeftY);
         }
-        else
-        {
+        else {
             //console.log("create " + element.key);
             var rect = document.createElementNS("http://www.w3.org/2000/svg", 'rect');
             rect.setAttribute("x", topLeftX);
@@ -89,21 +83,18 @@ function drawAreas( currentRects, data, color )
         foundRects[element.key] = element.key;
     }
 
-    cleanElements( currentRects, foundRects );
+    cleanElements(currentRects, foundRects);
 }
 
-function drawPoints( currentCircles, data, color )
-{
+function drawPoints(currentCircles, data, color) {
     var foundCircles = {};
 
-    for (var i = 0; i < data.length; i++)
-    {
+    for (var i = 0; i < data.length; i++) {
         var element = data[i];
 
         var object = null;
 
-        switch (element.floor)
-        {
+        switch (element.floor) {
             case 0:
                 object = document.getElementById('firstFloorCtx');
                 break;
@@ -127,15 +118,13 @@ function drawPoints( currentCircles, data, color )
         var posX = convertX(originalWidth, currentWidth, element.posX);
         var posY = convertY(originalHeight, currentHeight, element.posY);
 
-        if( currentCircles[element.key] )
-        {
+        if (currentCircles[element.key]) {
             //console.log("update " + element.key );
             var circle = currentCircles[element.key];
             circle.setAttribute("cx", posX);
             circle.setAttribute("cy", posY);
         }
-        else
-        {
+        else {
             //console.log("create " + element.key );
             var circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle');
             circle.setAttribute("cx", posX);
@@ -153,21 +142,19 @@ function drawPoints( currentCircles, data, color )
         foundCircles[element.key] = element.key;
     }
 
-    cleanElements( currentCircles, foundCircles );
+    cleanElements(currentCircles, foundCircles);
 }
 
-function cleanElements( currentElements, usedElements )
-{
-    for (var key in currentElements)
-    {
+function cleanElements(currentElements, usedElements) {
+    for (var key in currentElements) {
         // skip loop if the property is from prototype
         if (!currentElements.hasOwnProperty(key)) continue;
 
-        if( usedElements[key] ) continue;
+        if (usedElements[key]) continue;
 
         //console.log("remove " + currentCircles[key] );
 
-        currentElements[key].parentNode.removeChild( currentElements[key] );
+        currentElements[key].parentNode.removeChild(currentElements[key]);
 
         delete currentElements[key];
     }

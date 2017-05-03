@@ -9,13 +9,16 @@
 <div class="box">
     <div>
         <h2>First Floor</h2>
-        <object id="firstFloorCtx" data="${ctx.imgPrefix}/overview/floor_first.svg" width="600" type="image/svg+xml"></object>
+        <object id="firstFloorCtx" data="${ctx.imgPrefix}/overview/floor_first.svg" width="600"
+                type="image/svg+xml"></object>
 
         <h2>Second Floor</h2>
-        <object id="secondFloorCtx" data="${ctx.imgPrefix}/overview/floor_second.svg" width="600" type="image/svg+xml"></object>
+        <object id="secondFloorCtx" data="${ctx.imgPrefix}/overview/floor_second.svg" width="600"
+                type="image/svg+xml"></object>
 
         <h2>Attic</h2>
-        <object id="thirdFloorCtx" data="${ctx.imgPrefix}/overview/floor_attic.svg" width="600" type="image/svg+xml"></object>
+        <object id="thirdFloorCtx" data="${ctx.imgPrefix}/overview/floor_attic.svg" width="600"
+                type="image/svg+xml"></object>
 
     </div>
 </div>
@@ -50,27 +53,56 @@
     trackerCircles = {};
     beaconCircles = {};
 
-    function loadData()
-    {
+    function loadData() {
         openSVGRequests--;
 
         if (openSVGRequests > 0) return;
 
-        $.get("/overviewTracker/", function (data) {
-            drawPoints( trackerCircles, data, "#c82124" );
-        });
-
-        function refreshBeacons()
-        {
-            $.get( "/overviewArea/", function( data )
-            {
-                drawAreas( areaRects, data, "#000066");
-
-                window.setTimeout(refreshBeacons, 1000 );
-            });
+        var webSocket = new WebSocket("ws://precision:8080/overviewUpdate");
+        webSocket.onopen = function (message) {
+            wsOpen(message);
+        };
+        webSocket.onmessage = function (message) {
+            wsGetMessage(message);
+        };
+        webSocket.onclose = function (message) {
+            wsClose(message);
+        };
+        webSocket.onerror = function (message) {
+            wsError(message);
+        };
+        function wsOpen(message) {
+            console.log("wsOpen");
         }
 
-        refreshBeacons();
+        function wsSendMessage() {
+            console.log("wsSendMessage");
+            //webSocket.send(message.value);
+        }
+
+        function wsCloseConnection() {
+            console.log("wsCloseConnection");
+            webSocket.close();
+        }
+
+        function wsGetMessage(message) {
+            //console.log(message);
+            var obj = JSON.parse(message.data);
+            if (obj.type == "tracker") {
+                drawPoints(trackerCircles, obj.data, "#c82124");
+            }
+            else {
+                drawAreas(areaRects, obj.data, "#000066");
+            }
+        }
+
+        function wsClose(message) {
+            console.log("wsClose " + message.data);
+        }
+
+        function wsError(message) {
+            console.log("wsError " + message.data);
+        }
     }
 </script>
 <footer>&copy; 2017 by Holger Hees</footer>

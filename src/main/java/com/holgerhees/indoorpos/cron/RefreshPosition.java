@@ -1,13 +1,14 @@
 package com.holgerhees.indoorpos.cron;
 
-import com.holgerhees.indoorpos.persistance.dao.*;
+import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
+import com.holgerhees.indoorpos.persistance.dao.RoomDAO;
+import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
-import java.util.*;
 
 @Component
 public class RefreshPosition

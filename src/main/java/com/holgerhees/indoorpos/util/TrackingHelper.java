@@ -8,7 +8,7 @@ public class TrackingHelper
     {
     }
 
-    public static int compareTracker( CacheService.TrackedBeacon t1, CacheService.TrackedBeacon t2)
+    public static int compareTracker( CacheService.TrackedBeacon t1, CacheService.TrackedBeacon t2 )
     {
         /*double length1 = LocationHelper.getDistance(  t1.getRssi(), t1.getTxPower() );
         double cmp1 = (100 - length1) * t1.getSamples();
