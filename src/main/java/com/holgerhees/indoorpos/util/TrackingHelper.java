@@ -1,7 +1,6 @@
 package com.holgerhees.indoorpos.util;
 
-import com.holgerhees.indoorpos.persistance.dao.TrackedBeaconDAO;
-import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
+import com.holgerhees.indoorpos.frontend.service.CacheService;
 
 public class TrackingHelper
 {
@@ -9,7 +8,7 @@ public class TrackingHelper
     {
     }
 
-    public static int compareTracker( TrackedBeaconDTO t1, TrackedBeaconDTO t2 )
+    public static int compareTracker( CacheService.TrackedBeacon t1, CacheService.TrackedBeacon t2)
     {
         /*double length1 = LocationHelper.getDistance(  t1.getRssi(), t1.getTxPower() );
         double cmp1 = (100 - length1) * t1.getSamples();

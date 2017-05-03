@@ -1,69 +1,114 @@
 package com.holgerhees.indoorpos.frontend.service;
 
-import com.google.gson.JsonElement;
-import com.holgerhees.indoorpos.frontend.controller.Controller;
-import com.holgerhees.indoorpos.persistance.dao.AreaDAO;
-import com.holgerhees.indoorpos.persistance.dao.RoomDAO;
-import com.holgerhees.indoorpos.persistance.dao.TrackedBeaconDAO;
-import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
-import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
-import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
-import com.holgerhees.shared.web.model.Request;
-import com.holgerhees.shared.web.util.GSonFactory;
-import com.holgerhees.shared.web.view.GsonView;
-import com.holgerhees.shared.web.view.View;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component( "cacheService" )
 public class CacheService
 {
-    public static int MIN_SAMPLES = 3;
-    public static int MIN_RSSI = -88;
+	public static class TrackedBeacon
+	{
+		private Long trackerId;
+		private Long beaconId;
+		private int txPower;
+		private int rssi;
+		private int samples;
 
-    public static int MIN_INTERVAL = 2000;
-    private static int MAX_INTERVAL = 10000;
+		public Long getTrackerId()
+		{
+			return trackerId;
+		}
 
-    private int interval = 0;
-    private long lastTrackerUpdate = 0;
-    private long lastTrackerId = 0;
+		public void setTrackerId( Long trackerId )
+		{
+			this.trackerId = trackerId;
+		}
 
-    public void trackerUdate( TrackerDTO trackerDTO )
+		public Long getBeaconId()
+		{
+			return beaconId;
+		}
+
+		public void setBeaconId( Long beaconId )
+		{
+			this.beaconId = beaconId;
+		}
+
+		public int getTxPower()
+		{
+			return txPower;
+		}
+
+		public void setTxPower( int txPower )
+		{
+			this.txPower = txPower;
+		}
+
+		public int getRssi()
+		{
+			return rssi;
+		}
+
+		public void setRssi( int rssi )
+		{
+			this.rssi = rssi;
+		}
+
+		public int getSamples()
+		{
+			return samples;
+		}
+
+		public void setSamples( int samples )
+		{
+			this.samples = samples;
+		}
+	}
+
+	Map<Long,List<TrackedBeacon>> trackedBeaconMap = new HashMap<>();
+
+	public List<TrackedBeacon> getTrackedBeacons()
+	{
+		List<TrackedBeacon> result = new ArrayList<>();
+
+		List<List<TrackedBeacon>> trackedBeacons = new ArrayList<>(trackedBeaconMap.values());
+
+		for( List<TrackedBeacon> beacons: trackedBeacons )
+		{
+			for( TrackedBeacon beacon : beacons )
+			{
+				result.add(beacon);
+			}
+		}
+		return result;
+	}
+
+	public List<TrackedBeacon> getTrackedBeacons( Long beaconId )
+	{
+		List<TrackedBeacon> result = new ArrayList<>();
+
+		List<List<TrackedBeacon>> trackedBeacons = new ArrayList<>(trackedBeaconMap.values());
+
+		for( List<TrackedBeacon> beacons: trackedBeacons )
+		{
+			for( TrackedBeacon beacon : beacons )
+			{
+				if( !beacon.getBeaconId().equals( beaconId ) )
+				{
+					continue;
+				}
+				result.add(beacon);
+			}
+		}
+		return result;
+	}
+
+    public void storeTrackerList( Long trackerId, List<TrackedBeacon> trackedBeacons )
     {
-        long currentTrackerUpdate = System.currentTimeMillis();
-
-        if( lastTrackerUpdate > 0 && lastTrackerId == trackerDTO.getId() )
-        {
-            interval = (int) ( currentTrackerUpdate - lastTrackerUpdate );
-
-            if( interval > MAX_INTERVAL )
-            {
-                interval = MAX_INTERVAL;
-            }
-        }
-        else
-        {
-            interval = 0;
-        }
-
-        lastTrackerUpdate = currentTrackerUpdate;
-        lastTrackerId = trackerDTO.getId();
-    }
-
-    public int getTrackerInterval()
-    {
-        return interval;
-    }
-
-    public long getLastTrackerUpdate()
-    {
-        return lastTrackerUpdate;
+	    trackedBeaconMap.put( trackerId, trackedBeacons );
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component( "fileController" )
 public class FileController implements Controller
 {
-
     @Override
     public View handle( Request req )
     {

@@ -34,9 +34,6 @@ public class OverviewAreaController implements Controller
     TrackerDAO trackerDAO;
 
     @Autowired
-    TrackedBeaconDAO trackedBeaconDAO;
-
-    @Autowired
     CacheService cacheService;
 
     private class Area
@@ -47,14 +44,6 @@ public class OverviewAreaController implements Controller
         int bottomRightX;
         int bottomRightY;
         int floor;
-    }
-
-    private class Result
-    {
-        int nextWakeup;
-        int age;
-        int interval;
-        List<Area> entries;
     }
 
     @Override
@@ -68,9 +57,9 @@ public class OverviewAreaController implements Controller
 
         for( BeaconDTO beaconDTO: beaconDTOs )
         {
-            List<TrackedBeaconDTO> trackedBeaconDTOs = trackedBeaconDAO.getTrackedBeacons( beaconDTO.getId() );
-            TrackedBeaconDTO activeTracker = null;
-            for( TrackedBeaconDTO trackedBeaconDTO: trackedBeaconDTOs )
+            List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons( beaconDTO.getId() );
+	        CacheService.TrackedBeacon activeTracker = null;
+            for( CacheService.TrackedBeacon trackedBeaconDTO: trackedBeaconDTOs )
             {
                 if( activeTracker == null || TrackingHelper.compareTracker( activeTracker, trackedBeaconDTO ) > 0 )
                 {
@@ -107,32 +96,7 @@ public class OverviewAreaController implements Controller
             entries.add( _area );
         }
 
-        Result result = new Result();
-
-        int interval = cacheService.getTrackerInterval();
-        long age = new Date().getTime() - cacheService.getLastTrackerUpdate();
-
-        result.interval = interval;
-        result.age = (int) age;
-
-        if( interval > 0 )
-        {
-            // allways 10% ~300ms later
-            result.nextWakeup = (int) ( ( interval * 1.1 ) - age );
-
-            if( result.nextWakeup < CacheService.MIN_INTERVAL )
-            {
-                result.nextWakeup = CacheService.MIN_INTERVAL;
-            }
-        }
-        else
-        {
-            result.nextWakeup = CacheService.MIN_INTERVAL;
-        }
-
-        result.entries = entries;
-
-        JsonElement json = GSonFactory.createGSon().toJsonTree( result );
+        JsonElement json = GSonFactory.createGSon().toJsonTree( entries );
 
         return new GsonView( json, request );
     }

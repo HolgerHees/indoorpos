@@ -1,10 +1,6 @@
 package com.holgerhees.indoorpos.cron;
 
 import com.holgerhees.indoorpos.persistance.dao.*;
-import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
-import com.holgerhees.indoorpos.util.LocationHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +30,6 @@ public class RefreshPosition
 
     @Autowired
     RoomDAO roomDAO;
-
-    @Autowired
-    TrackedBeaconDAO trackedBeaconDAO;
 
     private class TrackerDistance
     {

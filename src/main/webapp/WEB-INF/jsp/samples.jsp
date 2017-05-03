@@ -55,6 +55,34 @@
     }
 
     refreshSamples();
+
+    var webSocket = new WebSocket("ws://localhost:8080/SamplesServerEndPoint/samplesUpdateTest");
+    webSocket.onopen = function(message){ wsOpen(message);};
+    webSocket.onmessage = function(message){ wsGetMessage(message);};
+    webSocket.onclose = function(message){ wsClose(message);};
+    webSocket.onerror = function(message){ wsError(message);};
+    function wsOpen(message){
+    	console.log("wsOpen");
+    }
+    function wsSendMessage(){
+	    console.log("wsSendMessage");
+	    //webSocket.send(message.value);
+    }
+    function wsCloseConnection(){
+	    console.log("wsCloseConnection");
+	    webSocket.close();
+    }
+    function wsGetMessage(message){
+	    console.log("wsGetMessage " + message.data );
+    }
+    function wsClose(message){
+	    console.log("wsClose " + message.data );
+    }
+
+    function wsError(message){
+	    console.log("wsError " + message.data );
+    }
+
 </script>
 <footer>&copy; 2017 by Holger Hees</footer>
 </body>

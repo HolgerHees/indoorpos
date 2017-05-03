@@ -64,17 +64,10 @@
         {
             $.get( "/overviewArea/", function( data )
             {
-                drawAreas( areaRects, data.entries, "#000066");
+                drawAreas( areaRects, data, "#000066");
 
-                console.log("sleep " + data.nextWakeup + ", age: " + data.age + ", interval: " + data.interval );
-
-                window.setTimeout(refreshBeacons, data.nextWakeup);
+                window.setTimeout(refreshBeacons, 1000 );
             });
-
-            /*$.get("/overviewBeacon/", function (data) {
-                drawPoints( beaconCircles, data, "#006600" );
-                window.setTimeout(refreshBeacons, 5000)
-            });*/
         }
 
         refreshBeacons();

@@ -18,7 +18,6 @@ import java.io.IOException;
 
 public class RouterServlet extends HttpServlet
 {
-
     private static final long serialVersionUID = 1L;
 
     private static Log LOGGER = LogFactory.getLog( RouterServlet.class );

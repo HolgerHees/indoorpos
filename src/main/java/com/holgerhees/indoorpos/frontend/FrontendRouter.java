@@ -9,6 +9,7 @@ import com.holgerhees.shared.web.view.View;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -35,45 +36,22 @@ public class FrontendRouter implements Router
 
         Controller controller;
 
-        if( request.getServletPath().startsWith( "/tracker/" ) )
-        {
-            controller = (Controller) applicationContext.getBean( "trackerController" );
-        }
-        else if( request.getServletPath().startsWith( "/test/" ) )
-        {
-            controller = (Controller) applicationContext.getBean( "testController" );
-        }
-        else if( request.getServletPath().startsWith( "/overview/" ) )
-        {
-            controller = (Controller) applicationContext.getBean( "overviewController" );
-        }
-        else if( request.getServletPath().startsWith( "/overviewTracker/" ) )
-        {
-            controller = (Controller) applicationContext.getBean( "overviewTrackerController" );
-        }
-        else if( request.getServletPath().startsWith( "/overviewBeacon/" ) )
-        {
-            controller = (Controller) applicationContext.getBean( "overviewBeaconController" );
-        }
-        else if( request.getServletPath().startsWith( "/overviewArea/" ) )
-        {
-            controller = (Controller) applicationContext.getBean( "overviewAreaController" );
-        }
-        else if( request.getServletPath().startsWith( "/samples/" ) )
-        {
-	        controller = (Controller) applicationContext.getBean( "samplesController" );
-        }
-        else if( request.getServletPath().startsWith( "/samplesUpdate/" ) )
-        {
-	        controller = (Controller) applicationContext.getBean( "samplesUpdateController" );
-        }
-        else if( isStaticContent( request ) )
+        if( isStaticContent( request ) )
         {
             controller = getStaticContentController( request, staticContentServlet );
         }
         else
         {
-            controller = (Controller) applicationContext.getBean( "homeController" );
+        	try
+	        {
+	        	int length = request.getServletPath().length();
+		        String name = length <= 2 ? "homeController" : request.getServletPath().substring(1, length - 1) + "Controller";
+		        controller = (Controller) applicationContext.getBean(name);
+	        }
+	        catch( BeansException e )
+	        {
+		        controller = (Controller) applicationContext.getBean( "homeController" );
+	        }
         }
 
         View view = null;

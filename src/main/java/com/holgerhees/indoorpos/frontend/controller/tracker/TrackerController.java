@@ -3,10 +3,8 @@ package com.holgerhees.indoorpos.frontend.controller.tracker;
 import com.holgerhees.indoorpos.frontend.controller.Controller;
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
-import com.holgerhees.indoorpos.persistance.dao.TrackedBeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackedBeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.shared.web.model.Request;
 import com.holgerhees.shared.web.util.GSonFactory;
@@ -21,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +57,6 @@ public class TrackerController implements Controller
 
     @Autowired
     private TrackerDAO trackerDAO;
-
-    @Autowired
-    private TrackedBeaconDAO trackedBeaconDAO;
 
     @Autowired
     private CacheService cacheService;
@@ -104,10 +100,9 @@ public class TrackerController implements Controller
         }
         else
         {
-            boolean found = false;
-
 	        Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
-            List<Long> trackedBeaconIds = trackedBeaconDAO.getTrackedBeaconIds( trackerDTO.getId() );
+
+	        List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
 
             for( TrackedBeacon beacon : param.trackedBeacons )
             {
@@ -164,30 +159,17 @@ public class TrackerController implements Controller
 
                 LOGGER.info("Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
 
-                TrackedBeaconDTO trackedBeaconDTO = new TrackedBeaconDTO();
-                trackedBeaconDTO.setTrackerId( trackerDTO.getId() );
-                trackedBeaconDTO.setBeaconId( beaconDTO.getId() );
-                trackedBeaconDTO.setTxPower( txpower );
-                trackedBeaconDTO.setRssi( rssi );
-                trackedBeaconDTO.setSamples( size );
-                trackedBeaconDAO.save( trackedBeaconDTO );
+                CacheService.TrackedBeacon trackedBeacon = new CacheService.TrackedBeacon();
+	            trackedBeacon.setTrackerId( trackerDTO.getId() );
+	            trackedBeacon.setBeaconId( beaconDTO.getId() );
+	            trackedBeacon.setTxPower( txpower );
+	            trackedBeacon.setRssi( rssi );
+	            trackedBeacon.setSamples( size );
 
-	            trackedBeaconIds.remove( beaconDTO.getId() );
-
-                found = true;
+	            trackedBeacons.add( trackedBeacon );
             }
 
-            // delete unreachable beacons
-            for( Long beaconId: trackedBeaconIds )
-            {
-                LOGGER.info("Tracker " + trackerDTO.getName() + " removed" );
-				trackedBeaconDAO.delete( trackerDTO.getId(), beaconId );
-            }
-
-            if( found )
-            {
-                cacheService.trackerUdate( trackerDTO );
-            }
+            cacheService.storeTrackerList( trackerDTO.getId(), trackedBeacons );
         }
 
         return new TextView( req, "tracked" );
