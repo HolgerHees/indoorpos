@@ -69,12 +69,15 @@ def mainLoop():
     lastJson = None
 
     websocket = yield from websockets.connect(server_url)
+    interval_start = time.time()
 
     try:
         while True:
-            start = time.time()
+            returnedList = blescan.scanBeacons(sock,interval,interval_start)
             
-            returnedList = blescan.scanBeacons(sock,interval)
+            interval_end = time.time()
+            interval_duration = str(interval_end - interval_start)
+            interval_start = interval_end
             
             json = "{"
             json += "\"uuid\":\"" + uuid + "\","
@@ -120,7 +123,7 @@ def mainLoop():
             try:
                 if json != lastJson:
                     if maxSamples > 25:
-                        log( "CNT: " + str(maxSamples) + " - TIME: " + str(time.time() - start) + " - JSON: " + json + "\n" )
+                        log( "CNT: " + str(maxSamples) + " - TIME: " + interval_duration + " - JSON: " + json + "\n" )
 
                     yield from websocket.send(json)
                     #response = urllib2.urlopen(req)

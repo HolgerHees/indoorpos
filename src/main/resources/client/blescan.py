@@ -123,13 +123,12 @@ def clearDiscoveredDevices(sock):
     bluez.hci_filter_set_ptype(flt, bluez.HCI_EVENT_PKT)
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, flt )
 
-def scanBeacons(sock,timeout):
+def scanBeacons(sock,timeout,timeout_start):
 
     clearDiscoveredDevices(sock)
 
     myFullList = {}
     
-    start = time.time()
     i = 0
     
     while True:
@@ -172,7 +171,7 @@ def scanBeacons(sock,timeout):
             time.sleep(0.1)
 
         end = time.time()
-        if ( end - start ) >= timeout:
+        if ( end - timeout_start ) >= timeout:
             break
             
     return myFullList
