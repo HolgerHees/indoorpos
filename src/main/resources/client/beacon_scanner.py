@@ -17,8 +17,8 @@ interval = 2.0
 server_url = "http://precision:8080/tracker/"
 ip_map = {
     '192.168.0.125': 'livingroom',
+    '192.168.0.126': 'kitchen',
     '192.168.0.127': 'floor',
-    '192.168.0.128': 'kitchen',
 }
 
 def getUUID():
