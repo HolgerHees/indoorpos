@@ -25,6 +25,7 @@ import com.holgerhees.indoorpos.frontend.websockets.overview.OverviewWatcher;
 import com.holgerhees.shared.web.util.GSonFactory;
 
 @ServerEndpoint( value = "/samplesUpdate" )
+@Component( "samplesEndPoint" )
 public class SamplesEndPoint
 {
     private static Log LOGGER = LogFactory.getLog( SamplesEndPoint.class );

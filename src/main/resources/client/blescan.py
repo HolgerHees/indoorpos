@@ -50,19 +50,19 @@ def returnnumberpacket(pkt):
     myInteger = 0
     multiple = 256
     for c in pkt:
-        myInteger +=  struct.unpack("B",c)[0] * multiple
+        myInteger +=  struct.unpack("B",bytes([c]))[0] * multiple
         multiple = 1
     return myInteger 
 
 def returnstringpacket(pkt):
     myString = "";
     for c in pkt:
-        myString +=  "%02x" %struct.unpack("B",c)[0]
+        myString +=  "%02x" %struct.unpack("B",bytes([c]))[0]
     return myString 
 
 def printpacket(pkt):
     for c in pkt:
-        sys.stdout.write("%02x " % struct.unpack("B",c)[0])
+        sys.stdout.write("%02x " % struct.unpack("B",bytes([c]))[0])
 
 def get_packed_bdaddr(bdaddr_string):
     packable_addr = []
@@ -148,20 +148,20 @@ def scanBeacons(sock,timeout):
             elif event == bluez.EVT_DISCONN_COMPLETE:
                 i = 0 
             elif event == LE_META_EVENT:
-                subevent, = struct.unpack("B", pkt[3])
+                subevent, = struct.unpack("B", bytes([pkt[3]]))
                 pkt = pkt[4:]
                 if subevent == EVT_LE_CONN_COMPLETE:
                     le_handle_connection_complete(pkt)
                 elif subevent == EVT_LE_ADVERTISING_REPORT:
-                    num_reports = struct.unpack("B", pkt[0])[0]
+                    num_reports = struct.unpack("B", bytes([pkt[0]]))[0]
                     report_pkt_offset = 0
                     for i in range(0, num_reports):
                         mac = packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9])
                         uuid = returnstringpacket(pkt[report_pkt_offset -22: report_pkt_offset - 6]) 
                         major = "%i" % returnnumberpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4])
                         minor = "%i" % returnnumberpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2])
-                        txpower = struct.unpack("b", pkt[report_pkt_offset -2])
-                        rssi = struct.unpack("b", pkt[report_pkt_offset -1])
+                        txpower = struct.unpack("b", bytes([pkt[report_pkt_offset -2]]))
+                        rssi = struct.unpack("b", bytes([pkt[report_pkt_offset -1]]))
 
                         if not uuid in myFullList:
                             myFullList[uuid] = {"mac":mac,"uuid":uuid,"major":major,"minor":minor,"samples":[]}
