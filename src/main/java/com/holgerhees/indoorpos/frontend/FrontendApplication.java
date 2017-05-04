@@ -1,5 +1,6 @@
 package com.holgerhees.indoorpos.frontend;
 
+import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
 import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 import com.holgerhees.shared.web.Application;
 import com.holgerhees.shared.web.Router;
@@ -72,12 +73,15 @@ public class FrontendApplication implements Application
     @Override
     public void shutdown()
     {
-        LOGGER.info( "Shutdown ThreadPoolTaskExecutor and ThreadPoolTaskScheduler." );
+        LOGGER.info( "Shutdown ThreadPoolTaskExecutor, ThreadPoolTaskScheduler and CacheWatcherService." );
 
         ThreadPoolTaskScheduler scheduler = (ThreadPoolTaskScheduler) applicationContext.getBean( "taskScheduler" );
         scheduler.shutdown();
 
         ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) applicationContext.getBean( "taskExecutor" );
         executor.shutdown();
+
+        CacheWatcherService watcher = (CacheWatcherService) applicationContext.getBean( "cacheWatcherService" );
+        watcher.shutdown();
     }
 }

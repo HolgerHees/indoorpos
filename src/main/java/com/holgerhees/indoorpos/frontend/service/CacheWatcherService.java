@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -67,6 +68,11 @@ public class CacheWatcherService
 		watcher = new Thread( new Watcher() );
 		watcher.setDaemon( true );
 		watcher.start();
+	}
+
+	public void shutdown()
+	{
+		watcher.interrupt();
 	}
 
 	public void addWatcher( CacheWatcherClient client )
