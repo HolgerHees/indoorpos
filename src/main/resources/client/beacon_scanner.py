@@ -2,6 +2,7 @@
 
 import blescan
 import signal
+import functools
 import sys
 import time
 import datetime
@@ -10,6 +11,8 @@ import subprocess
 
 import asyncio
 import websockets
+
+from concurrent.futures import CancelledError
 
 import bluetooth._bluetooth as bluez
 
@@ -40,7 +43,17 @@ def signal_handler(signal, frame):
 
 signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGHUP, signal_handler)
 
+def loop_signal_handler(loop):
+    for task in asyncio.Task.all_tasks():
+        task.cancel()
+
+loop = asyncio.get_event_loop()
+loop.add_signal_handler(signal.SIGTERM, functools.partial(loop_signal_handler, loop))
+loop.add_signal_handler(signal.SIGINT, functools.partial(loop_signal_handler, loop))
+loop.add_signal_handler(signal.SIGHUP, functools.partial(loop_signal_handler, loop))
+    
 uuid = getUUID()
 
 if uuid == None:
@@ -68,14 +81,36 @@ oldFilter = blescan.prepareScan(sock)
 def mainLoop():
     lastJson = None
 
+    log( "websocket opened" )
     websocket = yield from websockets.connect(server_url)
+    
+    blescan.clearDiscoveredDevices(sock)
     interval_start = time.time()
 
     try:
         while True:
-            returnedList = blescan.scanBeacons(sock,interval,interval_start)
             
-            interval_end = time.time()
+            myFullList = {}
+            interval_end = 0
+            while True:
+                try:
+                    myFullList = blescan.scanBeacons(sock,myFullList)
+                except bluez.error as e:
+                    # just skip
+                    pass
+                finally:
+                    interval_end = time.time()
+                    runtime = interval_end - interval_start
+                    if runtime >= interval:
+                        break
+                    interval_left = interval - runtime
+                    if interval_left > 0.1:
+                        yield from asyncio.sleep( 0.1 )
+                    else:
+                        yield from asyncio.sleep( interval_left )
+
+            blescan.clearDiscoveredDevices(sock)
+
             interval_duration = str(interval_end - interval_start)
             interval_start = interval_end
             
@@ -86,9 +121,9 @@ def mainLoop():
             devices = []
             
             maxSamples = 0
-            for key in returnedList:
+            for key in myFullList:
                 
-                beacon = returnedList[key]
+                beacon = myFullList[key]
                 
                 device = "{"
                 device += "\"mac\":\""+beacon["mac"]+"\","
@@ -119,6 +154,8 @@ def mainLoop():
             
             json += "]}"
 
+            #log( "CNT: " + str(maxSamples) + " - TIME: " + interval_duration + " - JSON: " + json + "\n" )
+
             #req = urllib2.Request(server_url, json)
             try:
                 if json != lastJson:
@@ -139,7 +176,10 @@ def mainLoop():
             except socket.error as e:
                 log( 'socket error: ' + str(e.args) )
                 hasError = True
+    except CancelledError as e:
+        pass
     finally:
+        log( "websocket closed" )
         yield from websocket.close()
         
 asyncio.get_event_loop().run_until_complete(mainLoop())

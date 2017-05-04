@@ -123,55 +123,39 @@ def clearDiscoveredDevices(sock):
     bluez.hci_filter_set_ptype(flt, bluez.HCI_EVENT_PKT)
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, flt )
 
-def scanBeacons(sock,timeout,timeout_start):
+def scanBeacons(sock,myFullList):
 
-    clearDiscoveredDevices(sock)
+    # 0x40 is non blocking
+    pkt = sock.recv(255,0x40)
 
-    myFullList = {}
-    
-    i = 0
-    
-    while True:
+    #print pkt
 
-        try:
-            # 0x40 is non blocking
-            pkt = sock.recv(255,0x40)
-        
-            #print pkt
-            
-            ptype, event, plen = struct.unpack("BBB", pkt[:3])
-            if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
-                i = 0
-            elif event == bluez.EVT_NUM_COMP_PKTS:
-                i = 0 
-            elif event == bluez.EVT_DISCONN_COMPLETE:
-                i = 0 
-            elif event == LE_META_EVENT:
-                subevent, = struct.unpack("B", bytes([pkt[3]]))
-                pkt = pkt[4:]
-                if subevent == EVT_LE_CONN_COMPLETE:
-                    le_handle_connection_complete(pkt)
-                elif subevent == EVT_LE_ADVERTISING_REPORT:
-                    num_reports = struct.unpack("B", bytes([pkt[0]]))[0]
-                    report_pkt_offset = 0
-                    for i in range(0, num_reports):
-                        mac = packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9])
-                        uuid = returnstringpacket(pkt[report_pkt_offset -22: report_pkt_offset - 6]) 
-                        major = "%i" % returnnumberpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4])
-                        minor = "%i" % returnnumberpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2])
-                        txpower = struct.unpack("b", bytes([pkt[report_pkt_offset -2]]))
-                        rssi = struct.unpack("b", bytes([pkt[report_pkt_offset -1]]))
+    ptype, event, plen = struct.unpack("BBB", pkt[:3])
+    if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
+        i = 0
+    elif event == bluez.EVT_NUM_COMP_PKTS:
+        i = 0 
+    elif event == bluez.EVT_DISCONN_COMPLETE:
+        i = 0 
+    elif event == LE_META_EVENT:
+        subevent, = struct.unpack("B", bytes([pkt[3]]))
+        pkt = pkt[4:]
+        if subevent == EVT_LE_CONN_COMPLETE:
+            le_handle_connection_complete(pkt)
+        elif subevent == EVT_LE_ADVERTISING_REPORT:
+            num_reports = struct.unpack("B", bytes([pkt[0]]))[0]
+            report_pkt_offset = 0
+            for i in range(0, num_reports):
+                mac = packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9])
+                uuid = returnstringpacket(pkt[report_pkt_offset -22: report_pkt_offset - 6]) 
+                major = "%i" % returnnumberpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4])
+                minor = "%i" % returnnumberpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2])
+                txpower = struct.unpack("b", bytes([pkt[report_pkt_offset -2]]))
+                rssi = struct.unpack("b", bytes([pkt[report_pkt_offset -1]]))
 
-                        if not uuid in myFullList:
-                            myFullList[uuid] = {"mac":mac,"uuid":uuid,"major":major,"minor":minor,"samples":[]}
+                if not uuid in myFullList:
+                    myFullList[uuid] = {"mac":mac,"uuid":uuid,"major":major,"minor":minor,"samples":[]}
 
-                        myFullList[uuid]['samples'].append({"txpower":txpower[0],"rssi":rssi[0],"timestamp":time.time()})
-                        
-        except bluez.error as e:
-            time.sleep(0.1)
-
-        end = time.time()
-        if ( end - timeout_start ) >= timeout:
-            break
+                myFullList[uuid]['samples'].append({"txpower":txpower[0],"rssi":rssi[0],"timestamp":time.time()})
             
     return myFullList
