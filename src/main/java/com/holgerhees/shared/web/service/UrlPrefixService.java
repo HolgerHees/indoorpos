@@ -20,6 +20,21 @@ public class UrlPrefixService
     @Autowired
     private FrontendConfig frontendConfig;
 
+    public String getServer( Protocol protocol )
+    {
+	    StringBuilder sb = new StringBuilder();
+
+	    sb.append( frontendConfig.getWebDomain() );
+
+	    if( !applicationConfig.isProduction() )
+	    {
+		    sb.append( COLON );
+		    sb.append( protocol == Protocol.HTTPS ? frontendConfig.getWebHttpsPort() : frontendConfig.getWebHttpPort() );
+	    }
+
+	    return sb.toString();
+    }
+
     public String getUrlPrefix( Protocol protocol )
     {
         StringBuilder sb = new StringBuilder();

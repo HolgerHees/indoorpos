@@ -6,6 +6,7 @@ public class PageDTO
     private String cssPrefix;
     private String jsPrefix;
     private String imgPrefix;
+    private String server;
 
     public String getCssPrefix()
     {
@@ -36,4 +37,14 @@ public class PageDTO
     {
         this.imgPrefix = imgPrefix;
     }
+
+	public String getServer()
+	{
+		return server;
+	}
+
+	public void setServer(String server)
+	{
+		this.server = server;
+	}
 }

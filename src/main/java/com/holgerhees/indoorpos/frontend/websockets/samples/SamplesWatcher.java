@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos.frontend.controller.samples;
+package com.holgerhees.indoorpos.frontend.websockets.samples;
 
 /**
  * Created by hhees on 03.05.17.
@@ -6,6 +6,11 @@ package com.holgerhees.indoorpos.frontend.controller.samples;
 
 import com.google.gson.JsonElement;
 import com.holgerhees.indoorpos.frontend.service.CacheService;
+import com.holgerhees.indoorpos.frontend.service.CacheWatcherClient;
+import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
+import com.holgerhees.indoorpos.frontend.websockets.overview.OverviewEndPoint;
+import com.holgerhees.indoorpos.frontend.websockets.overview.OverviewWatcher;
 import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
@@ -18,12 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.websocket.Session;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Component( "samplesWatcher" )
-public class SamplesWatcher
+public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
 {
     private static Log LOGGER = LogFactory.getLog( SamplesWatcher.class );
 
@@ -36,9 +43,10 @@ public class SamplesWatcher
     @Autowired
     CacheService cacheService;
 
-    private Thread watcher;
+    @Autowired
+	CacheWatcherService cacheWatcherService;
 
-    private class Samples
+	private class Samples
     {
         String trackerName;
         String beaconName;
@@ -47,46 +55,33 @@ public class SamplesWatcher
         int samples;
     }
 
-    public class Watcher implements Runnable
-    {
-        public Watcher()
-        {
-            //Initialization of atributes
-        }
-
-        @Override
-        public void run()
-        {
-            while( true )
-            {
-                try
-                {
-                    //LOGGER.info( "Samples watcher" );
-                    Thread.sleep( 500 );
-
-                    if( SamplesEndPoint.hasSessions() )
-                    {
-                        String json = getSamplesAsJson();
-                        SamplesEndPoint.broadcast( json );
-                    }
-                } catch( InterruptedException e )
-                {
-                    e.printStackTrace();
-                }
-                // Do something
-            }
-        }
-    }
-
     @PostConstruct
     public void init()
     {
-        watcher = new Thread( new Watcher() );
-        watcher.setDaemon( true );
-        watcher.start();
+	    cacheWatcherService.addWatcher( this );
+	    SamplesEndPoint.setSamplesWatcher( this );
     }
 
-    private String getSamplesAsJson()
+	@Override
+	public void notifyCacheChange()
+	{
+		if( !SamplesEndPoint.hasSessions() )
+		{
+			return;
+		}
+
+		List<SamplesWatcher.Samples> samples = getSamples();
+		SamplesEndPoint.broadcastMessage( samples );
+	}
+
+	@Override
+	public void notifyNewSession(Session userSession)
+	{
+		List<SamplesWatcher.Samples> samples = getSamples();
+		SamplesEndPoint.broadcastMessage( samples );
+	}
+
+	private List<SamplesWatcher.Samples> getSamples()
     {
         Map<Long, TrackerDTO> trackerDTOMap = trackerDAO.getTrackerIDMap();
         Map<Long, BeaconDTO> beaconDTOs = beaconDAO.getBeaconIDMap();
@@ -123,8 +118,6 @@ public class SamplesWatcher
             entries.get( activeIndex ).isActive = true;
         }
 
-        JsonElement json = GSonFactory.createGSon().toJsonTree( entries );
-
-        return json.toString();
+        return entries;
     }
 }

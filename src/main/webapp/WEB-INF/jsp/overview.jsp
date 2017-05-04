@@ -58,7 +58,7 @@
 
         if (openSVGRequests > 0) return;
 
-        var webSocket = new WebSocket("ws://precision:8080/overviewUpdate");
+        var webSocket = new WebSocket("ws://${ctx.server}/overviewUpdate");
         webSocket.onopen = function (message) {
             wsOpen(message);
         };

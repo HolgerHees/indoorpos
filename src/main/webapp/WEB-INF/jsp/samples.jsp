@@ -46,7 +46,7 @@
         box.innerHTML = content;
     }
 
-    var webSocket = new WebSocket("ws://precision:8080/samplesUpdate");
+    var webSocket = new WebSocket("ws://${ctx.server}/samplesUpdate");
     webSocket.onopen = function (message) {
         wsOpen(message);
     };

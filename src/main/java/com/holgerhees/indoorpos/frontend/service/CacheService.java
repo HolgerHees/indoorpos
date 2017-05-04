@@ -10,6 +10,8 @@ import java.util.Map;
 @Component( "cacheService" )
 public class CacheService
 {
+	private long lastUpdate;
+
     public static class TrackedBeacon
     {
         private Long trackerId;
@@ -110,5 +112,11 @@ public class CacheService
     public void storeTrackerList( Long trackerId, List<TrackedBeacon> trackedBeacons )
     {
         trackedBeaconMap.put( trackerId, trackedBeacons );
+        lastUpdate = System.currentTimeMillis();
+    }
+
+    public long getLastUpdate()
+    {
+    	return lastUpdate;
     }
 }
