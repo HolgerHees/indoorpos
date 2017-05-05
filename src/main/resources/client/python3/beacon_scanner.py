@@ -61,7 +61,7 @@ def scan_beacons(interval_start):
     interval_end = 0
     while True:
         try:
-            my_full_list = bleproto.scanBeacons(sock, my_full_list)
+            my_full_list = bleproto.scan_beacons(sock, my_full_list)
         except bluez.error:
             pass
         finally:
@@ -99,11 +99,11 @@ def main_loop():
 
                 while True:
 
-                    my_full_list, interval_start, interval_end, interval_duration = scan_beacons(interval_start)
+                    my_full_list, interval_start, interval_end, interval_duration = yield from scan_beacons(interval_start)
 
                     json, max_samples = bletools.convert_to_json( my_full_list, uuid )
 
-                    #bletools.log("CNT: " + str(max_samples) + " - TIME: " + interval_duration + "\n")
+                    bletools.log("CNT: " + str(max_samples) + " - TIME: " + interval_duration + "\n")
 
                     if json != last_json:
                         if max_samples > 25:
