@@ -103,7 +103,7 @@ def main_loop():
 
                     json, max_samples = bletools.convert_to_json( my_full_list, uuid )
 
-                    bletools.log("CNT: " + str(max_samples) + " - TIME: " + interval_duration + "\n")
+                    #bletools.log("CNT: " + str(max_samples) + " - TIME: " + interval_duration + "\n")
 
                     if json != last_json:
                         if max_samples > 25:
