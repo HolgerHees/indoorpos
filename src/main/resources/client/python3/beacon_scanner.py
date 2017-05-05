@@ -1,15 +1,12 @@
-# test BLE Scanning software
-
-import asyncio
-import functools
 import signal
-import bluetooth._bluetooth as bluez
-import socket
 import sys
 import time
+import socket
 import websockets
+import bluetooth._bluetooth as bluez
+import asyncio
+import functools
 from concurrent.futures import CancelledError
-
 import bleproto
 import bletools
 

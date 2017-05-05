@@ -1,6 +1,3 @@
-# BLE iBeaconScanner based on https://github.com/adamf/BLE/blob/master/ble-scanner.py
-# JCS 06/07/14
-
 DEBUG = False
 # BLE scanner based on https://github.com/adamf/BLE/blob/master/ble-scanner.py
 # BLE scanner, based on https://code.google.com/p/pybluez/source/browse/trunk/examples/advanced/inquiry-with-rssi.py
@@ -21,36 +18,36 @@ import struct
 import bluetooth._bluetooth as bluez
 
 LE_META_EVENT = 0x3e
-LE_PUBLIC_ADDRESS=0x00
-LE_RANDOM_ADDRESS=0x01
-LE_SET_SCAN_PARAMETERS_CP_SIZE=7
-OGF_LE_CTL=0x08
-OCF_LE_SET_SCAN_PARAMETERS=0x000B
-OCF_LE_SET_SCAN_ENABLE=0x000C
-OCF_LE_CREATE_CONN=0x000D
+LE_PUBLIC_ADDRESS = 0x00
+LE_RANDOM_ADDRESS = 0x01
+LE_SET_SCAN_PARAMETERS_CP_SIZE = 7
+OGF_LE_CTL = 0x08
+OCF_LE_SET_SCAN_PARAMETERS = 0x000B
+OCF_LE_SET_SCAN_ENABLE = 0x000C
+OCF_LE_CREATE_CONN = 0x000D
 
 LE_ROLE_MASTER = 0x00
 LE_ROLE_SLAVE = 0x01
 
 # these are actually subevents of LE_META_EVENT
-EVT_LE_CONN_COMPLETE=0x01
-EVT_LE_ADVERTISING_REPORT=0x02
-EVT_LE_CONN_UPDATE_COMPLETE=0x03
-EVT_LE_READ_REMOTE_USED_FEATURES_COMPLETE=0x04
+EVT_LE_CONN_COMPLETE = 0x01
+EVT_LE_ADVERTISING_REPORT = 0x02
+EVT_LE_CONN_UPDATE_COMPLETE = 0x03
+EVT_LE_READ_REMOTE_USED_FEATURES_COMPLETE = 0x04
 
 # Advertisment event types
-ADV_IND=0x00
-ADV_DIRECT_IND=0x01
-ADV_SCAN_IND=0x02
-ADV_NONCONN_IND=0x03
-ADV_SCAN_RSP=0x04
+ADV_IND = 0x00
+ADV_DIRECT_IND = 0x01
+ADV_SCAN_IND = 0x02
+ADV_NONCONN_IND = 0x03
+ADV_SCAN_RSP = 0x04
 
 
 def returnnumberpacket(pkt):
     my_integer = 0
     multiple = 256
     for c in pkt:
-        my_integer += struct.unpack("B",bytes([c]))[0] * multiple
+        my_integer += struct.unpack("B", bytes([c]))[0] * multiple
         multiple = 1
     return my_integer
 
@@ -58,13 +55,13 @@ def returnnumberpacket(pkt):
 def returnstringpacket(pkt):
     my_string = ""
     for c in pkt:
-        my_string += "%02x" %struct.unpack("B",bytes([c]))[0]
+        my_string += "%02x" %struct.unpack("B", bytes([c]))[0]
     return my_string
 
 
 def printpacket(pkt):
     for c in pkt:
-        sys.stdout.write("%02x " % struct.unpack("B",bytes([c]))[0])
+        sys.stdout.write("%02x " % struct.unpack("B", bytes([c]))[0])
 
 
 def get_packed_bdaddr(bdaddr_string):
@@ -107,11 +104,11 @@ def hci_le_set_scan_parameters(sock):
 
 
 def prepare_scan(sock):
-    return sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
+    return sock.getsockopt(bluez.SOL_HCI, bluez.HCI_FILTER, 14)
 
 
-def finalize_scan(sock,old_filter):
-    sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, old_filter )
+def finalize_scan(sock, old_filter):
+    sock.setsockopt(bluez.SOL_HCI, bluez.HCI_FILTER, old_filter)
 
 
 def clear_discovered_devices(sock):
@@ -122,10 +119,10 @@ def clear_discovered_devices(sock):
     flt = bluez.hci_filter_new()
     bluez.hci_filter_all_events(flt)
     bluez.hci_filter_set_ptype(flt, bluez.HCI_EVENT_PKT)
-    sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, flt )
+    sock.setsockopt(bluez.SOL_HCI, bluez.HCI_FILTER, flt)
 
 
-def scan_beacons(sock,myFullList):
+def scan_beacons(sock, my_full_list):
 
     # 0x40 is non blocking
     pkt = sock.recv(255, 0x40)
@@ -155,9 +152,9 @@ def scan_beacons(sock,myFullList):
                 txpower = struct.unpack("b", bytes([pkt[report_pkt_offset -2]]))
                 rssi = struct.unpack("b", bytes([pkt[report_pkt_offset -1]]))
 
-                if not uuid in myFullList:
-                    myFullList[uuid] = {"mac": mac, "uuid": uuid, "major": major, "minor": minor, "samples": []}
+                if not uuid in my_full_list:
+                    my_full_list[uuid] = {"mac": mac, "uuid": uuid, "major": major, "minor": minor, "samples": []}
 
-                myFullList[uuid]['samples'].append({"txpower": txpower[0], "rssi": rssi[0], "timestamp": time.time()})
+                my_full_list[uuid]['samples'].append({"txpower": txpower[0], "rssi": rssi[0], "timestamp": time.time()})
             
-    return myFullList
+    return my_full_list
