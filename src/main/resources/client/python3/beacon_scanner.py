@@ -111,7 +111,7 @@ def main_loop():
 
                         yield from websocket.send(json)
                         last_json = json
-            except (OSError, socket.error) as e:
+            except (websockets.exceptions.ConnectionClosed, OSError, socket.error) as e:
                 bletools.log("socket error: " + str(e.args))
                 yield from asyncio.sleep(10.0)
     except CancelledError:
