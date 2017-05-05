@@ -45,23 +45,27 @@ ADV_SCAN_IND=0x02
 ADV_NONCONN_IND=0x03
 ADV_SCAN_RSP=0x04
 
+
 def returnnumberpacket(pkt):
-    myInteger = 0
+    my_integer = 0
     multiple = 256
     for c in pkt:
-        myInteger +=  struct.unpack("B",bytes([c]))[0] * multiple
+        my_integer +=  struct.unpack("B",bytes([c]))[0] * multiple
         multiple = 1
-    return myInteger 
+    return my_integer
+
 
 def returnstringpacket(pkt):
-    myString = "";
+    my_string = "";
     for c in pkt:
-        myString +=  "%02x" %struct.unpack("B",bytes([c]))[0]
-    return myString 
+        my_string +=  "%02x" %struct.unpack("B",bytes([c]))[0]
+    return my_string
+
 
 def printpacket(pkt):
     for c in pkt:
         sys.stdout.write("%02x " % struct.unpack("B",bytes([c]))[0])
+
 
 def get_packed_bdaddr(bdaddr_string):
     packable_addr = []
@@ -71,18 +75,23 @@ def get_packed_bdaddr(bdaddr_string):
         packable_addr.append(int(b, 16))
     return struct.pack("<BBBBBB", *packable_addr)
 
+
 def packed_bdaddr_to_string(bdaddr_packed):
     return ':'.join('%02x'%i for i in struct.unpack("<BBBBBB", bdaddr_packed[::-1]))
+
 
 def hci_enable_le_scan(sock):
     hci_toggle_le_scan(sock, 0x01)
 
+
 def hci_disable_le_scan(sock):
     hci_toggle_le_scan(sock, 0x00)
+
 
 def hci_toggle_le_scan(sock, enable):
     cmd_pkt = struct.pack("<BB", enable, 0x00)
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_ENABLE, cmd_pkt)
+
 
 #    pkt = sock.recv(255)
 ##    print "socked recieved"
@@ -106,13 +115,16 @@ def hci_le_set_scan_parameters(sock):
     #print "packed up: \"", str( cmd_pkt ) , "\""
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_PARAMETERS, cmd_pkt)
 
-def prepareScan(sock):
+
+def prepare_scan(sock):
     return sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
 
-def finalizeScan(sock,old_filter):
+
+def finalize_scan(sock,old_filter):
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, old_filter )
 
-def clearDiscoveredDevices(sock):
+
+def clear_discovered_devices(sock):
     # perform a device inquiry on bluetooth device #0
     # The inquiry should last 8 * 1.28 = 10.24 seconds
     # before the inquiry is performed, bluez should flush its cache of
@@ -122,7 +134,8 @@ def clearDiscoveredDevices(sock):
     bluez.hci_filter_set_ptype(flt, bluez.HCI_EVENT_PKT)
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, flt )
 
-def scanBeacons(sock,myFullList):
+
+def scan_beacons(sock,myFullList):
 
     # 0x40 is non blocking
     pkt = sock.recv(255,0x40)

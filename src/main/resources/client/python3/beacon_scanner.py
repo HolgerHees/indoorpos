@@ -22,11 +22,12 @@ ip_map = {
     '192.168.0.127': 'floor',
 }
 
+
 def loop_signal_handler(loop):
     for task in asyncio.Task.all_tasks():
         task.cancel()
-    bletools.log( 'ble thread stopped' )
-    bleproto.finalizeScan(sock, oldFilter)
+    bletools.log('ble thread stopped')
+    bleproto.finalize_scan(sock, oldFilter)
     sys.exit(0)
 
 loop = asyncio.get_event_loop()
@@ -34,19 +35,19 @@ loop.add_signal_handler(signal.SIGTERM, functools.partial(loop_signal_handler, l
 loop.add_signal_handler(signal.SIGINT, functools.partial(loop_signal_handler, loop))
 loop.add_signal_handler(signal.SIGHUP, functools.partial(loop_signal_handler, loop))
 
-uuid = bletools.getUUID(ip_map)
+uuid = bletools.get_uuid(ip_map)
 
-if uuid == None:
-	bletools.log( "no uuid detected" )
-	exit(1)
+if uuid is None:
+    bletools.log("no uuid detected")
+    exit(1)
 else:
-	bletools.log( uuid + " detected" )
+    bletools.log(uuid + " detected")
 
 try:
     sock = bluez.hci_open_dev(dev_id)
-    bletools.log( "ble thread started" )
-except:
-    bletools.log( "error accessing bluetooth device..." )
+    bletools.log("ble thread started")
+except bluez.BluetoothError as e:
+    bletools.log("error accessing bluetooth device...")
     sys.exit(1)
 
 bletools.log( "set le parameter" )
@@ -55,67 +56,72 @@ bleproto.hci_le_set_scan_parameters(sock)
 bletools.log( "enable le scanning" )
 bleproto.hci_enable_le_scan(sock)
 
-oldFilter = bleproto.prepareScan(sock)
+oldFilter = bleproto.prepare_scan(sock)
+
+
+def scan_beacons(interval_start):
+    my_full_list = {}
+    interval_end = 0
+    while True:
+        try:
+            my_full_list = bleproto.scanBeacons(sock, my_full_list)
+        except bluez.error as e:
+            pass
+        finally:
+            interval_end = time.time()
+            runtime = interval_end - interval_start
+            if runtime >= interval:
+                break
+            interval_left = interval - runtime
+            if interval_left > 0.1:
+                yield from asyncio.sleep( 0.1 )
+            else:
+                yield from asyncio.sleep( interval_left )
+
+    bleproto.clear_discovered_devices(sock)
+
+    interval_duration = str(interval_end - interval_start)
+    interval_start = interval_end
+
+    return my_full_list,interval_start,interval_end,interval_duration
+
 
 @asyncio.coroutine
-def mainLoop():
-    lastJson = None
+def main_loop():
+    last_json = None
     websocket = None
 
     try:
         while True:
             try:
                 websocket = yield from websockets.connect(server_url)
-                bletools.log( "websocket opened" )
+                bletools.log("websocket opened")
 
-                bleproto.clearDiscoveredDevices(sock)
+                bleproto.clear_discovered_devices(sock)
                 interval_start = time.time()
 
                 while True:
-                    myFullList = {}
-                    interval_end = 0
-                    while True:
-                        try:
-                            myFullList = bleproto.scanBeacons(sock, myFullList)
-                        except bluez.error as e:
-                            pass
-                        finally:
-                            interval_end = time.time()
-                            runtime = interval_end - interval_start
-                            if runtime >= interval:
-                                break
-                            interval_left = interval - runtime
-                            if interval_left > 0.1:
-                                yield from asyncio.sleep( 0.1 )
-                            else:
-                                yield from asyncio.sleep( interval_left )
 
-                    bleproto.clearDiscoveredDevices(sock)
+                    my_full_list, interval_start, interval_end, interval_duration = scan_beacons( interval_start )
 
-                    interval_duration = str(interval_end - interval_start)
-                    interval_start = interval_end
+                    json, max_samples = bletools.convert_to_json( my_full_list, uuid )
 
-                    json, maxSamples = bletools.convertToJson( myFullList, uuid )
+                    bletools.log("CNT: " + str(max_samples) + " - TIME: " + interval_duration + "\n")
 
-                    #bletools.log( "CNT: " + str(maxSamples) + " - TIME: " + interval_duration + " - JSON: " + json + "\n" )
-
-                    if json != lastJson:
-                        if maxSamples > 25:
-                            bletools.log( "CNT: " + str(maxSamples) + " - TIME: " + interval_duration + " - JSON: " + json + "\n" )
+                    if json != last_json:
+                        if max_samples > 25:
+                            bletools.log("CNT: " + str(max_samples) + " - TIME: " + interval_duration + " - JSON: " + json + "\n")
 
                         yield from websocket.send(json)
-                        lastJson = json
-                    else:
-                        #bletools.log( 'json not changed' )
-                        pass
+                        last_json = json
             except (OSError, socket.error) as e:
-                bletools.log( "socke error: " + str(e.args) )
-                yield from asyncio.sleep( 10.0 )
+                bletools.log("socket error: " + str(e.args))
+                yield from asyncio.sleep(10.0)
     except CancelledError as e:
         pass
     finally:
-        if websocket != None:
+        if websocket is not None:
             yield from websocket.close()
-            bletools.log( "websocket closed" )
+            bletools.log("websocket closed")
 
-asyncio.get_event_loop().run_until_complete(mainLoop())
+asyncio.get_event_loop().run_until_complete(main_loop())

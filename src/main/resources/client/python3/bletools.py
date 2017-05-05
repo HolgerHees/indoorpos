@@ -2,56 +2,59 @@ import subprocess
 import datetime
 import time
 
+
 def log(line):
-	st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-	print( st + " - " + line )
+    st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    print( st + " - " + line )
 
-def getUUID(ip_map):
-	ip = subprocess.check_output(["hostname", "-I"], universal_newlines=True).strip()
-	try:
-		return ip_map[ip]
-	except KeyError as e:
-		return None
 
-def convertTolJson( myFullList, uuid ):
-	json = "{"
-	json += "\"uuid\":\"" + uuid + "\","
-	json += "\"trackedBeacons\":["
+def get_uuid(ip_map):
+    ip = subprocess.check_output(["hostname", "-I"], universal_newlines=True).strip()
+    try:
+        return ip_map[ip]
+    except KeyError as e:
+        return None
 
-	devices = []
 
-	maxSamples = 0
-	for key in myFullList:
+def convert_to_json( myFullList, uuid ):
+    json = "{"
+    json += "\"uuid\":\"" + uuid + "\","
+    json += "\"trackedBeacons\":["
 
-		beacon = myFullList[key]
+    devices = []
 
-		device = "{"
-		device += "\"mac\":\""+beacon["mac"]+"\","
-		device += "\"uuid\":\""+beacon["uuid"]+"\","
-		device += "\"major\":\""+beacon["major"]+"\","
-		device += "\"minor\":\""+beacon["minor"]+"\","
-		device += "\"samples\":["
+    max_samples = 0
+    for key in myFullList:
 
-		samples = []
-		for beaconSample in beacon["samples"]:
+        beacon = myFullList[key]
 
-			sample = "{"
-			sample += "\"txpower\":" + str(beaconSample['txpower']) + ","
-			sample += "\"rssi\":" + str(beaconSample['rssi']) + ","
-			sample += "\"timestamp\":" + str(beaconSample['timestamp'])
-			sample += "}"
-			samples.append(sample)
+        device = "{"
+        device += "\"mac\":\""+beacon["mac"]+"\","
+        device += "\"uuid\":\""+beacon["uuid"]+"\","
+        device += "\"major\":\""+beacon["major"]+"\","
+        device += "\"minor\":\""+beacon["minor"]+"\","
+        device += "\"samples\":["
 
-			if maxSamples < len(samples):
-				maxSamples = len(samples)
+        samples = []
+        for beaconSample in beacon["samples"]:
 
-		device += ",".join(samples)
-		device += "]}"
+            sample = "{"
+            sample += "\"txpower\":" + str(beaconSample['txpower']) + ","
+            sample += "\"rssi\":" + str(beaconSample['rssi']) + ","
+            sample += "\"timestamp\":" + str(beaconSample['timestamp'])
+            sample += "}"
+            samples.append(sample)
 
-		devices.append(device)
+            if max_samples < len(samples):
+                max_samples = len(samples)
 
-	json += ",".join(devices)
+        device += ",".join(samples)
+        device += "]}"
 
-	json += "]}"
+        devices.append(device)
 
-	return (json,maxSamples)
+    json += ",".join(devices)
+
+    json += "]}"
+
+    return (json,max_samples)
