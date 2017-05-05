@@ -5,18 +5,18 @@ import time
 
 def log(line):
     st = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-    print( st + " - " + line )
+    print(st + " - " + line)
 
 
 def get_uuid(ip_map):
     ip = subprocess.check_output(["hostname", "-I"], universal_newlines=True).strip()
     try:
         return ip_map[ip]
-    except KeyError as e:
+    except KeyError:
         return None
 
 
-def convert_to_json( myFullList, uuid ):
+def convert_to_json(my_full_list, uuid):
     json = "{"
     json += "\"uuid\":\"" + uuid + "\","
     json += "\"trackedBeacons\":["
@@ -24,9 +24,9 @@ def convert_to_json( myFullList, uuid ):
     devices = []
 
     max_samples = 0
-    for key in myFullList:
+    for key in my_full_list:
 
-        beacon = myFullList[key]
+        beacon = my_full_list[key]
 
         device = "{"
         device += "\"mac\":\""+beacon["mac"]+"\","
@@ -57,4 +57,4 @@ def convert_to_json( myFullList, uuid ):
 
     json += "]}"
 
-    return (json,max_samples)
+    return json, max_samples

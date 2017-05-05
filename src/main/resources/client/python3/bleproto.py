@@ -50,15 +50,15 @@ def returnnumberpacket(pkt):
     my_integer = 0
     multiple = 256
     for c in pkt:
-        my_integer +=  struct.unpack("B",bytes([c]))[0] * multiple
+        my_integer += struct.unpack("B",bytes([c]))[0] * multiple
         multiple = 1
     return my_integer
 
 
 def returnstringpacket(pkt):
-    my_string = "";
+    my_string = ""
     for c in pkt:
-        my_string +=  "%02x" %struct.unpack("B",bytes([c]))[0]
+        my_string += "%02x" %struct.unpack("B",bytes([c]))[0]
     return my_string
 
 
@@ -93,17 +93,7 @@ def hci_toggle_le_scan(sock, enable):
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_ENABLE, cmd_pkt)
 
 
-#    pkt = sock.recv(255)
-##    print "socked recieved"
-#    status,mode = struct.unpack("xxxxxxBB", pkt)
-#    print status
-
-
 def hci_le_set_scan_parameters(sock):
-    #print "setting up scan"
-    #old_filter = sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
-    #print "got old filter"
-
     SCAN_RANDOM = 0x01
     OWN_TYPE = SCAN_RANDOM
     SCAN_TYPE = 0x01
@@ -138,22 +128,22 @@ def clear_discovered_devices(sock):
 def scan_beacons(sock,myFullList):
 
     # 0x40 is non blocking
-    pkt = sock.recv(255,0x40)
-
+    pkt = sock.recv(255, 0x40)
     #print pkt
 
     ptype, event, plen = struct.unpack("BBB", pkt[:3])
     if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
-        i = 0
+        pass
     elif event == bluez.EVT_NUM_COMP_PKTS:
-        i = 0 
+        pass
     elif event == bluez.EVT_DISCONN_COMPLETE:
-        i = 0 
+        pass
     elif event == LE_META_EVENT:
         subevent, = struct.unpack("B", bytes([pkt[3]]))
         pkt = pkt[4:]
         if subevent == EVT_LE_CONN_COMPLETE:
-            le_handle_connection_complete(pkt)
+            #le_handle_connection_complete(pkt)
+            pass
         elif subevent == EVT_LE_ADVERTISING_REPORT:
             num_reports = struct.unpack("B", bytes([pkt[0]]))[0]
             report_pkt_offset = 0
@@ -166,8 +156,8 @@ def scan_beacons(sock,myFullList):
                 rssi = struct.unpack("b", bytes([pkt[report_pkt_offset -1]]))
 
                 if not uuid in myFullList:
-                    myFullList[uuid] = {"mac":mac,"uuid":uuid,"major":major,"minor":minor,"samples":[]}
+                    myFullList[uuid] = {"mac": mac, "uuid": uuid, "major": major, "minor": minor, "samples": []}
 
-                myFullList[uuid]['samples'].append({"txpower":txpower[0],"rssi":rssi[0],"timestamp":time.time()})
+                myFullList[uuid]['samples'].append({"txpower": txpower[0], "rssi": rssi[0], "timestamp": time.time()})
             
     return myFullList
