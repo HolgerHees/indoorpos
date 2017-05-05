@@ -166,7 +166,8 @@ def mainLoop():
                     #response = urllib2.urlopen(req)
                     lastJson = json
                 else:
-                    log( 'json not changed' )
+                    #log( 'json not changed' )
+                    pass
             #except urllib2.HTTPError as e:
             #    log( 'http error: ' + str( e.code ) )
             #    hasError = True
