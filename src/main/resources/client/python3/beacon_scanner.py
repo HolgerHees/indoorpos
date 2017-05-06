@@ -125,7 +125,9 @@ def main_loop():
                         data = yield from websocket.recv();
                         network_end = time.time()
 
-                        bletools.log("CNT: " + str(sample_count) + " - TIME: " + ( "%.4f" % interval_duration) + " - NET: " + ( "%.4f" % (network_end-network_start)))
+                        bletools.log(
+                            "CNT: " + str(sample_count) + " - TIME: " + ("%.4f" % interval_duration) + " - NET: " + (
+                            "%.4f" % (network_end - network_start)))
 
                         next_wakeup, interval_length = data.split(",")
                         interval_length = int(interval_length) / 1000.0
@@ -144,7 +146,8 @@ def main_loop():
                         interval_end = interval_start + interval_length
 
             except (
-            websockets.exceptions.ConnectionClosed, websockets.exceptions.InvalidHandshake, OSError, socket.error) as e:
+                    websockets.exceptions.ConnectionClosed, websockets.exceptions.InvalidHandshake, OSError,
+                    socket.error) as e:
                 bletools.log("socket error: " + str(e.args))
                 yield from asyncio.sleep(10.0)
     except CancelledError:

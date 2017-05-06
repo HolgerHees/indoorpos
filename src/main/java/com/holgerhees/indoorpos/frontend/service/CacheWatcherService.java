@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.List;
 public class CacheWatcherService
 {
     private static Log LOGGER = LogFactory.getLog( CacheWatcherService.class );
+    private static DecimalFormat df = new DecimalFormat( "#.####" );
+
     public static int INTERVAL_LENGTH = 2000;
 
     @Autowired
@@ -44,11 +47,11 @@ public class CacheWatcherService
                 {
                     nextWakeup = System.currentTimeMillis() + INTERVAL_LENGTH;
                     Thread.sleep( INTERVAL_LENGTH );
-                    LOGGER.info( "Update cache" );
-
                     if( lastUpdate != cacheService.getLastUpdate() )
                     {
                         lastUpdate = cacheService.getLastUpdate();
+
+                        long start = System.currentTimeMillis();
 
                         cacheService.updateActiveTracker();
 
@@ -56,6 +59,8 @@ public class CacheWatcherService
                         {
                             client.notifyCacheChange();
                         }
+
+                        LOGGER.info( "Update cache " + df.format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
                     }
                 } catch( InterruptedException e )
                 {

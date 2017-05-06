@@ -256,7 +256,7 @@ def main(argv=None):
         # 02 Byte 0 of iBeacon advertisement indicator
         # 15 Byte 1 of iBeacon advertisement indicator
         process_command("hcitool -i %s cmd 0x08 0x0008 1E 02 01 1A 1A FF 4C 00 02 15 %s %s %s %s 00 >/dev/null" % (
-        device, split_uuid, split_major_hex, split_minor_hex, power_hex))
+            device, split_uuid, split_major_hex, split_minor_hex, power_hex))
 
         # https://esf.eurotech.com/docs/how-to-user-bluetooth-le-beacons
         # http://stackoverflow.com/questions/21124993/is-there-a-way-to-increase-ble-advertisement-frequency-in-bluez

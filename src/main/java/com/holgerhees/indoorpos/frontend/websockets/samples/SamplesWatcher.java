@@ -11,7 +11,6 @@ import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
-import com.holgerhees.indoorpos.util.TrackingHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +80,7 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
         List<SamplesWatcher.Samples> entries = new ArrayList<>();
         List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
 
-        for( CacheService.TrackedBeacon trackedBeaconDTO: trackedBeaconDTOs )
+        for( CacheService.TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
         {
             TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeaconDTO.getTrackerId() );
             BeaconDTO beaconDTO = beaconDTOMap.get( trackedBeaconDTO.getBeaconId() );

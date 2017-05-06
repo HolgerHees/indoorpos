@@ -1,8 +1,6 @@
 package com.holgerhees.indoorpos.frontend.service;
 
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
-import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
-import com.holgerhees.indoorpos.util.TrackingHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +132,7 @@ public class CacheService
 
     public List<TrackedBeacon> getActiveTrackedBeacons()
     {
-        return new ArrayList<>(activeBeaconMap.values());
+        return new ArrayList<>( activeBeaconMap.values() );
     }
 
     public void storeTrackerList( Long trackerId, List<TrackedBeacon> trackedBeacons )
@@ -155,7 +153,7 @@ public class CacheService
             TrackedBeacon lastActiveTracker = null;
             if( _lastActiveTracker != null )
             {
-                for( TrackedBeacon trackedBeacon: trackedBeaconDTOs )
+                for( TrackedBeacon trackedBeacon : trackedBeaconDTOs )
                 {
                     if( trackedBeacon.getTrackerId().equals( _lastActiveTracker.getTrackerId() ) )
                     {
@@ -172,8 +170,6 @@ public class CacheService
             if( activeTracker != null )
             {
                 activeTracker.activeCount++;
-
-                LOGGER.info( activeTracker.activeCount );
 
                 activeBeaconMap.put( beaconDTO.getId(), activeTracker );
             }
@@ -203,7 +199,7 @@ public class CacheService
 
         if( lastActiveBeacon != null )
         {
-            if( lastActiveBeacon.trackerId.equals( t1.trackerId ) && lastActiveBeacon.beaconId.equals( t1.beaconId ))
+            if( lastActiveBeacon.trackerId.equals( t1.trackerId ) && lastActiveBeacon.beaconId.equals( t1.beaconId ) )
             {
                 t1.activeCount = lastActiveBeacon.activeCount;
                 if( t1.activeCount > 5 )
@@ -212,7 +208,7 @@ public class CacheService
                     if( t1.samples >= t2.samples ) return t1;
                 }
             }
-            else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) && lastActiveBeacon.beaconId.equals( t2.beaconId ))
+            else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) && lastActiveBeacon.beaconId.equals( t2.beaconId ) )
             {
                 t2.activeCount = lastActiveBeacon.activeCount;
                 if( t2.activeCount > 5 )

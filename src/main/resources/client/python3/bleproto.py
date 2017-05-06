@@ -91,6 +91,7 @@ def hci_toggle_le_scan(sock, enable):
     cmd_pkt = struct.pack("<BB", enable, 0x00)
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_ENABLE, cmd_pkt)
 
+
 def hci_enable_le_scan(sock):
     hci_toggle_le_scan(sock, 0x01)
 
@@ -103,6 +104,7 @@ def hci_toggle_le_scan(sock, enable):
     cmd_pkt = struct.pack("<BB", enable, 0x00)
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_ENABLE, cmd_pkt)
 
+
 def hci_enable_le_advertise(sock):
     hci_toggle_le_advertise(sock, 0x01)
 
@@ -110,9 +112,11 @@ def hci_enable_le_advertise(sock):
 def hci_disable_le_advertise(sock):
     hci_toggle_le_advertise(sock, 0x00)
 
+
 def hci_toggle_le_advertise(sock, enable):
     cmd_pkt = struct.pack("<BB", enable, 0x00)
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_ADVERTISE_ENABLE, cmd_pkt)
+
 
 def hci_le_set_scan_parameters(sock):
     SCAN_RANDOM = 0x01
