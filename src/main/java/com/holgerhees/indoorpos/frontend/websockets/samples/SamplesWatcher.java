@@ -75,38 +75,26 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
     private List<SamplesWatcher.Samples> getSamples()
     {
         Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
-        Map<Long, BeaconDTO> beaconDTOs = daoCacheService.getBeaconIDMap();
-
-        List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
+        Map<Long, BeaconDTO> beaconDTOMap = daoCacheService.getBeaconIDMap();
+        Map<Long, CacheService.TrackedBeacon> activeTrackedBeaconMap = cacheService.getActiveTrackedBeaconMap();
 
         List<SamplesWatcher.Samples> entries = new ArrayList<>();
-        CacheService.TrackedBeacon activeTracker = null;
-        int activeIndex = -1;
-        for( int i = 0; i < trackedBeaconDTOs.size(); i++ )
+        List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
+
+        for( CacheService.TrackedBeacon trackedBeaconDTO: trackedBeaconDTOs )
         {
-            CacheService.TrackedBeacon trackedBeaconDTO = trackedBeaconDTOs.get( i );
-
             TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeaconDTO.getTrackerId() );
-            BeaconDTO beaconDTO = beaconDTOs.get( trackedBeaconDTO.getBeaconId() );
+            BeaconDTO beaconDTO = beaconDTOMap.get( trackedBeaconDTO.getBeaconId() );
 
-            if( activeTracker == null || TrackingHelper.compareTracker( activeTracker, trackedBeaconDTO ) > 0 )
-            {
-                activeTracker = trackedBeaconDTO;
-                activeIndex = i;
-            }
+            CacheService.TrackedBeacon activeTrackedBeacon = activeTrackedBeaconMap.get( beaconDTO.getId() );
 
             SamplesWatcher.Samples _sample = new SamplesWatcher.Samples();
             _sample.trackerName = trackerDTO.getName();
             _sample.beaconName = beaconDTO.getName();
             _sample.rssi = trackedBeaconDTO.getRssi();
             _sample.samples = trackedBeaconDTO.getSamples();
-
+            _sample.isActive = activeTrackedBeacon.getTrackerId().equals( trackedBeaconDTO.getTrackerId() );
             entries.add( _sample );
-        }
-
-        if( activeIndex >= 0 )
-        {
-            entries.get( activeIndex ).isActive = true;
         }
 
         return entries;

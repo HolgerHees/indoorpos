@@ -21,9 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.websocket.Session;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component( "overviewWatcher" )
 public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClient
@@ -39,7 +37,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     @Autowired
     CacheWatcherService cacheWatcherService;
 
-    private List<Long> lastDetectedRooms;
+    private Set<Long> lastDetectedRooms;
 
     private class Area
     {
@@ -75,7 +73,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
             return;
         }
 
-        List<Long> detectedRooms = getDetectedRooms();
+        Set<Long> detectedRooms = getDetectedRooms();
         if( detectedRooms.equals( lastDetectedRooms ) )
         {
             return;
@@ -92,39 +90,26 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     {
         OverviewEndPoint.sendMessage( userSession, "tracker", getTracker() );
 
-        List<Long> detectedRooms = getDetectedRooms();
+        Set<Long> detectedRooms = getDetectedRooms();
         List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
         OverviewEndPoint.broadcastMessage( "area", areas );
     }
 
-    private List<Long> getDetectedRooms()
+    private Set<Long> getDetectedRooms()
     {
         Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
-        List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
 
-        List<Long> detectedRooms = new ArrayList<>();
+        Set<Long> detectedRooms = new HashSet<>();
 
-        for( BeaconDTO beaconDTO : beaconDTOs )
+        for( CacheService.TrackedBeacon trackedBeacon : cacheService.getActiveTrackedBeacons() )
         {
-            List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons( beaconDTO.getId() );
-            CacheService.TrackedBeacon activeTracker = null;
-            for( CacheService.TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
-            {
-                if( activeTracker == null || TrackingHelper.compareTracker( activeTracker, trackedBeaconDTO ) > 0 )
-                {
-                    activeTracker = trackedBeaconDTO;
-                }
-            }
-            if( activeTracker != null )
-            {
-                TrackerDTO trackerDTO = trackerDTOMap.get( activeTracker.getTrackerId() );
-                detectedRooms.add( trackerDTO.getRoomId() );
-            }
+            TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeacon.getTrackerId() );
+            detectedRooms.add( trackerDTO.getRoomId() );
         }
         return detectedRooms;
     }
 
-    private List<OverviewWatcher.Area> getAreas( List<Long> detectedRooms )
+    private List<OverviewWatcher.Area> getAreas( Set<Long> detectedRooms )
     {
         Map<Long, RoomDTO> roomDTOMap = daoCacheService.getRoomIDMap();
 

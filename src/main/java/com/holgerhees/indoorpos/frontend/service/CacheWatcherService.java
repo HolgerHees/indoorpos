@@ -50,6 +50,8 @@ public class CacheWatcherService
                     {
                         lastUpdate = cacheService.getLastUpdate();
 
+                        cacheService.updateActiveTracker();
+
                         for( CacheWatcherClient client : watcherClients )
                         {
                             client.notifyCacheChange();
