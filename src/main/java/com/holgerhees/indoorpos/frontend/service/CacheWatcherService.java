@@ -20,8 +20,17 @@ public class CacheWatcherService
     private static Log LOGGER = LogFactory.getLog( CacheWatcherService.class );
     private static DecimalFormat df = new DecimalFormat( "#.####" );
 
+    // at least every XX ms we should do a websocket call to resynchronize the next wakeup
+    public static int PING_INTERVAL = 60000;
+
+    // ble scan interval in ms
     public static int INTERVAL_LENGTH = 2000;
+
+    // beacon advertising interval in ms
     public static int FREQUENCY = 100;
+
+    // time difference in ms between tracking websocket call and cache updates
+    public static int WAKEUP_BUFFER = 200;
 
     // if more then 10 seconds active (INTERVAL_LENGTH * 5)
     public static int ACTIVE_COUNT_THRESHOLD = 5;
@@ -97,6 +106,6 @@ public class CacheWatcherService
 
     public long getNextWakeup()
     {
-        return nextWakeup - System.currentTimeMillis();
+        return nextWakeup - System.currentTimeMillis() - WAKEUP_BUFFER;
     }
 }

@@ -64,7 +64,7 @@ public class TrackerWatcher
         TrackerEndPoint.setTrackerWatcher( this );
     }
 
-    public long notifyTrackerChange( String message )
+    public void notifyTrackerChange( String message )
     {
         long start = System.currentTimeMillis();
 
@@ -83,7 +83,10 @@ public class TrackerWatcher
             LOGGER.info( "Handle tracker message in " + df
                     .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds (" + trackerDTO.getName() + ")" );
         }
+    }
 
+    public long getNextWakeup()
+    {
         return cacheWatcherService.getNextWakeup();
     }
 

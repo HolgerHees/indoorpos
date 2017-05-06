@@ -40,9 +40,17 @@ public class TrackerEndPoint
     public void onMessage( String message, Session userSession )
     {
         //LOGGER.info( "onMessage" );
-        long nextWakeup = watcher.notifyTrackerChange( message );
 
-        userSession.getAsyncRemote().sendText( Long.toString( nextWakeup ) );
+        if( message.equals( "init" ) )
+        {
+            String msg = Long.toString( watcher.getNextWakeup() ) + "," + Long.toString( CacheWatcherService.INTERVAL_LENGTH ) + "," + Long.toString( CacheWatcherService.FREQUENCY ) + "," + Long.toString( CacheWatcherService.PING_INTERVAL );
+            userSession.getAsyncRemote().sendText( msg );
+        }
+        else
+        {
+            watcher.notifyTrackerChange( message );
+            userSession.getAsyncRemote().sendText( Long.toString( watcher.getNextWakeup() ) );
+        }
     }
 
     @OnError

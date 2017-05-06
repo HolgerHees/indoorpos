@@ -12,9 +12,6 @@ import websockets
 from concurrent.futures import CancelledError
 
 dev_id = 0
-interval_length = 2.0
-beacon_frequency = 0.1
-ping_interval = 60.0
 server_url = "ws://precision:8080/trackerUpdate"
 ip_map = {
     '192.168.0.125': 'livingroom',
@@ -56,7 +53,7 @@ oldFilter = bleproto.prepare_scan(sock)
 
 
 @asyncio.coroutine
-def scan_beacons(interval_start, interval_end):
+def scan_beacons(interval_start, interval_end, beacon_frequency):
     my_full_list = {}
     current_time = 0
     while True:
@@ -92,22 +89,31 @@ def main_loop():
     websocket = None
 
     try:
-        max_samples = int(round(interval_length / beacon_frequency))
-
         while True:
             try:
                 bletools.log("open websocket %s" % server_url)
                 websocket = yield from websockets.connect(server_url)
 
-                bletools.log("start ble scanning in the %s" % uuid)
                 interval_start = time.time()
-                interval_end = interval_start + interval_length
+
+                yield from websocket.send("init");
+                data = yield from websocket.recv();
+
+                next_wakeup, interval_length, beacon_frequency, ping_interval = data.split(",")
+                next_wakeup = int(next_wakeup) / 1000.0                
+                interval_length = int(interval_length) / 1000.0
+                beacon_frequency = int(beacon_frequency) / 1000.0
+                ping_interval = int(ping_interval) / 1000.0
+                
+                max_samples = int(round(interval_length / beacon_frequency))
+
+                bletools.log("start ble scanning in the %s" % uuid)
+                interval_end = interval_start + interval_length + next_wakeup
                 skip_count = 0
 
                 while True:
 
-                    my_full_list, interval_start, interval_duration = yield from scan_beacons(interval_start,
-                                                                                              interval_end)
+                    my_full_list, interval_start, interval_duration = yield from scan_beacons(interval_start, interval_end, beacon_frequency)
 
                     json, sample_count = bletools.convert_to_json(my_full_list, uuid, max_samples)
 
@@ -131,10 +137,7 @@ def main_loop():
 
                         next_wakeup = int(next_wakeup) / 1000.0
 
-                        # 200ms before the server side job runs
-                        next_wakeup -= 0.200
-
-                        # bletools.log(str(next_wakeup))
+                        #bletools.log(str(next_wakeup))
 
                         interval_end = interval_start + interval_length + next_wakeup
                     else:
