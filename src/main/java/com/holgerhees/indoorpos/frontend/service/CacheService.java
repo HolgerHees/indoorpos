@@ -204,21 +204,13 @@ public class CacheService
             {
                 // copy activeCount from old to new oject
                 t1.activeCount = lastActiveBeacon.activeCount;
-                if( t1.activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
-                {
-                    if( t1.rssi >= t2.rssi ) return t1;
-                    if( t1.samples >= t2.samples ) return t1;
-                }
+                if( isActive( t1, t2 ) ) return t1;
             }
             else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) && lastActiveBeacon.beaconId.equals( t2.beaconId ) )
             {
                 // copy activeCount from old to new oject
                 t2.activeCount = lastActiveBeacon.activeCount;
-                if( t2.activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t2.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
-                {
-                    if( t2.rssi >= t1.rssi ) return t2;
-                    if( t2.samples >= t1.samples ) return t2;
-                }
+                if( isActive( t2, t1 ) ) return t2;
             }
         }
 
@@ -231,5 +223,15 @@ public class CacheService
         if( priority1 > priority2 ) return t1;
         if( priority1 < priority2 ) return t2;
         return t1;
+    }
+
+    private boolean isActive( TrackedBeacon t1, TrackedBeacon t2 )
+    {
+        if( t1.activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+        {
+            if( t1.rssi >= t2.rssi ) return true;
+            if( t1.samples >= t2.samples ) return true;
+        }
+        return false;
     }
 }
