@@ -90,6 +90,11 @@ public class TrackerWatcher
         return cacheWatcherService.getNextWakeup();
     }
 
+    public TrackerDTO getTrackerByIp( String ip )
+    {
+        return daoCacheService.getTrackerByIp( ip );
+    }
+
     private void processTrackedBeacons( Parameter param, TrackerDTO trackerDTO )
     {
         Map<String, BeaconDTO> beaconDTOMap = daoCacheService.getBeaconUUIDMap();
@@ -135,7 +140,7 @@ public class TrackerWatcher
             for( TrackedBeaconSample sample : beacon.samples )
             {
                 txpower += sample.txpower;
-                rssi += sample.rssi;
+                rssi += sample.rssi + trackerDTO.getRssiOffset();
             }
             int size = beacon.samples.size();
             txpower = txpower / size;

@@ -13,11 +13,6 @@ from concurrent.futures import CancelledError
 
 dev_id = 0
 server_url = "ws://precision:8080/trackerUpdate"
-ip_map = {
-    '192.168.0.125': 'livingroom',
-    '192.168.0.126': 'kitchen',
-    '192.168.0.127': 'floor',
-}
 
 
 def loop_signal_handler(loop):
@@ -33,11 +28,7 @@ loop.add_signal_handler(signal.SIGTERM, functools.partial(loop_signal_handler, l
 loop.add_signal_handler(signal.SIGINT, functools.partial(loop_signal_handler, loop))
 loop.add_signal_handler(signal.SIGHUP, functools.partial(loop_signal_handler, loop))
 
-uuid = bletools.get_uuid(ip_map)
-
-if uuid is None:
-    bletools.log("no uuid detected")
-    exit(1)
+ip = bletools.get_ip()
 
 try:
     bletools.log("open device hci%s" % str(dev_id))
@@ -96,10 +87,10 @@ def main_loop():
 
                 interval_start = time.time()
 
-                yield from websocket.send("init");
+                yield from websocket.send("init:%s" % ip);
                 data = yield from websocket.recv();
 
-                next_wakeup, interval_length, beacon_frequency, ping_interval = data.split(",")
+                next_wakeup, interval_length, beacon_frequency, ping_interval, uuid = data.split(",")
                 next_wakeup = int(next_wakeup) / 1000.0                
                 interval_length = int(interval_length) / 1000.0
                 beacon_frequency = int(beacon_frequency) / 1000.0

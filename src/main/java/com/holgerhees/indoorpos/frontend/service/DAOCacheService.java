@@ -110,6 +110,19 @@ public class DAOCacheService
         return trackerUuidMapCache.get( uuid );
     }
 
+    public TrackerDTO getTrackerByIp( String ip )
+    {
+        for( TrackerDTO trackerDTO: trackerCache )
+        {
+            if( trackerDTO.getIp().equals( ip ) )
+            {
+                return trackerDTO;
+            }
+        }
+
+        return null;
+    }
+
     public Map<Long, TrackerDTO> getTrackerIDMap()
     {
         return trackerIdMapCache;

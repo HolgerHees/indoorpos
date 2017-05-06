@@ -73,6 +73,8 @@ public class ImportData
             trackerDTO.setPosX( 953 );
             trackerDTO.setPosY( 620 );
             trackerDTO.setName( "Wohnzimmer" );
+            trackerDTO.setIp( "192.168.0.125" );
+            trackerDTO.setRssiOffset( 0 );
             trackerDAO.save( trackerDTO );
 
             // Küche
@@ -95,6 +97,8 @@ public class ImportData
             trackerDTO.setPosX( 295 );
             trackerDTO.setPosY( 620 );
             trackerDTO.setName( "Küche" );
+            trackerDTO.setIp( "192.168.0.126" );
+            trackerDTO.setRssiOffset( -2 );
             trackerDAO.save( trackerDTO );
 
             // HWR
@@ -117,6 +121,8 @@ public class ImportData
 			trackerDTO.setPosX(400);
 			trackerDTO.setPosY(280);
 			trackerDTO.setName("HWR");
+            trackerDTO.setIp( "192.168.0.129" );
+            trackerDTO.setTxPower( 0 );
 			trackerDAO.save(trackerDTO);*/
 
             // Flur
@@ -139,6 +145,8 @@ public class ImportData
             trackerDTO.setPosX( 715 );
             trackerDTO.setPosY( 48 );
             trackerDTO.setName( "Flur" );
+            trackerDTO.setIp( "192.168.0.127" );
+            trackerDTO.setRssiOffset( 0 );
             trackerDAO.save( trackerDTO );
 
             // Gästezimmer
@@ -161,6 +169,8 @@ public class ImportData
             trackerDTO.setPosX( 953 );
             trackerDTO.setPosY( 48 );
             trackerDTO.setName( "Gästezimmer" );
+            trackerDTO.setIp( "192.168.0.128" );
+            trackerDTO.setRssiOffset( 0 );
             trackerDAO.save( trackerDTO );
 
             // Holgers Phone

@@ -2,6 +2,7 @@ package com.holgerhees.indoorpos.persistance.dto;
 
 import com.holgerhees.shared.persistance.annotations.DbColumn;
 import com.holgerhees.shared.persistance.annotations.DbForeignKey;
+import com.holgerhees.shared.persistance.annotations.DbIndex;
 import com.holgerhees.shared.persistance.annotations.DbTable;
 import com.holgerhees.shared.persistance.dto.AbstractKeyDTO;
 
@@ -32,6 +33,15 @@ public class TrackerDTO extends AbstractKeyDTO
     @DbColumn( name = "name",
                type = "varchar(255)" )
     private String name;
+
+    @DbColumn( name = "ip",
+               type = "varchar(255)" )
+    @DbIndex( type = DbIndex.Type.INDEX)
+    private String ip;
+
+    @DbColumn( name = "rssi_offset",
+               type = "tinyint(2)" )
+    private int rssiOffset;
 
     public String getUuid()
     {
@@ -81,5 +91,25 @@ public class TrackerDTO extends AbstractKeyDTO
     public void setName( String name )
     {
         this.name = name;
+    }
+
+    public String getIp()
+    {
+        return ip;
+    }
+
+    public void setIp( String ip )
+    {
+        this.ip = ip;
+    }
+
+    public int getRssiOffset()
+    {
+        return rssiOffset;
+    }
+
+    public void setRssiOffset( int rssiOffset )
+    {
+        this.rssiOffset = rssiOffset;
     }
 }

@@ -8,12 +8,8 @@ def log(line):
     print(st + " - " + line)
 
 
-def get_uuid(ip_map):
-    ip = subprocess.check_output(["hostname", "-I"], universal_newlines=True).strip()
-    try:
-        return ip_map[ip]
-    except KeyError:
-        return None
+def get_ip():
+    return subprocess.check_output(["hostname", "-I"], universal_newlines=True).strip()
 
 
 def convert_to_json(my_full_list, uuid, max_samples):

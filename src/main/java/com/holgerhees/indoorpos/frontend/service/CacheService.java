@@ -230,7 +230,7 @@ public class CacheService
         if( t1.activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
         {
             if( t1.rssi >= t2.rssi ) return true;
-            if( t1.samples >= t2.samples ) return true;
+            //if( t1.samples >= t2.samples ) return true;
         }
         return false;
     }

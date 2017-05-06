@@ -5,6 +5,7 @@ package com.holgerhees.indoorpos.frontend.websockets.tracker;
  */
 
 import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -41,9 +42,13 @@ public class TrackerEndPoint
     {
         //LOGGER.info( "onMessage" );
 
-        if( message.equals( "init" ) )
+        if( message.startsWith( "init" ) )
         {
-            String msg = Long.toString( watcher.getNextWakeup() ) + "," + Long.toString( CacheWatcherService.INTERVAL_LENGTH ) + "," + Long.toString( CacheWatcherService.FREQUENCY ) + "," + Long.toString( CacheWatcherService.PING_INTERVAL );
+            String[] data = message.split( ":" );
+
+            TrackerDTO trackerDTO = watcher.getTrackerByIp( data[1] );
+
+            String msg = Long.toString( watcher.getNextWakeup() ) + "," + Long.toString( CacheWatcherService.INTERVAL_LENGTH ) + "," + Long.toString( CacheWatcherService.FREQUENCY ) + "," + Long.toString( CacheWatcherService.PING_INTERVAL ) + "," + trackerDTO.getUuid();
             userSession.getAsyncRemote().sendText( msg );
         }
         else
