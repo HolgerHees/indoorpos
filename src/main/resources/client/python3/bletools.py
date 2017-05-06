@@ -16,14 +16,14 @@ def get_uuid(ip_map):
         return None
 
 
-def convert_to_json(my_full_list, uuid):
+def convert_to_json(my_full_list, uuid, max_samples):
     json = "{"
     json += "\"uuid\":\"" + uuid + "\","
     json += "\"trackedBeacons\":["
 
     devices = []
 
-    max_samples = 0
+    sample_count = 0
     for key in my_full_list:
 
         beacon = my_full_list[key]
@@ -35,6 +35,9 @@ def convert_to_json(my_full_list, uuid):
         device += "\"minor\":\""+beacon["minor"]+"\","
         device += "\"samples\":["
 
+        if len(beacon["samples"]) > max_samples:
+            beacon["samples"] = beacon["samples"][((max_samples + 1) * -1):-1]
+
         samples = []
         for beaconSample in beacon["samples"]:
 
@@ -45,8 +48,8 @@ def convert_to_json(my_full_list, uuid):
             sample += "}"
             samples.append(sample)
 
-            if max_samples < len(samples):
-                max_samples = len(samples)
+            if sample_count < len(samples):
+                sample_count = len(samples)
 
         device += ",".join(samples)
         device += "]}"
@@ -57,4 +60,4 @@ def convert_to_json(my_full_list, uuid):
 
     json += "]}"
 
-    return json, max_samples
+    return json, sample_count

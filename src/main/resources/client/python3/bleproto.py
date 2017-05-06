@@ -126,6 +126,7 @@ def scan_beacons(sock, my_full_list):
 
     # 0x40 is non blocking
     pkt = sock.recv(255, 0x40)
+    #print(len(pkt))
     #print pkt
 
     ptype, event, plen = struct.unpack("BBB", pkt[:3])
