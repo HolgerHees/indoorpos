@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.websocket.Session;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class TrackerWatcher
 {
     private static Log LOGGER = LogFactory.getLog( TrackerWatcher.class );
+    private static DecimalFormat df = new DecimalFormat( "#.###" );
 
     private class TrackedBeaconSample
     {
@@ -69,6 +71,8 @@ public class TrackerWatcher
 
 	public void notifyTrackerChange( String message )
 	{
+        long start = System.currentTimeMillis();
+
         Parameter param = GSonFactory.createGSon().fromJson( message, Parameter.class );
 
         TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID( param.uuid );
@@ -76,71 +80,78 @@ public class TrackerWatcher
         if( trackerDTO == null )
         {
             LOGGER.info( "Skip unknown tracker with 'uuid': " + param.uuid );
+            return;
         }
-        else
+
+        processTrackedBeacons( param, trackerDTO );
+
+        LOGGER.info( "Handle tracker message in " + df
+                .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds (" + trackerDTO.getName() + ")" );
+	}
+
+    private void processTrackedBeacons( Parameter param, TrackerDTO trackerDTO )
+    {
+        Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
+
+        List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
+
+        for( TrackedBeacon beacon : param.trackedBeacons )
         {
-            Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
+            BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
 
-            List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
-
-            for( TrackedBeacon beacon : param.trackedBeacons )
+            if( beaconDTO == null )
             {
-                BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
-
-                if( beaconDTO == null )
-                {
-                    //LOGGER.info( "Skip unknown beacon with 'uuid': " + beacon.uuid );
-                    continue;
-                }
-
-                /*boolean isActive = activeTrackedBeaconIds.contains( beaconDTO.getId() );
-                int referenceRSSI = isActive ? -84 : -78;
-                switch( beacon.samples )
-                {
-                    case 1:
-                        if( !isActive )
-                        {
-                            LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low samples. Skip inactive beacon " + beacon.uuid );
-                            continue;
-                        }
-                    case 2:
-                    case 3:
-                    case 4:
-                        int minRSSI =  ( referenceRSSI - ( 2 * beacon.samples ) );
-                        if( beacon.rssi <= minRSSI )
-                        {
-                            LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip inactive beacon " + beacon.uuid );
-                            continue;
-                        }
-                        break;
-                    default:
-                        break;
-                }*/
-
-                int txpower = 0;
-                int rssi = 0;
-                for( TrackedBeaconSample sample : beacon.samples )
-                {
-                    txpower += sample.txpower;
-                    rssi += sample.rssi;
-                }
-                int size = beacon.samples.size();
-                txpower = txpower / size;
-                rssi = rssi / size;
-
-                //LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
-
-                CacheService.TrackedBeacon trackedBeacon = new CacheService.TrackedBeacon();
-                trackedBeacon.setTrackerId( trackerDTO.getId() );
-                trackedBeacon.setBeaconId( beaconDTO.getId() );
-                trackedBeacon.setTxPower( txpower );
-                trackedBeacon.setRssi( rssi );
-                trackedBeacon.setSamples( size );
-
-                trackedBeacons.add( trackedBeacon );
+                //LOGGER.info( "Skip unknown beacon with 'uuid': " + beacon.uuid );
+                continue;
             }
 
-            cacheService.storeTrackerList( trackerDTO.getId(), trackedBeacons );
+            /*boolean isActive = activeTrackedBeaconIds.contains( beaconDTO.getId() );
+            int referenceRSSI = isActive ? -84 : -78;
+            switch( beacon.samples )
+            {
+                case 1:
+                    if( !isActive )
+                    {
+                        LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low samples. Skip inactive beacon " + beacon.uuid );
+                        continue;
+                    }
+                case 2:
+                case 3:
+                case 4:
+                    int minRSSI =  ( referenceRSSI - ( 2 * beacon.samples ) );
+                    if( beacon.rssi <= minRSSI )
+                    {
+                        LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip inactive beacon " + beacon.uuid );
+                        continue;
+                    }
+                    break;
+                default:
+                    break;
+            }*/
+
+            int txpower = 0;
+            int rssi = 0;
+            for( TrackedBeaconSample sample : beacon.samples )
+            {
+                txpower += sample.txpower;
+                rssi += sample.rssi;
+            }
+            int size = beacon.samples.size();
+            txpower = txpower / size;
+            rssi = rssi / size;
+
+            //LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
+
+            CacheService.TrackedBeacon trackedBeacon = new CacheService.TrackedBeacon();
+            trackedBeacon.setTrackerId( trackerDTO.getId() );
+            trackedBeacon.setBeaconId( beaconDTO.getId() );
+            trackedBeacon.setTxPower( txpower );
+            trackedBeacon.setRssi( rssi );
+            trackedBeacon.setSamples( size );
+
+            trackedBeacons.add( trackedBeacon );
         }
-	}
+
+        cacheService.storeTrackerList( trackerDTO.getId(), trackedBeacons );
+    }
 }

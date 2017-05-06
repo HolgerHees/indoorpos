@@ -21,7 +21,6 @@ import java.util.Set;
 public class TrackerEndPoint
 {
     private static Log LOGGER = LogFactory.getLog( TrackerEndPoint.class );
-    private static DecimalFormat df = new DecimalFormat( "#.###" );
 
     private static Set<Session> userSessions = Collections.synchronizedSet( new HashSet<>() );
 	private static TrackerWatcher watcher;
@@ -44,10 +43,7 @@ public class TrackerEndPoint
     public void onMessage( String message, Session userSession )
     {
         //LOGGER.info( "onMessage" );
-        long start = System.currentTimeMillis();
         watcher.notifyTrackerChange( message );
-        LOGGER.info( "Handle tracker message in " + df
-                .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds"  );
     }
 
 	@OnError
