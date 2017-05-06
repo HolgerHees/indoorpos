@@ -42,7 +42,7 @@ public class TrackerEndPoint
         //LOGGER.info( "onMessage" );
         long nextWakeup = watcher.notifyTrackerChange( message );
 
-        userSession.getAsyncRemote().sendText( Long.toString( nextWakeup ) + "," + Long.toString( CacheWatcherService.INTERVAL_LENGTH ) );
+        userSession.getAsyncRemote().sendText( Long.toString( nextWakeup ) );
     }
 
     @OnError

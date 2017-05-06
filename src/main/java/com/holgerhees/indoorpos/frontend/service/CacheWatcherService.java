@@ -21,6 +21,12 @@ public class CacheWatcherService
     private static DecimalFormat df = new DecimalFormat( "#.####" );
 
     public static int INTERVAL_LENGTH = 2000;
+    public static int FREQUENCY = 100;
+
+    // if more then 10 seconds active (INTERVAL_LENGTH * 5)
+    public static int ACTIVE_COUNT_THRESHOLD = 5;
+    // more then 50% of possible samples (INTERVAL_LENGTH / FREQUENCY)
+    public static int MIN_SAMPLE_THRESHOLD = 10;
 
     @Autowired
     CacheService cacheService;

@@ -204,7 +204,7 @@ public class CacheService
             {
                 // copy activeCount from old to new oject
                 t1.activeCount = lastActiveBeacon.activeCount;
-                if( t1.activeCount > 5 )
+                if( t1.activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
                 {
                     if( t1.rssi >= t2.rssi ) return t1;
                     if( t1.samples >= t2.samples ) return t1;
@@ -214,7 +214,7 @@ public class CacheService
             {
                 // copy activeCount from old to new oject
                 t2.activeCount = lastActiveBeacon.activeCount;
-                if( t2.activeCount > 5 )
+                if( t2.activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t2.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
                 {
                     if( t2.rssi >= t1.rssi ) return t2;
                     if( t2.samples >= t1.samples ) return t2;

@@ -12,6 +12,7 @@ import websockets
 from concurrent.futures import CancelledError
 
 dev_id = 0
+interval_length = 2.0
 beacon_frequency = 0.1
 ping_interval = 60.0
 server_url = "ws://precision:8080/trackerUpdate"
@@ -91,7 +92,6 @@ def main_loop():
     websocket = None
 
     try:
-        interval_length = 1.0
         max_samples = int(round(interval_length / beacon_frequency))
 
         while True:
@@ -122,21 +122,17 @@ def main_loop():
                         network_start = time.time()
                         yield from websocket.send(json)
 
-                        data = yield from websocket.recv();
+                        next_wakeup = yield from websocket.recv();
                         network_end = time.time()
 
                         bletools.log(
                             "CNT: " + str(sample_count) + " - TIME: " + ("%.4f" % interval_duration) + " - NET: " + (
                             "%.4f" % (network_end - network_start)))
 
-                        next_wakeup, interval_length = data.split(",")
-                        interval_length = int(interval_length) / 1000.0
                         next_wakeup = int(next_wakeup) / 1000.0
 
                         # 200ms before the server side job runs
                         next_wakeup -= 0.200
-
-                        max_samples = int(round(interval_length / beacon_frequency))
 
                         # bletools.log(str(next_wakeup))
 
