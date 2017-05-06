@@ -44,7 +44,7 @@ public class CacheWatcherService
                 {
                     nextWakeup = System.currentTimeMillis() + INTERVAL_LENGTH;
                     Thread.sleep( INTERVAL_LENGTH );
-                    //LOGGER.info( "Update samples" );
+                    LOGGER.info( "Update cache" );
 
                     if( lastUpdate != cacheService.getLastUpdate() )
                     {

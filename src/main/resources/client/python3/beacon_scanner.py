@@ -48,6 +48,7 @@ except bluez.error as e:
     bletools.log("error accessing bluetooth device...")
     sys.exit(1)
 
+bleproto.hci_disable_le_advertise(sock)
 bleproto.hci_le_set_scan_parameters(sock)
 bleproto.hci_enable_le_scan(sock)
 oldFilter = bleproto.prepare_scan(sock)
@@ -110,8 +111,6 @@ def main_loop():
 
                     json, sample_count = bletools.convert_to_json(my_full_list, uuid, max_samples)
 
-                    bletools.log("CNT: " + str(sample_count) + " - TIME: " + str(interval_duration))
-
                     # if json changed or every minute
                     if json != last_json or skip_count >= (ping_interval / interval_length):
 
@@ -120,9 +119,14 @@ def main_loop():
                         last_json = json
                         skip_count = 0
 
+                        network_start = time.time()
                         yield from websocket.send(json)
 
                         data = yield from websocket.recv();
+                        network_end = time.time()
+
+                        bletools.log("CNT: " + str(sample_count) + " - TIME: " + ( "%.4f" % interval_duration) + " - NET: " + ( "%.4f" % (network_end-network_start)))
+
                         next_wakeup, interval_length = data.split(",")
                         interval_length = int(interval_length) / 1000.0
                         next_wakeup = int(next_wakeup) / 1000.0
