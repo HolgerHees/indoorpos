@@ -175,6 +175,7 @@ public class CacheService
             }
             else
             {
+                // no need to reset activeCount. TrackedBeacon objects are recreated with every tracker update
                 activeBeaconMap.remove( beaconDTO.getId() );
             }
         }
@@ -201,6 +202,7 @@ public class CacheService
         {
             if( lastActiveBeacon.trackerId.equals( t1.trackerId ) && lastActiveBeacon.beaconId.equals( t1.beaconId ) )
             {
+                // copy activeCount from old to new oject
                 t1.activeCount = lastActiveBeacon.activeCount;
                 if( t1.activeCount > 5 )
                 {
@@ -210,6 +212,7 @@ public class CacheService
             }
             else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) && lastActiveBeacon.beaconId.equals( t2.beaconId ) )
             {
+                // copy activeCount from old to new oject
                 t2.activeCount = lastActiveBeacon.activeCount;
                 if( t2.activeCount > 5 )
                 {
