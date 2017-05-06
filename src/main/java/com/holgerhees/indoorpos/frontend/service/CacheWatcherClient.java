@@ -5,5 +5,5 @@ package com.holgerhees.indoorpos.frontend.service;
  */
 public interface CacheWatcherClient
 {
-	void notifyCacheChange();
+    void notifyCacheChange();
 }

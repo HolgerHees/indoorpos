@@ -14,8 +14,9 @@ DEBUG = False
 
 import sys
 import time
-import struct
+
 import bluetooth._bluetooth as bluez
+import struct
 
 LE_META_EVENT = 0x3e
 LE_PUBLIC_ADDRESS = 0x00
@@ -55,7 +56,7 @@ def returnnumberpacket(pkt):
 def returnstringpacket(pkt):
     my_string = ""
     for c in pkt:
-        my_string += "%02x" %struct.unpack("B", bytes([c]))[0]
+        my_string += "%02x" % struct.unpack("B", bytes([c]))[0]
     return my_string
 
 
@@ -68,13 +69,13 @@ def get_packed_bdaddr(bdaddr_string):
     packable_addr = []
     addr = bdaddr_string.split(':')
     addr.reverse()
-    for b in addr: 
+    for b in addr:
         packable_addr.append(int(b, 16))
     return struct.pack("<BBBBBB", *packable_addr)
 
 
 def packed_bdaddr_to_string(bdaddr_packed):
-    return ':'.join('%02x'%i for i in struct.unpack("<BBBBBB", bdaddr_packed[::-1]))
+    return ':'.join('%02x' % i for i in struct.unpack("<BBBBBB", bdaddr_packed[::-1]))
 
 
 def hci_enable_le_scan(sock):
@@ -96,10 +97,10 @@ def hci_le_set_scan_parameters(sock):
     SCAN_TYPE = 0x01
     INTERVAL = 0x10
     WINDOW = 0x10
-    FILTER = 0x00 # all advertisements, not just whitelisted devices
+    FILTER = 0x00  # all advertisements, not just whitelisted devices
     # interval and window are uint_16, so we pad them with 0x0
     cmd_pkt = struct.pack("<BBBBBBB", SCAN_TYPE, 0x0, INTERVAL, 0x0, WINDOW, OWN_TYPE, FILTER)
-    #print "packed up: \"", str( cmd_pkt ) , "\""
+    # print "packed up: \"", str( cmd_pkt ) , "\""
     bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_PARAMETERS, cmd_pkt)
 
 
@@ -123,11 +124,10 @@ def clear_discovered_devices(sock):
 
 
 def scan_beacons(sock, my_full_list):
-
     # 0x40 is non blocking
     pkt = sock.recv(255, 0x40)
-    #print(len(pkt))
-    #print pkt
+    # print(len(pkt))
+    # print pkt
 
     ptype, event, plen = struct.unpack("BBB", pkt[:3])
     if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
@@ -140,22 +140,22 @@ def scan_beacons(sock, my_full_list):
         subevent, = struct.unpack("B", bytes([pkt[3]]))
         pkt = pkt[4:]
         if subevent == EVT_LE_CONN_COMPLETE:
-            #le_handle_connection_complete(pkt)
+            # le_handle_connection_complete(pkt)
             pass
         elif subevent == EVT_LE_ADVERTISING_REPORT:
             num_reports = struct.unpack("B", bytes([pkt[0]]))[0]
             report_pkt_offset = 0
             for i in range(0, num_reports):
                 mac = packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9])
-                uuid = returnstringpacket(pkt[report_pkt_offset -22: report_pkt_offset - 6]) 
-                major = "%i" % returnnumberpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4])
-                minor = "%i" % returnnumberpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2])
-                txpower = struct.unpack("b", bytes([pkt[report_pkt_offset -2]]))
-                rssi = struct.unpack("b", bytes([pkt[report_pkt_offset -1]]))
+                uuid = returnstringpacket(pkt[report_pkt_offset - 22: report_pkt_offset - 6])
+                major = "%i" % returnnumberpacket(pkt[report_pkt_offset - 6: report_pkt_offset - 4])
+                minor = "%i" % returnnumberpacket(pkt[report_pkt_offset - 4: report_pkt_offset - 2])
+                txpower = struct.unpack("b", bytes([pkt[report_pkt_offset - 2]]))
+                rssi = struct.unpack("b", bytes([pkt[report_pkt_offset - 1]]))
 
                 if not uuid in my_full_list:
                     my_full_list[uuid] = {"mac": mac, "uuid": uuid, "major": major, "minor": minor, "samples": []}
 
                 my_full_list[uuid]['samples'].append({"txpower": txpower[0], "rssi": rssi[0], "timestamp": time.time()})
-            
+
     return my_full_list

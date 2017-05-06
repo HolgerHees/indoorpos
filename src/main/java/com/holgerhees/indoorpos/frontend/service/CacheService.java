@@ -10,7 +10,7 @@ import java.util.Map;
 @Component( "cacheService" )
 public class CacheService
 {
-	private long lastUpdate;
+    private long lastUpdate;
 
     public static class TrackedBeacon
     {
@@ -117,6 +117,6 @@ public class CacheService
 
     public long getLastUpdate()
     {
-    	return lastUpdate;
+        return lastUpdate;
     }
 }

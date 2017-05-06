@@ -7,12 +7,8 @@ package com.holgerhees.indoorpos.frontend.websockets.overview;
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.frontend.service.CacheWatcherClient;
 import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
-import com.holgerhees.indoorpos.frontend.websockets.samples.SamplesEndPoint;
-import com.holgerhees.indoorpos.persistance.dao.AreaDAO;
-import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
-import com.holgerhees.indoorpos.persistance.dao.RoomDAO;
-import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
@@ -25,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.websocket.Session;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +31,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     private static Log LOGGER = LogFactory.getLog( OverviewWatcher.class );
 
     @Autowired
-    AreaDAO areaDAO;
-
-    @Autowired
-    RoomDAO roomDAO;
-
-    @Autowired
-    BeaconDAO beaconDAO;
-
-    @Autowired
-    TrackerDAO trackerDAO;
+    DAOCacheService daoCacheService;
 
     @Autowired
     CacheService cacheService;
@@ -55,7 +41,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
 
     private List<Long> lastDetectedRooms;
 
-	private class Area
+    private class Area
     {
         String key;
         int topLeftX;
@@ -77,72 +63,72 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     @PostConstruct
     public void init()
     {
-	    cacheWatcherService.addWatcher( this );
-	    OverviewEndPoint.setWatcher( this);
+        cacheWatcherService.addWatcher( this );
+        OverviewEndPoint.setWatcher( this );
     }
 
-	@Override
-	public void notifyCacheChange()
-	{
-		if( !OverviewEndPoint.hasSessions() )
-		{
-			return;
-		}
+    @Override
+    public void notifyCacheChange()
+    {
+        if( !OverviewEndPoint.hasSessions() )
+        {
+            return;
+        }
 
-		List<Long> detectedRooms = getDetectedRooms();
-		if( detectedRooms.equals( lastDetectedRooms ) )
-		{
-			return;
-		}
+        List<Long> detectedRooms = getDetectedRooms();
+        if( detectedRooms.equals( lastDetectedRooms ) )
+        {
+            return;
+        }
 
-		lastDetectedRooms = detectedRooms;
+        lastDetectedRooms = detectedRooms;
 
-		List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
-		OverviewEndPoint.broadcastMessage( "area", areas );
-	}
+        List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
+        OverviewEndPoint.broadcastMessage( "area", areas );
+    }
 
-	@Override
-	public void notifyNewSession(Session userSession)
-	{
-		OverviewEndPoint.sendMessage( userSession,"tracker", getTracker() );
+    @Override
+    public void notifyNewSession( Session userSession )
+    {
+        OverviewEndPoint.sendMessage( userSession, "tracker", getTracker() );
 
-		List<Long> detectedRooms = getDetectedRooms();
-		List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
-		OverviewEndPoint.broadcastMessage( "area", areas );
-	}
+        List<Long> detectedRooms = getDetectedRooms();
+        List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
+        OverviewEndPoint.broadcastMessage( "area", areas );
+    }
 
-	private List<Long> getDetectedRooms()
-	{
-		Map<Long, TrackerDTO> trackerDTOMap = trackerDAO.getTrackerIDMap();
-		List<BeaconDTO> beaconDTOs = beaconDAO.getBeacons();
+    private List<Long> getDetectedRooms()
+    {
+        Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
+        List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
 
-		List<Long> detectedRooms = new ArrayList<>();
+        List<Long> detectedRooms = new ArrayList<>();
 
-		for( BeaconDTO beaconDTO : beaconDTOs )
-		{
-			List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons( beaconDTO.getId() );
-			CacheService.TrackedBeacon activeTracker = null;
-			for( CacheService.TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
-			{
-				if( activeTracker == null || TrackingHelper.compareTracker( activeTracker, trackedBeaconDTO ) > 0 )
-				{
-					activeTracker = trackedBeaconDTO;
-				}
-			}
-			if( activeTracker != null )
-			{
-				TrackerDTO trackerDTO = trackerDTOMap.get( activeTracker.getTrackerId() );
-				detectedRooms.add( trackerDTO.getRoomId() );
-			}
-		}
-		return detectedRooms;
-	}
+        for( BeaconDTO beaconDTO : beaconDTOs )
+        {
+            List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons( beaconDTO.getId() );
+            CacheService.TrackedBeacon activeTracker = null;
+            for( CacheService.TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
+            {
+                if( activeTracker == null || TrackingHelper.compareTracker( activeTracker, trackedBeaconDTO ) > 0 )
+                {
+                    activeTracker = trackedBeaconDTO;
+                }
+            }
+            if( activeTracker != null )
+            {
+                TrackerDTO trackerDTO = trackerDTOMap.get( activeTracker.getTrackerId() );
+                detectedRooms.add( trackerDTO.getRoomId() );
+            }
+        }
+        return detectedRooms;
+    }
 
     private List<OverviewWatcher.Area> getAreas( List<Long> detectedRooms )
     {
-        Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();
+        Map<Long, RoomDTO> roomDTOMap = daoCacheService.getRoomIDMap();
 
-        List<AreaDTO> areas = areaDAO.getAreas();
+        List<AreaDTO> areas = daoCacheService.getAreas();
 
         List<OverviewWatcher.Area> entries = new ArrayList<>();
         for( AreaDTO area : areas )
@@ -168,8 +154,8 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
 
     private List<OverviewWatcher.Tracker> getTracker()
     {
-        Map<Long, RoomDTO> roomDTOMap = roomDAO.getRoomIDMap();
-        List<TrackerDTO> trackers = trackerDAO.getTracker();
+        Map<Long, RoomDTO> roomDTOMap = daoCacheService.getRoomIDMap();
+        List<TrackerDTO> trackers = daoCacheService.getTracker();
 
         List<OverviewWatcher.Tracker> result = new ArrayList<>();
         for( TrackerDTO tracker : trackers )

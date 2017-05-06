@@ -9,13 +9,8 @@ import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
 import com.holgerhees.shared.web.util.GSonFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,7 +41,7 @@ public class OverviewEndPoint
     {
         LOGGER.info( "onOpen" );
         userSessions.add( userSession );
-	    watcher.notifyNewSession( userSession );
+        watcher.notifyNewSession( userSession );
     }
 
     @OnClose
@@ -65,28 +60,28 @@ public class OverviewEndPoint
     @OnError
     public void onError( Session session, Throwable t )
     {
-	    //LOGGER.info( "onError" );
+        //LOGGER.info( "onError" );
     }
 
-	public static void setWatcher( EndPointWatcherClient watcher )
-	{
-		OverviewEndPoint.watcher = watcher;
-	}
+    public static void setWatcher( EndPointWatcherClient watcher )
+    {
+        OverviewEndPoint.watcher = watcher;
+    }
 
-	public static boolean hasSessions()
+    public static boolean hasSessions()
     {
         return userSessions.size() > 0;
     }
 
-	public static void sendMessage( Session session, String type, Object obj )
-	{
-		Result result = new Result( type, obj );
-		JsonElement json = GSonFactory.createGSon().toJsonTree( result );
+    public static void sendMessage( Session session, String type, Object obj )
+    {
+        Result result = new Result( type, obj );
+        JsonElement json = GSonFactory.createGSon().toJsonTree( result );
 
-		session.getAsyncRemote().sendText( json.toString() );
-	}
+        session.getAsyncRemote().sendText( json.toString() );
+    }
 
-	public static void broadcastMessage( String type, Object obj )
+    public static void broadcastMessage( String type, Object obj )
     {
         Result result = new Result( type, obj );
         JsonElement json = GSonFactory.createGSon().toJsonTree( result );

@@ -7,5 +7,5 @@ import javax.websocket.Session;
  */
 public interface EndPointWatcherClient
 {
-	void notifyNewSession(Session userSession);
+    void notifyNewSession( Session userSession );
 }

@@ -4,19 +4,14 @@ package com.holgerhees.indoorpos.frontend.websockets.samples;
  * Created by hhees on 03.05.17.
  */
 
-import com.google.gson.JsonElement;
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.frontend.service.CacheWatcherClient;
 import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
-import com.holgerhees.indoorpos.frontend.websockets.overview.OverviewEndPoint;
-import com.holgerhees.indoorpos.frontend.websockets.overview.OverviewWatcher;
-import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
-import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.indoorpos.util.TrackingHelper;
-import com.holgerhees.shared.web.util.GSonFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.websocket.Session;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,18 +29,15 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
     private static Log LOGGER = LogFactory.getLog( SamplesWatcher.class );
 
     @Autowired
-    BeaconDAO beaconDAO;
-
-    @Autowired
-    TrackerDAO trackerDAO;
+    DAOCacheService daoCacheService;
 
     @Autowired
     CacheService cacheService;
 
     @Autowired
-	CacheWatcherService cacheWatcherService;
+    CacheWatcherService cacheWatcherService;
 
-	private class Samples
+    private class Samples
     {
         String trackerName;
         String beaconName;
@@ -58,33 +49,33 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
     @PostConstruct
     public void init()
     {
-	    cacheWatcherService.addWatcher( this );
-	    SamplesEndPoint.setSamplesWatcher( this );
+        cacheWatcherService.addWatcher( this );
+        SamplesEndPoint.setSamplesWatcher( this );
     }
 
-	@Override
-	public void notifyCacheChange()
-	{
-		if( !SamplesEndPoint.hasSessions() )
-		{
-			return;
-		}
-
-		List<SamplesWatcher.Samples> samples = getSamples();
-		SamplesEndPoint.broadcastMessage( samples );
-	}
-
-	@Override
-	public void notifyNewSession(Session userSession)
-	{
-		List<SamplesWatcher.Samples> samples = getSamples();
-		SamplesEndPoint.broadcastMessage( samples );
-	}
-
-	private List<SamplesWatcher.Samples> getSamples()
+    @Override
+    public void notifyCacheChange()
     {
-        Map<Long, TrackerDTO> trackerDTOMap = trackerDAO.getTrackerIDMap();
-        Map<Long, BeaconDTO> beaconDTOs = beaconDAO.getBeaconIDMap();
+        if( !SamplesEndPoint.hasSessions() )
+        {
+            return;
+        }
+
+        List<SamplesWatcher.Samples> samples = getSamples();
+        SamplesEndPoint.broadcastMessage( samples );
+    }
+
+    @Override
+    public void notifyNewSession( Session userSession )
+    {
+        List<SamplesWatcher.Samples> samples = getSamples();
+        SamplesEndPoint.broadcastMessage( samples );
+    }
+
+    private List<SamplesWatcher.Samples> getSamples()
+    {
+        Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
+        Map<Long, BeaconDTO> beaconDTOs = daoCacheService.getBeaconIDMap();
 
         List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
 

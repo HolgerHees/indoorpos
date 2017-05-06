@@ -5,14 +5,10 @@ package com.holgerhees.indoorpos.frontend.websockets.tracker;
  */
 
 import com.holgerhees.indoorpos.frontend.service.CacheService;
-import com.holgerhees.indoorpos.frontend.service.CacheWatcherClient;
 import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
-import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
-import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
-import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
+import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
-import com.holgerhees.indoorpos.util.TrackingHelper;
 import com.holgerhees.shared.web.util.GSonFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.websocket.Session;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +25,7 @@ import java.util.Map;
 public class TrackerWatcher
 {
     private static Log LOGGER = LogFactory.getLog( TrackerWatcher.class );
-    private static DecimalFormat df = new DecimalFormat( "#.###" );
+    private static DecimalFormat df = new DecimalFormat( "#.####" );
 
     private class TrackedBeaconSample
     {
@@ -55,43 +50,46 @@ public class TrackerWatcher
     }
 
     @Autowired
-    private BeaconDAO beaconDAO;
-
-    @Autowired
-    private TrackerDAO trackerDAO;
+    private DAOCacheService daoCacheService;
 
     @Autowired
     private CacheService cacheService;
 
+    @Autowired
+    private CacheWatcherService cacheWatcherService;
+
     @PostConstruct
     public void init()
     {
-	    TrackerEndPoint.setTrackerWatcher( this );
+        TrackerEndPoint.setTrackerWatcher( this );
     }
 
-	public void notifyTrackerChange( String message )
-	{
+    public long notifyTrackerChange( String message )
+    {
         long start = System.currentTimeMillis();
 
         Parameter param = GSonFactory.createGSon().fromJson( message, Parameter.class );
 
-        TrackerDTO trackerDTO = trackerDAO.getTrackerByUUID( param.uuid );
+        TrackerDTO trackerDTO = daoCacheService.getTrackerByUUID( param.uuid );
 
         if( trackerDTO == null )
         {
             LOGGER.info( "Skip unknown tracker with 'uuid': " + param.uuid );
-            return;
+        }
+        else
+        {
+            processTrackedBeacons( param, trackerDTO );
+
+            LOGGER.info( "Handle tracker message in " + df
+                    .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds (" + trackerDTO.getName() + ")" );
         }
 
-        processTrackedBeacons( param, trackerDTO );
-
-        LOGGER.info( "Handle tracker message in " + df
-                .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds (" + trackerDTO.getName() + ")" );
-	}
+        return cacheWatcherService.getNextWakeup();
+    }
 
     private void processTrackedBeacons( Parameter param, TrackerDTO trackerDTO )
     {
-        Map<String, BeaconDTO> beaconDTOMap = beaconDAO.getBeaconUUIDMap();
+        Map<String, BeaconDTO> beaconDTOMap = daoCacheService.getBeaconUUIDMap();
 
         List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
 

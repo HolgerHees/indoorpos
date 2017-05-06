@@ -1,5 +1,5 @@
-import subprocess
 import datetime
+import subprocess
 import time
 
 
@@ -29,10 +29,10 @@ def convert_to_json(my_full_list, uuid, max_samples):
         beacon = my_full_list[key]
 
         device = "{"
-        device += "\"mac\":\""+beacon["mac"]+"\","
-        device += "\"uuid\":\""+beacon["uuid"]+"\","
-        device += "\"major\":\""+beacon["major"]+"\","
-        device += "\"minor\":\""+beacon["minor"]+"\","
+        device += "\"mac\":\"" + beacon["mac"] + "\","
+        device += "\"uuid\":\"" + beacon["uuid"] + "\","
+        device += "\"major\":\"" + beacon["major"] + "\","
+        device += "\"minor\":\"" + beacon["minor"] + "\","
         device += "\"samples\":["
 
         if len(beacon["samples"]) > max_samples:

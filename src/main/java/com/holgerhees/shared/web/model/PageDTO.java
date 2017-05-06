@@ -38,13 +38,13 @@ public class PageDTO
         this.imgPrefix = imgPrefix;
     }
 
-	public String getServer()
-	{
-		return server;
-	}
+    public String getServer()
+    {
+        return server;
+    }
 
-	public void setServer(String server)
-	{
-		this.server = server;
-	}
+    public void setServer( String server )
+    {
+        this.server = server;
+    }
 }

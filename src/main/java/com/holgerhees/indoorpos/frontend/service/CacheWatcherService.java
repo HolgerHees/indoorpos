@@ -1,14 +1,14 @@
 package com.holgerhees.indoorpos.frontend.service;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by hhees on 04.05.17.
@@ -16,67 +16,74 @@ import org.springframework.stereotype.Component;
 @Component( "cacheWatcherService" )
 public class CacheWatcherService
 {
-	@Autowired
-	CacheService cacheService;
+    private static Log LOGGER = LogFactory.getLog( CacheWatcherService.class );
+    public static int INTERVAL_LENGTH = 2000;
 
-	private Thread watcher;
+    @Autowired
+    CacheService cacheService;
 
-	private long lastUpdate;
-	private long lastPush;
+    private Thread watcher;
 
-	private static List<CacheWatcherClient> watcherClients = Collections.synchronizedList( new ArrayList<>());
+    private long lastUpdate;
+    private long nextWakeup;
 
-	public class Watcher implements Runnable
-	{
-		public Watcher()
-		{
-		}
+    private static List<CacheWatcherClient> watcherClients = Collections.synchronizedList( new ArrayList<>() );
 
-		@Override
-		public void run()
-		{
-			while( !Thread.currentThread().isInterrupted() )
-			{
-				try
-				{
-					//LOGGER.info( "Area watcher" );
-					Thread.sleep( 100 );
+    public class Watcher implements Runnable
+    {
+        public Watcher()
+        {
+        }
 
-					if( lastUpdate != cacheService.getLastUpdate() && System.currentTimeMillis() - lastPush > 500 )
-					{
-						lastUpdate = cacheService.getLastUpdate();
-						lastPush = System.currentTimeMillis();
+        @Override
+        public void run()
+        {
+            while( !Thread.currentThread().isInterrupted() )
+            {
+                try
+                {
+                    nextWakeup = System.currentTimeMillis() + INTERVAL_LENGTH;
+                    Thread.sleep( INTERVAL_LENGTH );
+                    //LOGGER.info( "Update samples" );
 
-						for( CacheWatcherClient client: watcherClients )
-						{
-							client.notifyCacheChange();
-						}
-					}
-				}
-				catch( InterruptedException e )
-				{
-					//e.printStackTrace();
-					Thread.currentThread().interrupt();
-				}
-			}
-		}
-	}
+                    if( lastUpdate != cacheService.getLastUpdate() )
+                    {
+                        lastUpdate = cacheService.getLastUpdate();
 
-	@PostConstruct
-	public void init()
-	{
-		watcher = new Thread( new Watcher() );
-		watcher.setDaemon( true );
-		watcher.start();
-	}
+                        for( CacheWatcherClient client : watcherClients )
+                        {
+                            client.notifyCacheChange();
+                        }
+                    }
+                } catch( InterruptedException e )
+                {
+                    //e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
 
-	public void shutdown()
-	{
-		watcher.interrupt();
-	}
+    @PostConstruct
+    public void init()
+    {
+        watcher = new Thread( new Watcher() );
+        watcher.setDaemon( true );
+        watcher.start();
+    }
 
-	public void addWatcher( CacheWatcherClient client )
-	{
-		watcherClients.add( client );
-	}
+    public void shutdown()
+    {
+        watcher.interrupt();
+    }
+
+    public void addWatcher( CacheWatcherClient client )
+    {
+        watcherClients.add( client );
+    }
+
+    public long getNextWakeup()
+    {
+        return nextWakeup - System.currentTimeMillis();
+    }
 }
