@@ -182,22 +182,28 @@ public class CacheService
             // update "active" state
             if( activeTracker != null )
             {
+                // remove lastActiveTracker if the new activeTracker is different
+                if( lastActiveTracker != null )
+                {
+                    if( !lastActiveTracker.trackerId.equals( activeTracker.trackerId ) )
+                    {
+                        activeBeaconMap.remove( lastActiveTracker.trackerId );
+                    }
+                    else
+                    {
+                        activeTracker.activeCount = lastActiveTracker.activeCount;
+                    }
+                }
+
                 activeTracker.activeCount++;
 
                 _activeRooms.add( trackerDTOMap.get( activeTracker.trackerId ).getRoomId() );
 
                 activeBeaconMap.put( activeTracker.beaconId, activeTracker );
-
-                // remove lastActiveTracker if the new activeTracker is different
-                if( lastActiveTracker != null && !lastActiveTracker.trackerId.equals( activeTracker.trackerId ) )
-                {
-                    activeBeaconMap.remove( lastActiveTracker.trackerId );
-                }
             }
             // remove lastActiveTracker
             else if( lastActiveTracker != null )
             {
-                // no need to reset activeCount. TrackedBeacon objects are recreated with every tracker update
                 activeBeaconMap.remove( lastActiveTracker.trackerId );
             }
         }
@@ -226,15 +232,11 @@ public class CacheService
         {
             if( lastActiveBeacon.trackerId.equals( t1.trackerId ) )
             {
-                // copy activeCount from old to new oject
-                t1.activeCount = lastActiveBeacon.activeCount;
-                if( isActive( t1, t2 ) ) return t1;
+                if( isActive( lastActiveBeacon.activeCount, t1, t2 ) ) return t1;
             }
             else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) )
             {
-                // copy activeCount from old to new oject
-                t2.activeCount = lastActiveBeacon.activeCount;
-                if( isActive( t2, t1 ) ) return t2;
+                if( isActive( lastActiveBeacon.activeCount, t2, t1 ) ) return t2;
             }
         }
 
@@ -249,9 +251,9 @@ public class CacheService
         return t1;
     }
 
-    private boolean isActive( TrackedBeacon t1, TrackedBeacon t2 )
+    private boolean isActive( int activeCount, TrackedBeacon t1, TrackedBeacon t2 )
     {
-        if( t1.activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+        if( activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
         {
             if( t1.rssi >= t2.rssi ) return true;
             //if( t1.samples >= t2.samples ) return true;
