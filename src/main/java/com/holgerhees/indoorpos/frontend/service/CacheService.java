@@ -188,7 +188,7 @@ public class CacheService
                                 if( isPriorisedActiveTracker( lastActiveTracker, trackedBeacon, activeTracker ) )
                                 {
                                     // keep attempt count of "losing" activeTracker
-                                    if( lastActiveTracker.attemptTrackerId != null && lastActiveTracker.attemptTrackerId.equals( activeTracker.trackerId ) )
+                                    if( activeTracker.trackerId.equals( lastActiveTracker.attemptTrackerId ) )
                                     {
                                         trackedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
                                     }
@@ -214,7 +214,7 @@ public class CacheService
                                 // fallback for a temporary missing trackedBeacon
                                 if( isPriorisedActiveTracker( lastActiveTracker, activeTracker ) )
                                 {
-                                    if( lastActiveTracker.attemptTrackerId == null || !lastActiveTracker.attemptTrackerId.equals( activeTracker.trackerId ) )
+                                    if( !activeTracker.trackerId.equals(  lastActiveTracker.attemptTrackerId ) )
                                     {
                                         lastActiveTracker.attemptTrackerId = activeTracker.trackerId;
                                         lastActiveTracker.attemptTrackerCount = 0;
@@ -291,7 +291,7 @@ public class CacheService
     {
         if( lastActiveTrackerRef.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
         {
-            if( lastActiveTrackerRef.attemptTrackerId != null && lastActiveTrackerRef.attemptTrackerId.equals( newActiveTracker.trackerId ) )
+            if( newActiveTracker.trackerId.equals( lastActiveTrackerRef.attemptTrackerId ) )
             {
                 if( lastActiveTrackerRef.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD )
                 {
