@@ -179,17 +179,18 @@ public class CacheService
                         for( TrackedBeacon trackedBeacon : trackedBeaconDTOs )
                         {
                             // find "fresh" trackedBeacon from lastActiveTracker
-                            if( trackedBeacon.trackerId.equals( lastActiveTracker.trackerId ) )
+                            if( lastActiveTracker.trackerId.equals( trackedBeacon.trackerId  ) )
                             {
                                 // is last active tracker (trackedBeacon) has higher priority then activeTracker
                                 if( isActive( lastActiveTracker.activeCount, trackedBeacon, activeTracker ) )
                                 {
                                     // store "losing" activeTracker
+                                    trackedBeacon.activeCount = lastActiveTracker.activeCount;
+                                    trackedBeacon.attemptTrackerId = activeTracker.trackerId;
                                     if( activeTracker.trackerId.equals( lastActiveTracker.attemptTrackerId ) )
                                     {
                                         trackedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
                                     }
-                                    trackedBeacon.attemptTrackerId = activeTracker.trackerId;
                                     trackedBeacon.attemptTrackerCount++;
 
                                     activeTracker = trackedBeacon;
