@@ -2,6 +2,7 @@
     display: table;
     width: 100%;
     padding: 0px;
+    border-collapse:collapse;
 }
 
 .row {
@@ -15,6 +16,10 @@
     padding: 4px;
 }
 
+.column.head {
+    font-weight: bold;
+}
+
 .row.active {
-    background-color: #EE8888;
+    background-color: #FFBBBB;
 }

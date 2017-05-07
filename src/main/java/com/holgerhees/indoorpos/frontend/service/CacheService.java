@@ -253,10 +253,17 @@ public class CacheService
 
     private boolean isActive( int activeCount, TrackedBeacon t1, TrackedBeacon t2 )
     {
-        if( activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD && t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+        if( activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
         {
-            if( t1.rssi >= t2.rssi ) return true;
-            //if( t1.samples >= t2.samples ) return true;
+            if( t2.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+            {
+                if( t2.rssi > CacheWatcherService.FORCE_NORMAL_CHECK_THRESHOLD ) return false;
+            }
+
+            if( t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+            {
+                if( t1.rssi >= ( t2.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_THRESHOLD ) ) return true;
+            }
         }
         return false;
     }

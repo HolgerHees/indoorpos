@@ -68,7 +68,7 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
     public void notifyNewSession( Session userSession )
     {
         List<SamplesWatcher.Samples> samples = getSamples();
-        SamplesEndPoint.broadcastMessage( samples );
+        SamplesEndPoint.sendMessage( userSession, samples );
     }
 
     private List<SamplesWatcher.Samples> getSamples()

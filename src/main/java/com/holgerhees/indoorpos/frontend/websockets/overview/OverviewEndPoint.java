@@ -41,8 +41,8 @@ public class OverviewEndPoint
     public void onOpen( Session userSession )
     {
         LOGGER.info( "onOpen" );
-        userSessions.add( userSession );
         watcher.notifyNewSession( userSession );
+        userSessions.add( userSession );
     }
 
     @OnClose
@@ -76,18 +76,14 @@ public class OverviewEndPoint
 
     public static void sendMessage( Session session, String type, Object obj )
     {
-        Result result = new Result( type, obj );
-        JsonElement json = GSonFactory.createGSon().toJsonTree( result );
-
         try
         {
+            Result result = new Result( type, obj );
+            JsonElement json = GSonFactory.createGSon().toJsonTree( result );
             // must be synchron
             session.getBasicRemote().sendText( json.toString() );
         }
-        catch( IOException e )
-        {
-            e.printStackTrace();
-        }
+        catch( IOException e ){}
     }
 
     public static void broadcastMessage( String type, Object obj )

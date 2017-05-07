@@ -22,10 +22,10 @@
     {
         var content = "";
         content += "<div class=\"row\">";
-        content += "<span class=\"column\">Tracker</span>";
-        content += "<span class=\"column\">Beacon</span>";
-        content += "<span class=\"column\">RSSI</span>";
-        content += "<span class=\"column\">Count</span>";
+        content += "<span class=\"column head\">Tracker</span>";
+        content += "<span class=\"column head\">Beacon</span>";
+        content += "<span class=\"column head\">RSSI</span>";
+        content += "<span class=\"column head\">Count</span>";
         content += "</div>";
 
         for (var i = 0; i < data.length; i++) {
