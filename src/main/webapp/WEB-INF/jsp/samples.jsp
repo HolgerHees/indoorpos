@@ -18,7 +18,8 @@
 <script type="application/javascript" src="${ctx.jsPrefix}/functions.js"></script>
 <script type="application/javascript">
 
-    function updateSamples(data) {
+    function updateSamples(data)
+    {
         var content = "";
         content += "<div class=\"row\">";
         content += "<span class=\"column\">Tracker</span>";
@@ -46,41 +47,38 @@
         box.innerHTML = content;
     }
 
-    var webSocket = new WebSocket("ws://${ctx.server}/samplesUpdate");
-    webSocket.onopen = function (message) {
-        wsOpen(message);
-    };
-    webSocket.onmessage = function (message) {
-        wsGetMessage(message);
-    };
-    webSocket.onclose = function (message) {
-        wsClose(message);
-    };
-    webSocket.onerror = function (message) {
-        wsError(message);
-    };
-    function wsOpen(message) {
+    function wsOpen(message)
+    {
         console.log("wsOpen");
     }
-    function wsSendMessage() {
-        console.log("wsSendMessage");
-        //webSocket.send(message.value);
-    }
-    function wsCloseConnection() {
-        console.log("wsCloseConnection");
-        webSocket.close();
-    }
-    function wsGetMessage(message) {
+
+    function wsGetMessage(message)
+    {
         //console.log(message );
         updateSamples(JSON.parse(message.data));
     }
-    function wsClose(message) {
+
+    function wsClose(message)
+    {
         console.log("wsClose " + message.data);
+        window.setTimeout(function(){initWebsocket();},10000);
     }
-    function wsError(message) {
+
+    function wsError(message)
+    {
         console.log("wsError " + message.data);
     }
 
+    function initWebsocket()
+    {
+        var webSocket = new WebSocket("ws://${ctx.server}/samplesUpdate");
+        webSocket.onopen = wsOpen;
+        webSocket.onmessage = wsGetMessage;
+        webSocket.onclose = wsClose;
+        webSocket.onerror = wsError;
+    }
+
+    initWebsocket();
 </script>
 <footer>&copy; 2017 by Holger Hees</footer>
 </body>

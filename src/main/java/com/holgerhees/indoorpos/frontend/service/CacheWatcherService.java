@@ -35,10 +35,10 @@ public class CacheWatcherService
     // network latency ins ms used to calculate to correct wakeup time
     public static int NETWORK_LATENCY = 20;
 
-    // if more then 10 seconds active (INTERVAL_LENGTH * 5)
+    // more then 10 seconds (INTERVAL_LENGTH * 5) active to acitvate "priorised tracker"
     public static int ACTIVE_COUNT_THRESHOLD = 5;
-    // more then 50% of possible samples (INTERVAL_LENGTH / FREQUENCY)
-    public static int MIN_SAMPLE_THRESHOLD = 10;
+    // more then 3 samples to acitvate "priorised tracker"
+    public static int MIN_SAMPLE_THRESHOLD = 3;
 
     @Autowired
     CacheService cacheService;

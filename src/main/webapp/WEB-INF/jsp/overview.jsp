@@ -27,6 +27,54 @@
 <script type="application/javascript">
 
     var openSVGRequests = 3;
+    var areaRects = {};
+    var trackerCircles = {};
+
+    function wsOpen(message)
+    {
+        console.log("wsOpen");
+    }
+
+    function wsGetMessage(message)
+    {
+        //console.log(message);
+        var obj = JSON.parse(message.data);
+        if (obj.type == "tracker") {
+            drawPoints(trackerCircles, obj.data, "#c82124");
+        }
+        else {
+            drawAreas(areaRects, obj.data, "#000066");
+        }
+    }
+
+    function wsClose(message)
+    {
+        console.log("wsClose " + message);
+        window.setTimeout(function(){initWebsocket();},10000);
+    }
+
+    function wsError(message)
+    {
+        console.log("wsError " + message);
+    }
+
+    function initWebsocket()
+    {
+        var webSocket = new WebSocket("ws://${ctx.server}/overviewUpdate");
+        webSocket.onopen = wsOpen;
+        webSocket.onmessage = wsGetMessage;
+        webSocket.onclose = wsClose;
+        webSocket.onerror = wsError;
+    }
+
+    function loadData()
+    {
+        openSVGRequests--;
+
+        if (openSVGRequests > 0) return;
+
+        window.setTimeout(function(){initWebsocket();},500);
+    }
 
     var firstFloorSVG = new Image();
     firstFloorSVG.src = "${ctx.imgPrefix}/overview/floor_first.svg";
@@ -47,66 +95,6 @@
     thirdFloorSVG.onload = function () {
         calculateSVGSizes('thirdFloorCtx', thirdFloorSVG);
         loadData();
-    }
-
-    areaRects = {};
-    trackerCircles = {};
-    beaconCircles = {};
-
-    function loadData() {
-        openSVGRequests--;
-
-        if (openSVGRequests > 0) return;
-
-        window.setTimeout(function()
-        {
-            var webSocket = new WebSocket("ws://${ctx.server}/overviewUpdate");
-            webSocket.onopen = function (message) {
-                wsOpen(message);
-            };
-            webSocket.onmessage = function (message) {
-                wsGetMessage(message);
-            };
-            webSocket.onclose = function (message) {
-                wsClose(message);
-            };
-            webSocket.onerror = function (message) {
-                wsError(message);
-            };
-        },500);
-
-        function wsOpen(message) {
-            console.log("wsOpen");
-        }
-
-        function wsSendMessage() {
-            console.log("wsSendMessage");
-            //webSocket.send(message.value);
-        }
-
-        function wsCloseConnection() {
-            console.log("wsCloseConnection");
-            webSocket.close();
-        }
-
-        function wsGetMessage(message) {
-            console.log(message);
-            var obj = JSON.parse(message.data);
-            if (obj.type == "tracker") {
-                drawPoints(trackerCircles, obj.data, "#c82124");
-            }
-            else {
-                drawAreas(areaRects, obj.data, "#000066");
-            }
-        }
-
-        function wsClose(message) {
-            console.log("wsClose " + message);
-        }
-
-        function wsError(message) {
-            console.log("wsError " + message);
-        }
     }
 </script>
 <footer>&copy; 2017 by Holger Hees</footer>
