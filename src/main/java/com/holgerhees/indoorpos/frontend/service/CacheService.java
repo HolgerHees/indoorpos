@@ -31,6 +31,8 @@ public class CacheService
         private int samples;
 
         private int activeCount = 0;
+        private int attemptTrackerCount = 0;
+        private Long attemptTrackerId;
 
         public Long getTrackerId()
         {
@@ -156,42 +158,53 @@ public class CacheService
         {
             List<TrackedBeacon> trackedBeaconDTOs = getTrackedBeacons( beaconDTO.getId() );
 
-            // get last active tracker
-            TrackedBeacon lastActiveTracker = activeBeaconMap.get( beaconDTO.getId() );
-            // and check if it is still tracked
-            TrackedBeacon lastActiveTrackerStillActive = null;
-            if( lastActiveTracker != null )
-            {
-                for( TrackedBeacon trackedBeacon : trackedBeaconDTOs )
-                {
-                    if( trackedBeacon.getTrackerId().equals( lastActiveTracker.trackerId ) )
-                    {
-                        lastActiveTrackerStillActive = lastActiveTracker;
-                        break;
-                    }
-                }
-            }
-
             // Determine the most relevant Tracker
             TrackedBeacon activeTracker = null;
             for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
             {
-                activeTracker = getActiveTracker( lastActiveTrackerStillActive, activeTracker, trackedBeaconDTO );
+                activeTracker = getActiveTracker( activeTracker, trackedBeaconDTO );
             }
+
+            // get last active tracker
+            TrackedBeacon lastActiveTracker = activeBeaconMap.get( beaconDTO.getId() );
 
             // update "active" state
             if( activeTracker != null )
             {
-                // remove lastActiveTracker if the new activeTracker is different
                 if( lastActiveTracker != null )
                 {
+                    // active tracker is different
                     if( !lastActiveTracker.trackerId.equals( activeTracker.trackerId ) )
                     {
-                        activeBeaconMap.remove( lastActiveTracker.trackerId );
+                        for( TrackedBeacon trackedBeacon : trackedBeaconDTOs )
+                        {
+                            // find "fresh" trackedBeacon from lastActiveTracker
+                            if( trackedBeacon.trackerId.equals( lastActiveTracker.trackerId ) )
+                            {
+                                // is last active tracker (trackedBeacon) has higher priority then activeTracker
+                                if( isActive( lastActiveTracker.activeCount, trackedBeacon, activeTracker ) )
+                                {
+                                    // store "losing" activeTracker
+                                    if( activeTracker.trackerId.equals( lastActiveTracker.attemptTrackerId ) )
+                                    {
+                                        trackedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
+                                    }
+                                    trackedBeacon.attemptTrackerId = activeTracker.trackerId;
+                                    trackedBeacon.attemptTrackerCount++;
+
+                                    activeTracker = trackedBeacon;
+                                }
+                                break;
+                            }
+                        }
                     }
+                    // active tracker is the same. keep old values and reset last "losing" tracker
                     else
                     {
                         activeTracker.activeCount = lastActiveTracker.activeCount;
+
+                        activeTracker.attemptTrackerId = null;
+                        activeTracker.attemptTrackerCount = 0;
                     }
                 }
 
@@ -211,7 +224,7 @@ public class CacheService
         activeRooms = _activeRooms;
     }
 
-    private TrackedBeacon getActiveTracker( TrackedBeacon lastActiveBeacon, TrackedBeacon t1, TrackedBeacon t2 )
+    private TrackedBeacon getActiveTracker( TrackedBeacon t1, TrackedBeacon t2 )
     {
         /*double length1 = LocationHelper.getDistance(  t1.getRssi(), t1.getTxPower() );
         double cmp1 = (100 - length1) * t1.getSamples();
@@ -226,18 +239,6 @@ public class CacheService
         if( t1 == null )
         {
             return t2;
-        }
-
-        if( lastActiveBeacon != null )
-        {
-            if( lastActiveBeacon.trackerId.equals( t1.trackerId ) )
-            {
-                if( isActive( lastActiveBeacon.activeCount, t1, t2 ) ) return t1;
-            }
-            else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) )
-            {
-                if( isActive( lastActiveBeacon.activeCount, t2, t1 ) ) return t2;
-            }
         }
 
         int signalStrengh1 = 100 + t1.getRssi();
@@ -255,9 +256,14 @@ public class CacheService
     {
         if( activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
         {
+            if( t1.attemptTrackerId != null && t1.attemptTrackerId.equals( t2.trackerId ) )
+            {
+                if( t1.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD ) return false;
+            }
+
             if( t2.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
             {
-                if( t2.rssi > CacheWatcherService.FORCE_NORMAL_CHECK_THRESHOLD ) return false;
+                if( t2.rssi >= CacheWatcherService.FORCE_NORMAL_CHECK_RSSI_THRESHOLD ) return false;
             }
 
             if( t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
