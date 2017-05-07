@@ -99,6 +99,7 @@ public class CacheWatcherService
 
     public void shutdown()
     {
+        LOGGER.info("Shutting down CacheWatcherService" );
         watcher.interrupt();
     }
 

@@ -1,15 +1,13 @@
 package com.holgerhees.indoorpos.frontend.service;
 
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
+import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component( "cacheService" )
 public class CacheService
@@ -19,6 +17,7 @@ public class CacheService
     private long lastUpdate;
     Map<Long, List<TrackedBeacon>> trackedBeaconMap = new HashMap<>();
     Map<Long, TrackedBeacon> activeBeaconMap = new HashMap<>();
+    Set<Long> activeRooms = new HashSet<>();
 
     @Autowired
     DAOCacheService daoCacheService;
@@ -82,6 +81,11 @@ public class CacheService
         {
             this.samples = samples;
         }
+
+        public boolean isActive()
+        {
+            return this.activeCount > 0;
+        }
     }
 
     public long getLastUpdate()
@@ -125,9 +129,9 @@ public class CacheService
         return result;
     }
 
-    public Map<Long, TrackedBeacon> getActiveTrackedBeaconMap()
+    public Set<Long> getActiveRooms()
     {
-        return activeBeaconMap;
+        return activeRooms;
     }
 
     public List<TrackedBeacon> getActiveTrackedBeacons()
@@ -144,6 +148,9 @@ public class CacheService
     public void updateActiveTracker()
     {
         List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
+        Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
+
+        Set<Long> _activeRooms = new HashSet<>(  );
 
         for( BeaconDTO beaconDTO : beaconDTOs )
         {
@@ -171,6 +178,8 @@ public class CacheService
             {
                 activeTracker.activeCount++;
 
+                _activeRooms.add( trackerDTOMap.get( activeTracker.getTrackerId() ).getRoomId() );
+
                 activeBeaconMap.put( beaconDTO.getId(), activeTracker );
             }
             else
@@ -179,6 +188,8 @@ public class CacheService
                 activeBeaconMap.remove( beaconDTO.getId() );
             }
         }
+
+        activeRooms = _activeRooms;
     }
 
     private TrackedBeacon getActiveTracker( TrackedBeacon lastActiveBeacon, TrackedBeacon t1, TrackedBeacon t2 )

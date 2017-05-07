@@ -71,7 +71,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
             return;
         }
 
-        Set<Long> detectedRooms = getDetectedRooms();
+        Set<Long> detectedRooms = cacheService.getActiveRooms();
         if( detectedRooms.equals( lastDetectedRooms ) )
         {
             return;
@@ -88,23 +88,9 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     {
         OverviewEndPoint.sendMessage( userSession, "tracker", getTracker() );
 
-        Set<Long> detectedRooms = getDetectedRooms();
+        Set<Long> detectedRooms = cacheService.getActiveRooms();
         List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
         OverviewEndPoint.sendMessage( userSession, "area", areas );
-    }
-
-    private Set<Long> getDetectedRooms()
-    {
-        Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
-
-        Set<Long> detectedRooms = new HashSet<>();
-
-        for( CacheService.TrackedBeacon trackedBeacon : cacheService.getActiveTrackedBeacons() )
-        {
-            TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeacon.getTrackerId() );
-            detectedRooms.add( trackerDTO.getRoomId() );
-        }
-        return detectedRooms;
     }
 
     private List<OverviewWatcher.Area> getAreas( Set<Long> detectedRooms )
