@@ -182,7 +182,7 @@ public class CacheService
                             if( lastActiveTracker.trackerId.equals( trackedBeacon.trackerId  ) )
                             {
                                 // is last active tracker (trackedBeacon) has higher priority then activeTracker
-                                if( isActive( lastActiveTracker.activeCount, trackedBeacon, activeTracker ) )
+                                if( isActive( lastActiveTracker, trackedBeacon, activeTracker ) )
                                 {
                                     // store "losing" activeTracker
                                     trackedBeacon.activeCount = lastActiveTracker.activeCount;
@@ -253,13 +253,13 @@ public class CacheService
         return t1;
     }
 
-    private boolean isActive( int activeCount, TrackedBeacon t1, TrackedBeacon t2 )
+    private boolean isActive( TrackedBeacon lastActiveTracker, TrackedBeacon t1, TrackedBeacon t2 )
     {
-        if( activeCount > CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
+        if( lastActiveTracker.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
         {
-            if( t1.attemptTrackerId != null && t1.attemptTrackerId.equals( t2.trackerId ) )
+            if( lastActiveTracker.attemptTrackerId != null && lastActiveTracker.attemptTrackerId.equals( t2.trackerId ) )
             {
-                if( t1.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD ) return false;
+                if( lastActiveTracker.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD ) return false;
             }
 
             if( t2.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )

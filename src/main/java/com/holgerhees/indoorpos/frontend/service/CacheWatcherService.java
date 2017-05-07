@@ -35,19 +35,18 @@ public class CacheWatcherService
     // network latency ins ms used to calculate to correct wakeup time
     public static int NETWORK_LATENCY = 20;
 
-    // more then 10 seconds (INTERVAL_LENGTH * 5) active to acitvate "priorised tracker"
-    public static int ACTIVE_COUNT_THRESHOLD = 5;
-    // more then 3 samples to acitvate "priorised tracker"
-    public static int MIN_SAMPLE_THRESHOLD = 3;
-
-    // a new RSSI value of highter then XX should always force a "normal" isActive check
-    public static int FORCE_NORMAL_CHECK_RSSI_THRESHOLD = -70;
-
+    /** is Active check **/
+    // "priorised tracker" only if tracker was already active 2 times (now 3 times => 6 seconds)
+    public static int ACTIVE_COUNT_THRESHOLD = 2;
     // a new tracker who already tried 2 times to go active is forcing a "normal" isActive check
     public static int FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD = 2;
-
+    // more then 3 samples to acitvate "priorised tracker"
+    public static int MIN_SAMPLE_THRESHOLD = 3;
+    // a new RSSI value of highter then XX should always force a "normal" isActive check
+    public static int FORCE_NORMAL_CHECK_RSSI_THRESHOLD = -70;
     // a new RSSI value must be higher then XX to force a "normal" isActive check
     public static int FORCE_PRIORITY_CHECK_RSSI_THRESHOLD = 10;
+    /*********************/
 
     @Autowired
     CacheService cacheService;
