@@ -81,6 +81,7 @@ public class OverviewEndPoint
 
         try
         {
+            // must be synchron
             session.getBasicRemote().sendText( json.toString() );
         }
         catch( IOException e )
