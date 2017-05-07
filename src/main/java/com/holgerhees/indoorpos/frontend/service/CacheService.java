@@ -187,7 +187,7 @@ public class CacheService
                                     // store "losing" activeTracker
                                     trackedBeacon.activeCount = lastActiveTracker.activeCount;
                                     trackedBeacon.attemptTrackerId = activeTracker.trackerId;
-                                    if( activeTracker.trackerId.equals( lastActiveTracker.attemptTrackerId ) )
+                                    if( trackedBeacon.attemptTrackerId.equals( lastActiveTracker.attemptTrackerId ) )
                                     {
                                         trackedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
                                     }
