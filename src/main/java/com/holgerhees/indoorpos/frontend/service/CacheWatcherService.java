@@ -32,6 +32,9 @@ public class CacheWatcherService
     // time difference in ms between tracking websocket call and cache updates
     public static int WAKEUP_BUFFER = 200;
 
+    // network latency ins ms used to calculate to correct wakeup time
+    public static int NETWORK_LATENCY = 20;
+
     // if more then 10 seconds active (INTERVAL_LENGTH * 5)
     public static int ACTIVE_COUNT_THRESHOLD = 5;
     // more then 50% of possible samples (INTERVAL_LENGTH / FREQUENCY)
@@ -106,6 +109,6 @@ public class CacheWatcherService
 
     public long getNextWakeup()
     {
-        return nextWakeup - System.currentTimeMillis() - WAKEUP_BUFFER;
+        return nextWakeup - System.currentTimeMillis() - ( WAKEUP_BUFFER - NETWORK_LATENCY );
     }
 }

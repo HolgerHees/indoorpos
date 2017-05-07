@@ -111,30 +111,6 @@ public class TrackerWatcher
                 continue;
             }
 
-            /*boolean isActive = activeTrackedBeaconIds.contains( beaconDTO.getId() );
-            int referenceRSSI = isActive ? -84 : -78;
-            switch( beacon.samples )
-            {
-                case 1:
-                    if( !isActive )
-                    {
-                        LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low samples. Skip inactive beacon " + beacon.uuid );
-                        continue;
-                    }
-                case 2:
-                case 3:
-                case 4:
-                    int minRSSI =  ( referenceRSSI - ( 2 * beacon.samples ) );
-                    if( beacon.rssi <= minRSSI )
-                    {
-                        LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + beacon.rssi + ", Samples: " + beacon.samples + ". Low Signal. Skip inactive beacon " + beacon.uuid );
-                        continue;
-                    }
-                    break;
-                default:
-                    break;
-            }*/
-
             int txpower = 0;
             int rssi = 0;
             for( TrackedBeaconSample sample : beacon.samples )

@@ -64,8 +64,6 @@ def scan_beacons(interval_start, interval_end, beacon_frequency):
             else:
                 yield from asyncio.sleep(interval_left)
 
-    # bleproto.clear_discovered_devices(sock)
-
     interval_duration = current_time - interval_start
     interval_start = current_time
 
@@ -118,19 +116,19 @@ def main_loop():
 
                         network_start = time.time()
                         yield from websocket.send(json)
-
                         next_wakeup = yield from websocket.recv();
-                        network_end = time.time()
-
-                        bletools.log(
-                            "CNT: " + str(sample_count) + " - TIME: " + ("%.4f" % interval_duration) + " - NET: " + (
-                            "%.4f" % (network_end - network_start)))
-
                         next_wakeup = int(next_wakeup) / 1000.0
+
+                        interval_end = time.time() + interval_length + next_wakeup
+
+                        network_duration = (time.time() - network_start)
+                        
+                        bletools.log(
+                            "CNT: " + ("%02d" % sample_count) + " - TIME: " + ("%.4f" % interval_duration) + " - NET: " + (
+                            "%.4f" % network_duration) + " - WAKEUP: " + ( "%.4f" % next_wakeup) )
 
                         #bletools.log(str(next_wakeup))
 
-                        interval_end = interval_start + interval_length + next_wakeup
                     else:
                         skip_count += 1
                         interval_end = interval_start + interval_length
