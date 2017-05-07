@@ -86,10 +86,15 @@ public class CacheWatcherService
 
                         LOGGER.info( "Update cache " + df.format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds" );
                     }
-                } catch( InterruptedException e )
+                }
+                catch( InterruptedException e )
                 {
                     //e.printStackTrace();
                     Thread.currentThread().interrupt();
+                }
+                catch( Exception e )
+                {
+                    LOGGER.fatal( e );
                 }
             }
         }
