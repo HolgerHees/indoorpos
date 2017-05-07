@@ -188,7 +188,7 @@ public class CacheService
                                 if( isPriorisedActiveTracker( lastActiveTracker, trackedBeacon, activeTracker ) )
                                 {
                                     // keep attempt count of "losing" activeTracker
-                                    if( lastActiveTracker.attemptTrackerId.equals( activeTracker.trackerId ) )
+                                    if( lastActiveTracker.attemptTrackerId != null && lastActiveTracker.attemptTrackerId.equals( activeTracker.trackerId ) )
                                     {
                                         trackedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
                                     }
@@ -214,7 +214,7 @@ public class CacheService
                                 // fallback for a temporary missing trackedBeacon
                                 if( isPriorisedActiveTracker( lastActiveTracker, activeTracker ) )
                                 {
-                                    if( !lastActiveTracker.attemptTrackerId.equals( activeTracker.trackerId ) )
+                                    if( lastActiveTracker.attemptTrackerId == null || !lastActiveTracker.attemptTrackerId.equals( activeTracker.trackerId ) )
                                     {
                                         lastActiveTracker.attemptTrackerId = activeTracker.trackerId;
                                         lastActiveTracker.attemptTrackerCount = 0;
