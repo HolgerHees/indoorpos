@@ -268,7 +268,7 @@ public class CacheService
 
             if( t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
             {
-                if( t1.rssi >= ( t2.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_THRESHOLD ) ) return true;
+                if( t1.rssi >= ( t2.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD ) ) return true;
             }
         }
         return false;

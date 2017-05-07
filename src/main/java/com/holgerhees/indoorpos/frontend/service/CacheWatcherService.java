@@ -43,11 +43,11 @@ public class CacheWatcherService
     // a new RSSI value of highter then XX should always force a "normal" isActive check
     public static int FORCE_NORMAL_CHECK_RSSI_THRESHOLD = -70;
 
-    // a tracker who tries 3 times (was allready 2 times there) to go active is forcing a "normal" isActive check
+    // a new tracker who already tried 2 times to go active is forcing a "normal" isActive check
     public static int FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD = 2;
 
     // a new RSSI value must be higher then XX to force a "normal" isActive check
-    public static int FORCE_PRIORITY_CHECK_THRESHOLD = 10;
+    public static int FORCE_PRIORITY_CHECK_RSSI_THRESHOLD = 10;
 
     @Autowired
     CacheService cacheService;
