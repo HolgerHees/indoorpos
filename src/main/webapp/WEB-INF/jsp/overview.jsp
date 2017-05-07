@@ -58,19 +58,23 @@
 
         if (openSVGRequests > 0) return;
 
-        var webSocket = new WebSocket("ws://${ctx.server}/overviewUpdate");
-        webSocket.onopen = function (message) {
-            wsOpen(message);
-        };
-        webSocket.onmessage = function (message) {
-            wsGetMessage(message);
-        };
-        webSocket.onclose = function (message) {
-            wsClose(message);
-        };
-        webSocket.onerror = function (message) {
-            wsError(message);
-        };
+        window.setTimeout(function()
+        {
+            var webSocket = new WebSocket("ws://${ctx.server}/overviewUpdate");
+            webSocket.onopen = function (message) {
+                wsOpen(message);
+            };
+            webSocket.onmessage = function (message) {
+                wsGetMessage(message);
+            };
+            webSocket.onclose = function (message) {
+                wsClose(message);
+            };
+            webSocket.onerror = function (message) {
+                wsError(message);
+            };
+        },500);
+
         function wsOpen(message) {
             console.log("wsOpen");
         }
@@ -86,7 +90,7 @@
         }
 
         function wsGetMessage(message) {
-            //console.log(message);
+            console.log(message);
             var obj = JSON.parse(message.data);
             if (obj.type == "tracker") {
                 drawPoints(trackerCircles, obj.data, "#c82124");
@@ -97,11 +101,11 @@
         }
 
         function wsClose(message) {
-            console.log("wsClose " + message.data);
+            console.log("wsClose " + message);
         }
 
         function wsError(message) {
-            console.log("wsError " + message.data);
+            console.log("wsError " + message);
         }
     }
 </script>

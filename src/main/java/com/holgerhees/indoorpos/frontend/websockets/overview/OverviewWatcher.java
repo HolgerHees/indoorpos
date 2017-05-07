@@ -90,7 +90,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
 
         Set<Long> detectedRooms = getDetectedRooms();
         List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
-        OverviewEndPoint.broadcastMessage( "area", areas );
+        OverviewEndPoint.sendMessage( userSession, "area", areas );
     }
 
     private Set<Long> getDetectedRooms()

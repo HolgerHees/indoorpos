@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -78,7 +79,14 @@ public class OverviewEndPoint
         Result result = new Result( type, obj );
         JsonElement json = GSonFactory.createGSon().toJsonTree( result );
 
-        session.getAsyncRemote().sendText( json.toString() );
+        try
+        {
+            session.getBasicRemote().sendText( json.toString() );
+        }
+        catch( IOException e )
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void broadcastMessage( String type, Object obj )
