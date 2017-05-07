@@ -246,29 +246,35 @@ public class CacheService
         {
             if( lastActiveTrackerRef.attemptTrackerId != null && lastActiveTrackerRef.attemptTrackerId.equals( newActiveTracker.trackerId ) )
             {
-                if( lastActiveTrackerRef.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD ) return newActiveTracker;
+                if( lastActiveTrackerRef.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD )
+                {
+                    return newActiveTracker;
+                }
             }
 
             if( newActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
             {
-                if( newActiveTracker.rssi > CacheWatcherService.FORCE_NORMAL_CHECK_RSSI_THRESHOLD ) return newActiveTracker;
-            }
-
-            if( currentActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
-            {
-                if( currentActiveTracker.rssi > ( newActiveTracker.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD ) )
+                if( newActiveTracker.rssi > CacheWatcherService.FORCE_NORMAL_CHECK_RSSI_THRESHOLD )
                 {
-                    // store "losing" activeTracker
-                    currentActiveTracker.activeCount = lastActiveTrackerRef.activeCount;
-                    currentActiveTracker.attemptTrackerId = newActiveTracker.trackerId;
-                    if( currentActiveTracker.attemptTrackerId.equals( lastActiveTrackerRef.attemptTrackerId ) )
-                    {
-                        currentActiveTracker.attemptTrackerCount = lastActiveTrackerRef.attemptTrackerCount;
-                    }
-                    currentActiveTracker.attemptTrackerCount++;
-                    return currentActiveTracker;
+                    return newActiveTracker;
                 }
             }
+
+            //if( currentActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+            //{
+            if( currentActiveTracker.rssi > ( newActiveTracker.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD ) )
+            {
+                // store "losing" activeTracker
+                currentActiveTracker.activeCount = lastActiveTrackerRef.activeCount;
+                currentActiveTracker.attemptTrackerId = newActiveTracker.trackerId;
+                if( currentActiveTracker.attemptTrackerId.equals( lastActiveTrackerRef.attemptTrackerId ) )
+                {
+                    currentActiveTracker.attemptTrackerCount = lastActiveTrackerRef.attemptTrackerCount;
+                }
+                currentActiveTracker.attemptTrackerCount++;
+                return currentActiveTracker;
+            }
+            //}
         }
         return newActiveTracker;
     }
