@@ -181,20 +181,8 @@ public class CacheService
                             // find "fresh" trackedBeacon from lastActiveTracker
                             if( lastActiveTracker.trackerId.equals( trackedBeacon.trackerId  ) )
                             {
-                                // is last active tracker (trackedBeacon) has higher priority then activeTracker
-                                if( isActive( lastActiveTracker, trackedBeacon, activeTracker ) )
-                                {
-                                    // store "losing" activeTracker
-                                    trackedBeacon.activeCount = lastActiveTracker.activeCount;
-                                    trackedBeacon.attemptTrackerId = activeTracker.trackerId;
-                                    if( trackedBeacon.attemptTrackerId.equals( lastActiveTracker.attemptTrackerId ) )
-                                    {
-                                        trackedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
-                                    }
-                                    trackedBeacon.attemptTrackerCount++;
-
-                                    activeTracker = trackedBeacon;
-                                }
+                                // use "trackedBeacon" if "lastActiveTracker" has higher priority then "activeTracker"
+                                activeTracker = getPriorisedActiveTracker( lastActiveTracker, trackedBeacon, activeTracker );
                                 break;
                             }
                         }
@@ -203,7 +191,6 @@ public class CacheService
                     else
                     {
                         activeTracker.activeCount = lastActiveTracker.activeCount;
-
                         activeTracker.attemptTrackerId = null;
                         activeTracker.attemptTrackerCount = 0;
                     }
@@ -253,25 +240,36 @@ public class CacheService
         return t1;
     }
 
-    private boolean isActive( TrackedBeacon lastActiveTracker, TrackedBeacon t1, TrackedBeacon t2 )
+    private TrackedBeacon getPriorisedActiveTracker( TrackedBeacon lastActiveTrackerRef, TrackedBeacon currentActiveTracker, TrackedBeacon newActiveTracker )
     {
-        if( lastActiveTracker.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
+        if( lastActiveTrackerRef.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
         {
-            if( lastActiveTracker.attemptTrackerId != null && lastActiveTracker.attemptTrackerId.equals( t2.trackerId ) )
+            if( lastActiveTrackerRef.attemptTrackerId != null && lastActiveTrackerRef.attemptTrackerId.equals( newActiveTracker.trackerId ) )
             {
-                if( lastActiveTracker.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD ) return false;
+                if( lastActiveTrackerRef.attemptTrackerCount >= CacheWatcherService.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD ) return newActiveTracker;
             }
 
-            if( t2.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+            if( newActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
             {
-                if( t2.rssi > CacheWatcherService.FORCE_NORMAL_CHECK_RSSI_THRESHOLD ) return false;
+                if( newActiveTracker.rssi > CacheWatcherService.FORCE_NORMAL_CHECK_RSSI_THRESHOLD ) return newActiveTracker;
             }
 
-            if( t1.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
+            if( currentActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
             {
-                if( t1.rssi > ( t2.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD ) ) return true;
+                if( currentActiveTracker.rssi > ( newActiveTracker.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD ) )
+                {
+                    // store "losing" activeTracker
+                    currentActiveTracker.activeCount = lastActiveTrackerRef.activeCount;
+                    currentActiveTracker.attemptTrackerId = newActiveTracker.trackerId;
+                    if( currentActiveTracker.attemptTrackerId.equals( lastActiveTrackerRef.attemptTrackerId ) )
+                    {
+                        currentActiveTracker.attemptTrackerCount = lastActiveTrackerRef.attemptTrackerCount;
+                    }
+                    currentActiveTracker.attemptTrackerCount++;
+                    return currentActiveTracker;
+                }
             }
         }
-        return false;
+        return newActiveTracker;
     }
 }
