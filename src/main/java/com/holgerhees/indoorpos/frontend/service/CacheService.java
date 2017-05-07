@@ -156,36 +156,49 @@ public class CacheService
         {
             List<TrackedBeacon> trackedBeaconDTOs = getTrackedBeacons( beaconDTO.getId() );
 
-            TrackedBeacon _lastActiveTracker = activeBeaconMap.get( beaconDTO.getId() );
-            TrackedBeacon lastActiveTracker = null;
-            if( _lastActiveTracker != null )
+            // get last active tracker
+            TrackedBeacon lastActiveTracker = activeBeaconMap.get( beaconDTO.getId() );
+            // and check if it is still tracked
+            TrackedBeacon lastActiveTrackerStillActive = null;
+            if( lastActiveTracker != null )
             {
                 for( TrackedBeacon trackedBeacon : trackedBeaconDTOs )
                 {
-                    if( trackedBeacon.getTrackerId().equals( _lastActiveTracker.getTrackerId() ) )
+                    if( trackedBeacon.getTrackerId().equals( lastActiveTracker.trackerId ) )
                     {
-                        lastActiveTracker = _lastActiveTracker;
+                        lastActiveTrackerStillActive = lastActiveTracker;
                         break;
                     }
                 }
             }
+
+            // Determine the most relevant Tracker
             TrackedBeacon activeTracker = null;
             for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
             {
-                activeTracker = getActiveTracker( lastActiveTracker, activeTracker, trackedBeaconDTO );
+                activeTracker = getActiveTracker( lastActiveTrackerStillActive, activeTracker, trackedBeaconDTO );
             }
+
+            // update "active" state
             if( activeTracker != null )
             {
                 activeTracker.activeCount++;
 
-                _activeRooms.add( trackerDTOMap.get( activeTracker.getTrackerId() ).getRoomId() );
+                _activeRooms.add( trackerDTOMap.get( activeTracker.trackerId ).getRoomId() );
 
-                activeBeaconMap.put( beaconDTO.getId(), activeTracker );
+                activeBeaconMap.put( activeTracker.beaconId, activeTracker );
+
+                // remove lastActiveTracker if the new activeTracker is different
+                if( lastActiveTracker != null && !lastActiveTracker.trackerId.equals( activeTracker.trackerId ) )
+                {
+                    activeBeaconMap.remove( lastActiveTracker.trackerId );
+                }
             }
-            else
+            // remove lastActiveTracker
+            else if( lastActiveTracker != null )
             {
                 // no need to reset activeCount. TrackedBeacon objects are recreated with every tracker update
-                activeBeaconMap.remove( beaconDTO.getId() );
+                activeBeaconMap.remove( lastActiveTracker.trackerId );
             }
         }
 
@@ -211,13 +224,13 @@ public class CacheService
 
         if( lastActiveBeacon != null )
         {
-            if( lastActiveBeacon.trackerId.equals( t1.trackerId ) && lastActiveBeacon.beaconId.equals( t1.beaconId ) )
+            if( lastActiveBeacon.trackerId.equals( t1.trackerId ) )
             {
                 // copy activeCount from old to new oject
                 t1.activeCount = lastActiveBeacon.activeCount;
                 if( isActive( t1, t2 ) ) return t1;
             }
-            else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) && lastActiveBeacon.beaconId.equals( t2.beaconId ) )
+            else if( lastActiveBeacon.trackerId.equals( t2.trackerId ) )
             {
                 // copy activeCount from old to new oject
                 t2.activeCount = lastActiveBeacon.activeCount;
