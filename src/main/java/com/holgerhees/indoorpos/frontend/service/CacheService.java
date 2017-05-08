@@ -175,18 +175,22 @@ public class CacheService
 
 				activeBeaconMap.put(activeTracker.beaconId, activeTracker);
 			}
-			// remove lastActiveTracker
 			else if( lastActiveTracker != null )
 			{
 				// fallback for a temporary missing trackedBeacon
-				if( lastActiveTracker.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
+				if( isPriorisedActiveTracker( lastActiveTracker ) )
 				{
 					lastActiveTracker.attemptTrackerId = null;
 					lastActiveTracker.attemptTrackerCount = 0;
 
 					// disable priorised isActive check next time
 					lastActiveTracker.fallbackCount++;
+
+					lastActiveTracker.activeCount++;
+
+					_activeRooms.add( daoCacheService.getTrackerById( lastActiveTracker.trackerId ).getRoomId());
 				}
+				// remove lastActiveTracker
 				else
 				{
 					activeBeaconMap.remove(lastActiveTracker.trackerId);
@@ -241,9 +245,9 @@ public class CacheService
 						activeTracker = prioritizedBeacon;
 					}
 				}
-				// fallback for a temporary missing trackedBeacon
-				else if( lastActiveTracker.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
+				else
 				{
+					// fallback for a temporary missing trackedBeacon
 					if( isPriorisedActiveTracker(lastActiveTracker, activeTracker) )
 					{
 						// store "losing" activeTracker
@@ -297,9 +301,26 @@ public class CacheService
 		return t1;
 	}
 
+	private boolean isPriorisedActiveTracker(TrackedBeacon lastActiveTrackerRef)
+	{
+		if( lastActiveTrackerRef.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD
+			&&
+			lastActiveTrackerRef.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean isPriorisedActiveTracker(TrackedBeacon lastActiveTrackerRef, TrackedBeacon newActiveTracker)
 	{
-		return isPriorisedActiveTracker(lastActiveTrackerRef, lastActiveTrackerRef, newActiveTracker);
+		if( lastActiveTrackerRef.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
+		{
+			return isPriorisedActiveTracker(lastActiveTrackerRef, lastActiveTrackerRef, newActiveTracker);
+		}
+
+		return false;
 	}
 
 	private boolean isPriorisedActiveTracker(TrackedBeacon lastActiveTrackerRef, TrackedBeacon currentActiveTracker, TrackedBeacon newActiveTracker)
