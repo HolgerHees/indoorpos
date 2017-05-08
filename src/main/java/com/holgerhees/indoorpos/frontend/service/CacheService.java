@@ -178,7 +178,7 @@ public class CacheService
 			else if( lastActiveTracker != null )
 			{
 				// fallback for a temporary missing trackedBeacon
-				if( isPriorisedActiveTracker( lastActiveTracker ) )
+				if( isLastActiveTrackerPriorised( lastActiveTracker ) )
 				{
 					lastActiveTracker.attemptTrackerId = null;
 					lastActiveTracker.attemptTrackerCount = 0;
@@ -223,7 +223,7 @@ public class CacheService
 				if( prioritizedBeacon != null )
 				{
 					// use "trackedBeacon" if "lastActiveTracker" has higher priority then "activeTracker"
-					if( isPriorisedActiveTracker(lastActiveTracker, prioritizedBeacon, activeTracker) )
+					if( isLastActiveTrackerPriorised(lastActiveTracker, prioritizedBeacon, activeTracker) )
 					{
 						// store different "losing" activeTracker
 						if( !activeTracker.trackerId.equals(lastActiveTracker.attemptTrackerId) )
@@ -248,7 +248,7 @@ public class CacheService
 				else
 				{
 					// fallback for a temporary missing trackedBeacon
-					if( isPriorisedActiveTracker(lastActiveTracker, activeTracker) )
+					if( isLastActiveTrackerPriorised(lastActiveTracker, activeTracker) )
 					{
 						// store "losing" activeTracker
 						if( !activeTracker.trackerId.equals(lastActiveTracker.attemptTrackerId) )
@@ -301,7 +301,7 @@ public class CacheService
 		return t1;
 	}
 
-	private boolean isPriorisedActiveTracker(TrackedBeacon lastActiveTrackerRef)
+	private boolean isLastActiveTrackerPriorised(TrackedBeacon lastActiveTrackerRef)
 	{
 		if( lastActiveTrackerRef.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD
 			&&
@@ -313,17 +313,17 @@ public class CacheService
 		return false;
 	}
 
-	private boolean isPriorisedActiveTracker(TrackedBeacon lastActiveTrackerRef, TrackedBeacon newActiveTracker)
+	private boolean isLastActiveTrackerPriorised(TrackedBeacon lastActiveTrackerRef, TrackedBeacon newActiveTracker)
 	{
 		if( lastActiveTrackerRef.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
 		{
-			return isPriorisedActiveTracker(lastActiveTrackerRef, lastActiveTrackerRef, newActiveTracker);
+			return isLastActiveTrackerPriorised(lastActiveTrackerRef, lastActiveTrackerRef, newActiveTracker);
 		}
 
 		return false;
 	}
 
-	private boolean isPriorisedActiveTracker(TrackedBeacon lastActiveTrackerRef, TrackedBeacon currentActiveTracker, TrackedBeacon newActiveTracker)
+	private boolean isLastActiveTrackerPriorised(TrackedBeacon lastActiveTrackerRef, TrackedBeacon currentActiveTracker, TrackedBeacon newActiveTracker)
 	{
 		if( lastActiveTrackerRef.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
 		{
