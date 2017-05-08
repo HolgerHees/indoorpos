@@ -46,6 +46,8 @@ public class CacheWatcherService
     public static int FORCE_NORMAL_CHECK_RSSI_THRESHOLD = -70;
     // a new RSSI value must be higher then XX to force a "normal" isActive check
     public static int FORCE_PRIORITY_CHECK_RSSI_THRESHOLD = 10;
+	// if the last active tracker is not tracked anymore, use it XX times as a fallback
+	public static int MAX_FALLBACK_COUNT = 1;
     /*********************/
 
     @Autowired
