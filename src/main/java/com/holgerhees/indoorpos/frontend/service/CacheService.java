@@ -137,11 +137,6 @@ public class CacheService
 		return activeRooms;
 	}
 
-	public List<TrackedBeacon> getActiveTrackedBeacons()
-	{
-		return new ArrayList<>(activeBeaconMap.values());
-	}
-
 	public void storeTrackerList(Long trackerId, List<TrackedBeacon> trackedBeacons)
 	{
 		trackedBeaconMap.put(trackerId, trackedBeacons);
@@ -171,69 +166,8 @@ public class CacheService
 			// update "active" state
 			if( activeTracker != null )
 			{
-				if( lastActiveTracker != null )
-				{
-					// active tracker is the same. keep old values and reset last "losing" tracker
-					if( lastActiveTracker.trackerId.equals(activeTracker.trackerId) )
-					{
-						activeTracker.activeCount = lastActiveTracker.activeCount;
-						activeTracker.attemptTrackerId = null;
-						activeTracker.attemptTrackerCount = 0;
-					}
-					// active tracker is different
-					else
-					{
-						// check if lastActiveTracker is still present
-						TrackedBeacon prioritizedBeacon = findBeacon( trackedBeaconDTOs, lastActiveTracker );
-
-						// prioritizedBeacon is used for the "isPriorisedActiveTracker" calculation
-						if( prioritizedBeacon != null )
-						{
-							// use "trackedBeacon" if "lastActiveTracker" has higher priority then "activeTracker"
-							if( isPriorisedActiveTracker(lastActiveTracker, prioritizedBeacon, activeTracker) )
-							{
-								// store different "losing" activeTracker
-								if( !activeTracker.trackerId.equals(lastActiveTracker.attemptTrackerId) )
-								{
-									prioritizedBeacon.attemptTrackerId = activeTracker.trackerId;
-									prioritizedBeacon.attemptTrackerCount = 0;
-								}
-								// keep "losing" activeTracker
-								else
-								{
-									prioritizedBeacon.attemptTrackerId = lastActiveTracker.attemptTrackerId;
-									prioritizedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
-								}
-								// increase attempt count of "losing" activeTracker
-								prioritizedBeacon.attemptTrackerCount++;
-
-								prioritizedBeacon.activeCount = lastActiveTracker.activeCount;
-
-								activeTracker = prioritizedBeacon;
-							}
-						}
-						// fallback for a temporary missing trackedBeacon
-						else if( lastActiveTracker.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
-						{
-							if( isPriorisedActiveTracker(lastActiveTracker, activeTracker) )
-							{
-								// store "losing" activeTracker
-								if( !activeTracker.trackerId.equals(lastActiveTracker.attemptTrackerId) )
-								{
-									lastActiveTracker.attemptTrackerId = activeTracker.trackerId;
-									lastActiveTracker.attemptTrackerCount = 0;
-								}
-								// increase attempt count of "losing" activeTracker
-								lastActiveTracker.attemptTrackerCount++;
-
-								// disable priorised isActive check next time
-								lastActiveTracker.fallbackCount++;
-
-								activeTracker = lastActiveTracker;
-							}
-						}
-					}
-				}
+				// check if lastActiveTracker should stay as the active tracker
+				activeTracker = checkPriorisedLastActiveTracker( lastActiveTracker, activeTracker, trackedBeaconDTOs );
 
 				activeTracker.activeCount++;
 
@@ -244,11 +178,93 @@ public class CacheService
 			// remove lastActiveTracker
 			else if( lastActiveTracker != null )
 			{
-				activeBeaconMap.remove(lastActiveTracker.trackerId);
+				// fallback for a temporary missing trackedBeacon
+				if( lastActiveTracker.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
+				{
+					lastActiveTracker.attemptTrackerId = null;
+					lastActiveTracker.attemptTrackerCount = 0;
+
+					// disable priorised isActive check next time
+					lastActiveTracker.fallbackCount++;
+				}
+				else
+				{
+					activeBeaconMap.remove(lastActiveTracker.trackerId);
+				}
 			}
 		}
 
 		activeRooms = _activeRooms;
+	}
+
+	private TrackedBeacon checkPriorisedLastActiveTracker(TrackedBeacon lastActiveTracker, TrackedBeacon activeTracker,
+		List<TrackedBeacon> trackedBeaconDTOs)
+	{
+		if( lastActiveTracker != null )
+		{
+			// active tracker is the same. keep old values and reset last "losing" tracker
+			if( lastActiveTracker.trackerId.equals(activeTracker.trackerId) )
+			{
+				activeTracker.activeCount = lastActiveTracker.activeCount;
+				activeTracker.attemptTrackerId = null;
+				activeTracker.attemptTrackerCount = 0;
+			}
+			// active tracker is different
+			else
+			{
+				// check if lastActiveTracker is still present
+				TrackedBeacon prioritizedBeacon = findBeacon( trackedBeaconDTOs, lastActiveTracker );
+
+				// prioritizedBeacon is used for the "isPriorisedActiveTracker" calculation
+				if( prioritizedBeacon != null )
+				{
+					// use "trackedBeacon" if "lastActiveTracker" has higher priority then "activeTracker"
+					if( isPriorisedActiveTracker(lastActiveTracker, prioritizedBeacon, activeTracker) )
+					{
+						// store different "losing" activeTracker
+						if( !activeTracker.trackerId.equals(lastActiveTracker.attemptTrackerId) )
+						{
+							prioritizedBeacon.attemptTrackerId = activeTracker.trackerId;
+							prioritizedBeacon.attemptTrackerCount = 0;
+						}
+						// keep "losing" activeTracker
+						else
+						{
+							prioritizedBeacon.attemptTrackerId = lastActiveTracker.attemptTrackerId;
+							prioritizedBeacon.attemptTrackerCount = lastActiveTracker.attemptTrackerCount;
+						}
+						// increase attempt count of "losing" activeTracker
+						prioritizedBeacon.attemptTrackerCount++;
+
+						prioritizedBeacon.activeCount = lastActiveTracker.activeCount;
+
+						activeTracker = prioritizedBeacon;
+					}
+				}
+				// fallback for a temporary missing trackedBeacon
+				else if( lastActiveTracker.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
+				{
+					if( isPriorisedActiveTracker(lastActiveTracker, activeTracker) )
+					{
+						// store "losing" activeTracker
+						if( !activeTracker.trackerId.equals(lastActiveTracker.attemptTrackerId) )
+						{
+							lastActiveTracker.attemptTrackerId = activeTracker.trackerId;
+							lastActiveTracker.attemptTrackerCount = 0;
+						}
+						// increase attempt count of "losing" activeTracker
+						lastActiveTracker.attemptTrackerCount++;
+
+						// disable priorised isActive check next time
+						lastActiveTracker.fallbackCount++;
+
+						activeTracker = lastActiveTracker;
+					}
+				}
+			}
+		}
+
+		return activeTracker;
 	}
 
 	private TrackedBeacon getActiveTracker(TrackedBeacon t1, TrackedBeacon t2)
