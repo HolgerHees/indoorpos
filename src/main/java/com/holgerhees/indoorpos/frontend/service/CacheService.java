@@ -151,7 +151,6 @@ public class CacheService
 	public void updateActiveTracker()
 	{
 		List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
-		Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
 
 		Set<Long> _activeRooms = new HashSet<>();
 
@@ -238,7 +237,7 @@ public class CacheService
 
 				activeTracker.activeCount++;
 
-				_activeRooms.add(trackerDTOMap.get(activeTracker.trackerId).getRoomId());
+				_activeRooms.add( daoCacheService.getTrackerById( activeTracker.trackerId ).getRoomId());
 
 				activeBeaconMap.put(activeTracker.beaconId, activeTracker);
 			}

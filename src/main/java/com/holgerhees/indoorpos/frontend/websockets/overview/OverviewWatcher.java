@@ -95,8 +95,6 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
 
     private List<OverviewWatcher.Area> getAreas( Set<Long> detectedRooms )
     {
-        Map<Long, RoomDTO> roomDTOMap = daoCacheService.getRoomIDMap();
-
         List<AreaDTO> areas = daoCacheService.getAreas();
 
         List<OverviewWatcher.Area> entries = new ArrayList<>();
@@ -113,7 +111,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
             _area.topLeftY = area.getTopLeftY();
             _area.bottomRightX = area.getBottomRightX();
             _area.bottomRightY = area.getBottomRightY();
-            _area.floor = roomDTOMap.get( area.getRoomId() ).getFloor();
+            _area.floor = daoCacheService.getRoomById( area.getRoomId() ).getFloor();
 
             entries.add( _area );
         }
@@ -123,7 +121,6 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
 
     private List<OverviewWatcher.Tracker> getTracker()
     {
-        Map<Long, RoomDTO> roomDTOMap = daoCacheService.getRoomIDMap();
         List<TrackerDTO> trackers = daoCacheService.getTracker();
 
         List<OverviewWatcher.Tracker> result = new ArrayList<>();
@@ -132,7 +129,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
             OverviewWatcher.Tracker _tracker = new OverviewWatcher.Tracker();
             _tracker.key = "tracker" + tracker.getId();
             _tracker.name = tracker.getName();
-            _tracker.floor = roomDTOMap.get( tracker.getRoomId() ).getFloor();
+            _tracker.floor = daoCacheService.getRoomById( tracker.getRoomId() ).getFloor();
             _tracker.posX = tracker.getPosX();
             _tracker.posY = tracker.getPosY();
 

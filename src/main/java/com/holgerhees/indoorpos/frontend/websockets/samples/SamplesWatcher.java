@@ -73,16 +73,13 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
 
     private List<SamplesWatcher.Samples> getSamples()
     {
-        Map<Long, TrackerDTO> trackerDTOMap = daoCacheService.getTrackerIDMap();
-        Map<Long, BeaconDTO> beaconDTOMap = daoCacheService.getBeaconIDMap();
-
         List<SamplesWatcher.Samples> entries = new ArrayList<>();
         List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
 
         for( CacheService.TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
         {
-            TrackerDTO trackerDTO = trackerDTOMap.get( trackedBeaconDTO.getTrackerId() );
-            BeaconDTO beaconDTO = beaconDTOMap.get( trackedBeaconDTO.getBeaconId() );
+            TrackerDTO trackerDTO = daoCacheService.getTrackerById( trackedBeaconDTO.getTrackerId() );
+            BeaconDTO beaconDTO = daoCacheService.getBeaconById( trackedBeaconDTO.getBeaconId() );
 
             SamplesWatcher.Samples _sample = new SamplesWatcher.Samples();
             _sample.trackerName = trackerDTO.getName();

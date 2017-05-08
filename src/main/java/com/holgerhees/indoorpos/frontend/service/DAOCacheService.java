@@ -84,20 +84,20 @@ public class DAOCacheService
         return beaconCache;
     }
 
-    public Map<String, BeaconDTO> getBeaconUUIDMap()
+    public BeaconDTO getBeaconByUUID( String uuid )
     {
-        return beaconUuidMapCache;
+        return beaconUuidMapCache.get( uuid );
     }
 
-    public Map<Long, BeaconDTO> getBeaconIDMap()
+    public BeaconDTO getBeaconById( Long id )
     {
-        return beaconIdMapCache;
+        return beaconIdMapCache.get( id );
     }
 
 
-    public Map<Long, RoomDTO> getRoomIDMap()
+    public RoomDTO getRoomById( Long id )
     {
-        return roomIdMapCache;
+        return roomIdMapCache.get( id );
     }
 
     public List<TrackerDTO> getTracker()
@@ -110,21 +110,21 @@ public class DAOCacheService
         return trackerUuidMapCache.get( uuid );
     }
 
-    public TrackerDTO getTrackerByIp( String ip )
+    public TrackerDTO getTrackerById( Long id )
     {
-        for( TrackerDTO trackerDTO: trackerCache )
-        {
-            if( trackerDTO.getIp().equals( ip ) )
-            {
-                return trackerDTO;
-            }
-        }
-
-        return null;
+        return trackerIdMapCache.get( id );
     }
 
-    public Map<Long, TrackerDTO> getTrackerIDMap()
-    {
-        return trackerIdMapCache;
-    }
+	public TrackerDTO getTrackerByIp( String ip )
+	{
+		for( TrackerDTO trackerDTO: trackerCache )
+		{
+			if( trackerDTO.getIp().equals( ip ) )
+			{
+				return trackerDTO;
+			}
+		}
+
+		return null;
+	}
 }

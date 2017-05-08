@@ -97,13 +97,11 @@ public class TrackerWatcher
 
     private void processTrackedBeacons( Parameter param, TrackerDTO trackerDTO )
     {
-        Map<String, BeaconDTO> beaconDTOMap = daoCacheService.getBeaconUUIDMap();
-
         List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
 
         for( TrackedBeacon beacon : param.trackedBeacons )
         {
-            BeaconDTO beaconDTO = beaconDTOMap.get( beacon.uuid );
+            BeaconDTO beaconDTO = daoCacheService.getBeaconByUUID( beacon.uuid );
 
             if( beaconDTO == null )
             {
