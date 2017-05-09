@@ -32,7 +32,10 @@
             var sample = data[i];
 
             content += "<div class=\"row";
-            if (sample.isActive) {
+	        if (sample.isFallback) {
+		        content += " fallback";
+	        }
+            else if (sample.isActive) {
                 content += " active";
             }
             content += "\">";
