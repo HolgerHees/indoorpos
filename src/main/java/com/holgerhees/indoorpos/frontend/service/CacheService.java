@@ -132,7 +132,7 @@ public class CacheService
 
 		for( BeaconDTO beaconDTO : beaconDTOs )
 		{
-			List<TrackedBeacon> trackedBeaconDTOs = getUsedTrackedBeacons(beaconDTO.getId());
+			List<TrackedBeacon> trackedBeaconDTOs = getTrackedBeacons(beaconDTO.getId());
 
 			// Determine the most relevant Tracker
 			TrackedBeacon newStrongestTrackedBeacon = null;
@@ -355,7 +355,7 @@ public class CacheService
 		return null;
 	}
 
-	private List<TrackedBeacon> getUsedTrackedBeacons(Long beaconId)
+	private List<TrackedBeacon> getTrackedBeacons(Long beaconId)
 	{
 		List<TrackedBeacon> result = new ArrayList<>();
 
