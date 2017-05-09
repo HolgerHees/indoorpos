@@ -20,7 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component( "samplesWatcher" )
 public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
@@ -75,7 +74,7 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
     private List<SamplesWatcher.Samples> getSamples()
     {
         List<SamplesWatcher.Samples> entries = new ArrayList<>();
-        List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getTrackedBeacons();
+        List<CacheService.TrackedBeacon> trackedBeaconDTOs = cacheService.getUsedTrackedBeacons();
 
         for( CacheService.TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
         {
