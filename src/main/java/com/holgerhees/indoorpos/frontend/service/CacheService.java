@@ -145,16 +145,6 @@ public class CacheService
 				// check if lastActiveTracker should stay as the active tracker
 				activeTracker = checkLastActiveTrackerPriorised( lastActiveTracker, activeTracker, trackedBeaconDTOs );
 
-				activeTracker.activeCount++;
-
-				_activeRooms.add( daoCacheService.getTrackerById( activeTracker.trackerId ).getRoomId());
-
-				// last active Tracker is only returned if it was not found in tracked Beacons
-				if( activeTracker == lastActiveTracker )
-				{
-					_usedTrackedBeacons.add(lastActiveTracker);
-				}
-
 				activeBeaconByBeaconIdMap.put(activeTracker.beaconId, activeTracker);
 			}
 			else if( lastActiveTracker != null )
@@ -168,15 +158,25 @@ public class CacheService
 					// disable priorised isActive check next time
 					lastActiveTracker.fallbackCount++;
 
-					lastActiveTracker.activeCount++;
-
-					_activeRooms.add( daoCacheService.getTrackerById( lastActiveTracker.trackerId ).getRoomId());
-					_usedTrackedBeacons.add( lastActiveTracker );
+					activeTracker = lastActiveTracker;
 				}
 				// remove lastActiveTracker
 				else
 				{
 					activeBeaconByBeaconIdMap.remove(lastActiveTracker.trackerId);
+				}
+			}
+
+			// last active Tracker is only returned if it was not found in tracked Beacons
+			if( activeTracker != null )
+			{
+				activeTracker.activeCount++;
+				_activeRooms.add( daoCacheService.getTrackerById( activeTracker.trackerId ).getRoomId());
+
+				// lastActiveTracker is only equal to activeTracker if it was not found in trackedBeacons
+				if( activeTracker == lastActiveTracker )
+				{
+					_usedTrackedBeacons.add(lastActiveTracker);
 				}
 			}
 		}
