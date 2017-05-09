@@ -155,7 +155,7 @@ public class CacheService
 			else if( lastStrongestTrackedBeacon != null )
 			{
 				// fallback for a temporary missing trackedBeacon
-				if( isLastActiveTrackerPriorised( lastStrongestTrackedBeacon ) )
+				if( isLastActiveTrackerPriorisedAsFallback( lastStrongestTrackedBeacon ) )
 				{
 					lastStrongestTrackedBeacon.attemptTrackerId = null;
 					lastStrongestTrackedBeacon.attemptTrackerCount = 0;
@@ -185,9 +185,30 @@ public class CacheService
 			}
 		}
 
-		activeRooms = new ArrayList<>( _activeRoomByBeaconId.values() );
-		activeRoomsByBeaconId = _activeRoomByBeaconId;
+		// sort tracked beacons by tracker and beacon id
+		_usedTrackedBeacons.sort((t1, t2) ->
+		{
+			if( t1.trackerId < t2.trackerId ) return -1;
+			if( t1.trackerId > t2.trackerId ) return 1;
+
+			if( t1.beaconId < t2.beaconId ) return -1;
+			if( t1.beaconId > t2.beaconId ) return 1;
+
+			return 0;
+		});
 		usedTrackedBeacons = _usedTrackedBeacons;
+
+		// filter out duplicate rooms and sort them by room id
+		List<Long> _activeRooms = new ArrayList<> ( new HashSet<>( _activeRoomByBeaconId.values() ) );
+		_activeRooms.sort((r1, r2) ->
+		{
+			if( r1 < r2 ) return -1;
+			if( r1 > r2 ) return 1;
+			return 0;
+		});
+		activeRooms = _activeRooms;
+
+		activeRoomsByBeaconId = _activeRoomByBeaconId;
 		strongestBeaconByBeaconIdMap = _strongestBeaconByBeaconIdMap;
 	}
 
@@ -212,8 +233,13 @@ public class CacheService
 				// prioritizedBeacon is used for the "isPriorisedActiveTracker" calculation
 				if( _lastStrongestTrackedBeacon != null )
 				{
+					// update RSSI to the latest value. Is used inside "isLastActiveTrackerPriorised" calculation
+					lastStrongestTrackedBeacon.rssi = _lastStrongestTrackedBeacon.rssi;
+					//lastStrongestTrackedBeacon.txPower = _lastStrongestTrackedBeacon.txPower;
+					//lastStrongestTrackedBeacon.samples = _lastStrongestTrackedBeacon.samples;
+
 					// use "trackedBeacon" if "lastActiveTracker" has higher priority then "activeTracker"
-					if( isLastActiveTrackerPriorised(lastStrongestTrackedBeacon, _lastStrongestTrackedBeacon, newStrongestTrackedBeacon) )
+					if( isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon) )
 					{
 						// store different "losing" activeTracker
 						if( !newStrongestTrackedBeacon.trackerId.equals(lastStrongestTrackedBeacon.attemptTrackerId) )
@@ -238,7 +264,7 @@ public class CacheService
 				else
 				{
 					// fallback for a temporary missing trackedBeacon
-					if( isLastActiveTrackerPriorised(lastStrongestTrackedBeacon, newStrongestTrackedBeacon) )
+					if( isLastActiveTrackerPriorisedAsFallback( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
 					{
 						// store "losing" activeTracker
 						if( !newStrongestTrackedBeacon.trackerId.equals(lastStrongestTrackedBeacon.attemptTrackerId) )
@@ -261,7 +287,7 @@ public class CacheService
 		return newStrongestTrackedBeacon;
 	}
 
-	private boolean isLastActiveTrackerPriorised(TrackedBeacon lastStrongestTrackedBeacon)
+	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon )
 	{
 		if( lastStrongestTrackedBeacon.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD
 			&&
@@ -273,17 +299,17 @@ public class CacheService
 		return false;
 	}
 
-	private boolean isLastActiveTrackerPriorised(TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon)
+	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
 	{
 		if( lastStrongestTrackedBeacon.fallbackCount < CacheWatcherService.MAX_FALLBACK_COUNT )
 		{
-			return isLastActiveTrackerPriorised(lastStrongestTrackedBeacon, lastStrongestTrackedBeacon, newStrongestTrackedBeacon);
+			return isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
 		}
 
 		return false;
 	}
 
-	private boolean isLastActiveTrackerPriorised(TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon _lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon)
+	private boolean isLastActiveTrackerPriorised( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
 	{
 		if( lastStrongestTrackedBeacon.activeCount >= CacheWatcherService.ACTIVE_COUNT_THRESHOLD )
 		{
@@ -308,7 +334,7 @@ public class CacheService
 
 			//if( currentActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
 			// priorised trackers signal is higher then "reduced" new signal
-			if( _lastStrongestTrackedBeacon.rssi > (newStrongestTrackedBeacon.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD) )
+			if( lastStrongestTrackedBeacon.rssi > (newStrongestTrackedBeacon.rssi - CacheWatcherService.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD) )
 			{
 				return true;
 			}
