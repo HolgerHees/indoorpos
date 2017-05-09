@@ -5,8 +5,8 @@ package com.holgerhees.indoorpos.frontend.websockets.samples;
  */
 
 import com.holgerhees.indoorpos.frontend.service.CacheService;
-import com.holgerhees.indoorpos.frontend.service.CacheWatcherClient;
-import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderClient;
+import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
 import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component( "samplesWatcher" )
-public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
+public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatcherClient
 {
     private static Log LOGGER = LogFactory.getLog( SamplesWatcher.class );
 
@@ -33,7 +33,7 @@ public class SamplesWatcher implements CacheWatcherClient, EndPointWatcherClient
     CacheService cacheService;
 
     @Autowired
-    CacheWatcherService cacheWatcherService;
+    CacheServiceBuilderJob cacheWatcherService;
 
     private class Samples
     {

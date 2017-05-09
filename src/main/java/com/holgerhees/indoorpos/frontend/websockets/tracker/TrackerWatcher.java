@@ -5,7 +5,7 @@ package com.holgerhees.indoorpos.frontend.websockets.tracker;
  */
 
 import com.holgerhees.indoorpos.frontend.service.CacheService;
-import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
 import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Component( "trackerWatcher" )
 public class TrackerWatcher
@@ -56,7 +55,7 @@ public class TrackerWatcher
     private CacheService cacheService;
 
     @Autowired
-    private CacheWatcherService cacheWatcherService;
+    private CacheServiceBuilderJob cacheWatcherService;
 
     @PostConstruct
     public void init()

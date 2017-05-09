@@ -5,12 +5,11 @@ package com.holgerhees.indoorpos.frontend.websockets.overview;
  */
 
 import com.holgerhees.indoorpos.frontend.service.CacheService;
-import com.holgerhees.indoorpos.frontend.service.CacheWatcherClient;
-import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderClient;
+import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
 import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
 import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
-import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +21,7 @@ import javax.websocket.Session;
 import java.util.*;
 
 @Component( "overviewWatcher" )
-public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClient
+public class OverviewWatcher implements CacheServiceBuilderClient, EndPointWatcherClient
 {
     private static Log LOGGER = LogFactory.getLog( OverviewWatcher.class );
 
@@ -33,7 +32,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     CacheService cacheService;
 
     @Autowired
-    CacheWatcherService cacheWatcherService;
+    CacheServiceBuilderJob cacheWatcherService;
 
     private List<Long> lastDetectedRooms;
 

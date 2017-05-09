@@ -14,10 +14,10 @@ import java.util.List;
 /**
  * Created by hhees on 04.05.17.
  */
-@Component( "cacheWatcherService" )
-public class CacheWatcherService
+@Component( "cacheServiceBuilderJob" )
+public class CacheServiceBuilderJob
 {
-    private static Log LOGGER = LogFactory.getLog( CacheWatcherService.class );
+    private static Log LOGGER = LogFactory.getLog( CacheServiceBuilderJob.class);
     private static DecimalFormat df = new DecimalFormat( "#.####" );
 
     // at least every XX ms we should do a websocket call to resynchronize the next wakeup
@@ -58,7 +58,7 @@ public class CacheWatcherService
     private long lastUpdate;
     private long nextWakeup;
 
-    private static List<CacheWatcherClient> watcherClients = Collections.synchronizedList( new ArrayList<>() );
+    private static List<CacheServiceBuilderClient> watcherClients = Collections.synchronizedList( new ArrayList<>());
 
     public class Watcher implements Runnable
     {
@@ -83,7 +83,7 @@ public class CacheWatcherService
 
                         cacheService.updateActiveTracker();
 
-                        for( CacheWatcherClient client : watcherClients )
+                        for( CacheServiceBuilderClient client : watcherClients )
                         {
                             client.notifyCacheChange();
                         }
@@ -119,7 +119,7 @@ public class CacheWatcherService
         watcher.interrupt();
     }
 
-    public void addWatcher( CacheWatcherClient client )
+    public void addWatcher( CacheServiceBuilderClient client)
     {
         watcherClients.add( client );
     }

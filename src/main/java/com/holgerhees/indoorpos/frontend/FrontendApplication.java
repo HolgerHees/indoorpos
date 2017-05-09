@@ -1,6 +1,6 @@
 package com.holgerhees.indoorpos.frontend;
 
-import com.holgerhees.indoorpos.frontend.service.CacheWatcherService;
+import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
 import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
 import com.holgerhees.shared.web.Application;
 import com.holgerhees.shared.web.Router;
@@ -85,7 +85,7 @@ public class FrontendApplication implements Application
         ThreadPoolTaskExecutor executor = (ThreadPoolTaskExecutor) applicationContext.getBean( "taskExecutor" );
         executor.shutdown();
 
-        CacheWatcherService watcher = (CacheWatcherService) applicationContext.getBean( "cacheWatcherService" );
+        CacheServiceBuilderJob watcher = (CacheServiceBuilderJob) applicationContext.getBean( "cacheWatcherService");
         watcher.shutdown();
 
         shutdownDatabase();
