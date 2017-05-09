@@ -35,7 +35,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     @Autowired
     CacheWatcherService cacheWatcherService;
 
-    private Set<Long> lastDetectedRooms;
+    private List<Long> lastDetectedRooms;
 
     private class Area
     {
@@ -71,7 +71,7 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
             return;
         }
 
-        Set<Long> detectedRooms = cacheService.getActiveRooms();
+        List<Long> detectedRooms = cacheService.getActiveRooms();
         if( detectedRooms.equals( lastDetectedRooms ) )
         {
             return;
@@ -88,12 +88,12 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
     {
         OverviewEndPoint.sendMessage( userSession, "tracker", getTracker() );
 
-        Set<Long> detectedRooms = cacheService.getActiveRooms();
+	    List<Long> detectedRooms = cacheService.getActiveRooms();
         List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
         OverviewEndPoint.sendMessage( userSession, "area", areas );
     }
 
-    private List<OverviewWatcher.Area> getAreas( Set<Long> detectedRooms )
+    private List<OverviewWatcher.Area> getAreas( List<Long> detectedRooms )
     {
         List<AreaDTO> areas = daoCacheService.getAreas();
 

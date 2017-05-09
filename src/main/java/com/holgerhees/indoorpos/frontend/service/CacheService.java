@@ -17,8 +17,9 @@ public class CacheService
 	private long lastUpdate;
 	Map<Long, List<TrackedBeacon>> trackedBeaconsByTrackerIdMap = new HashMap<>();
 
-	Map<Long, TrackedBeacon> activeBeaconByBeaconIdMap = new HashMap<>();
-	Set<Long> activeRooms = new HashSet<>();
+	List<Long> activeRooms = new ArrayList<>();
+	Map<Long, Long> activeRoomsByBeaconId = new HashMap<>();
+	Map<Long, TrackedBeacon> strongestBeaconByBeaconIdMap = new HashMap<>();
 	List<TrackedBeacon> usedTrackedBeacons = new ArrayList<>();
 
 	@Autowired
@@ -105,9 +106,14 @@ public class CacheService
 		return usedTrackedBeacons;
 	}
 
-	public Set<Long> getActiveRooms()
+	public List<Long> getActiveRooms()
 	{
 		return activeRooms;
+	}
+
+	public Long getActiveRoom( Long beaconId )
+	{
+		return activeRoomsByBeaconId.get( beaconId );
 	}
 
 	public void storeTrackerList(Long trackerId, List<TrackedBeacon> trackedBeacons)
@@ -122,6 +128,8 @@ public class CacheService
 
 		Set<Long> _activeRooms = new HashSet<>();
 		List<TrackedBeacon> _usedTrackedBeacons = new ArrayList<>();
+		Map<Long, TrackedBeacon> _strongestBeaconByBeaconIdMap = new HashMap<>();
+		Map<Long, Long> _activeRoomByBeaconId = new HashMap<>();
 
 		for( BeaconDTO beaconDTO : beaconDTOs )
 		{
@@ -137,15 +145,13 @@ public class CacheService
 			}
 
 			// get last active tracker
-			TrackedBeacon lastStrongestTrackedBeacon = activeBeaconByBeaconIdMap.get(beaconDTO.getId());
+			TrackedBeacon lastStrongestTrackedBeacon = strongestBeaconByBeaconIdMap.get(beaconDTO.getId());
 
 			// update "active" state
 			if( newStrongestTrackedBeacon != null )
 			{
 				// check if lastActiveTracker should stay as the active tracker
 				newStrongestTrackedBeacon = checkLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon, trackedBeaconDTOs );
-
-				activeBeaconByBeaconIdMap.put(newStrongestTrackedBeacon.beaconId, newStrongestTrackedBeacon);
 			}
 			else if( lastStrongestTrackedBeacon != null )
 			{
@@ -160,18 +166,16 @@ public class CacheService
 
 					newStrongestTrackedBeacon = lastStrongestTrackedBeacon;
 				}
-				// remove lastActiveTracker
-				else
-				{
-					activeBeaconByBeaconIdMap.remove(lastStrongestTrackedBeacon.trackerId);
-				}
 			}
 
 			// last active Tracker is only returned if it was not found in tracked Beacons
 			if( newStrongestTrackedBeacon != null )
 			{
 				newStrongestTrackedBeacon.activeCount++;
-				_activeRooms.add( daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId ).getRoomId());
+
+				Long roomId = daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId ).getRoomId();
+				_activeRoomByBeaconId.put( newStrongestTrackedBeacon.beaconId, roomId );
+				_strongestBeaconByBeaconIdMap.put( newStrongestTrackedBeacon.beaconId, newStrongestTrackedBeacon );
 
 				// lastStrongestTrackedBeacon is only equal to newStrongestTrackedBeacon if it was not found in trackedBeacons
 				// otherwise it is either a newStrongestTrackedBeacon or at least a fresh copy of lastStrongestTrackedBeacon
@@ -182,8 +186,10 @@ public class CacheService
 			}
 		}
 
-		activeRooms = _activeRooms;
+		activeRooms = new ArrayList<>( _activeRoomByBeaconId.values() );
+		activeRoomsByBeaconId = _activeRoomByBeaconId;
 		usedTrackedBeacons = _usedTrackedBeacons;
+		strongestBeaconByBeaconIdMap = _strongestBeaconByBeaconIdMap;
 	}
 
 	private TrackedBeacon checkLastActiveTrackerPriorised(TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon,
