@@ -140,30 +140,35 @@ public class CacheService
 		Map<Long, TrackedBeacon> _strongestBeaconByBeaconIdMap = new HashMap<>();
 		Map<Long, Long> _activeRoomByBeaconId = new HashMap<>();
 
+		Map<Long, List<TrackedBeacon>> trackedBeaconsByBeaconId = getTrackedBeaconsByBeaconIdMap();
+
 		for( BeaconDTO beaconDTO : beaconDTOs )
 		{
-			List<TrackedBeacon> trackedBeaconDTOs = getTrackedBeacons(beaconDTO.getId());
-
 			// get last active tracker
 			TrackedBeacon lastStrongestTrackedBeacon = strongestBeaconByBeaconIdMap.get(beaconDTO.getId());
 			boolean lastStillTracked = false;
 
 			// determine the most relevant (strongest signal) Tracker and fill up _usedTrackedBeacons
 			TrackedBeacon newStrongestTrackedBeacon = null;
-			for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
-			{
-				if( lastStrongestTrackedBeacon != null && lastStrongestTrackedBeacon.trackerId.equals( trackedBeaconDTO.trackerId ) )
-				{
-					trackedBeaconDTO.fallbackCount = lastStrongestTrackedBeacon.fallbackCount;
-					trackedBeaconDTO.activeCount = lastStrongestTrackedBeacon.activeCount;
-					trackedBeaconDTO.attemptTrackerCount = lastStrongestTrackedBeacon.attemptTrackerCount;
-					trackedBeaconDTO.attemptTrackerId = lastStrongestTrackedBeacon.attemptTrackerId;
 
-					lastStrongestTrackedBeacon = trackedBeaconDTO;
-					lastStillTracked = true;
+			List<TrackedBeacon> trackedBeaconDTOs = trackedBeaconsByBeaconId.get(beaconDTO.getId());
+			if( trackedBeaconDTOs != null )
+			{
+				for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
+				{
+					if( lastStrongestTrackedBeacon != null && lastStrongestTrackedBeacon.trackerId.equals( trackedBeaconDTO.trackerId ) )
+					{
+						trackedBeaconDTO.fallbackCount = lastStrongestTrackedBeacon.fallbackCount;
+						trackedBeaconDTO.activeCount = lastStrongestTrackedBeacon.activeCount;
+						trackedBeaconDTO.attemptTrackerCount = lastStrongestTrackedBeacon.attemptTrackerCount;
+						trackedBeaconDTO.attemptTrackerId = lastStrongestTrackedBeacon.attemptTrackerId;
+
+						lastStrongestTrackedBeacon = trackedBeaconDTO;
+						lastStillTracked = true;
+					}
+					newStrongestTrackedBeacon = getStrongestTrackedBeacon( trackedBeaconDTO, newStrongestTrackedBeacon );
+					_usedTrackedBeacons.add( trackedBeaconDTO );
 				}
-				newStrongestTrackedBeacon = getStrongestTrackedBeacon( trackedBeaconDTO, newStrongestTrackedBeacon );
-				_usedTrackedBeacons.add(trackedBeaconDTO);
 			}
 
 			if( lastStrongestTrackedBeacon != null && !lastStillTracked )
@@ -234,15 +239,15 @@ public class CacheService
 					}
 				}
 			}
-		}
 
-		// "lastStrongestTrackedBeacon" is not "active" anymore
-		if( newStrongestTrackedBeacon != lastStrongestTrackedBeacon )
-		{
-			lastStrongestTrackedBeacon.fallbackCount = 0;
-			lastStrongestTrackedBeacon.attemptTrackerCount = 0;
-			lastStrongestTrackedBeacon.attemptTrackerId = null;
-			lastStrongestTrackedBeacon.activeCount = 0;
+			// "lastStrongestTrackedBeacon" is not "active" anymore
+			if( newStrongestTrackedBeacon != lastStrongestTrackedBeacon )
+			{
+				lastStrongestTrackedBeacon.fallbackCount = 0;
+				lastStrongestTrackedBeacon.attemptTrackerCount = 0;
+				lastStrongestTrackedBeacon.attemptTrackerId = null;
+				lastStrongestTrackedBeacon.activeCount = 0;
+			}
 		}
 
 		return newStrongestTrackedBeacon;
@@ -337,26 +342,6 @@ public class CacheService
 		return null;
 	}
 
-	private List<TrackedBeacon> getTrackedBeacons(Long beaconId)
-	{
-		List<TrackedBeacon> result = new ArrayList<>();
-
-		List<List<TrackedBeacon>> trackedBeacons = new ArrayList<>(trackedBeaconsByTrackerIdMap.values());
-
-		for( List<TrackedBeacon> beacons : trackedBeacons )
-		{
-			for( TrackedBeacon beacon : beacons )
-			{
-				if( !beacon.getBeaconId().equals(beaconId) )
-				{
-					continue;
-				}
-				result.add(beacon);
-			}
-		}
-		return result;
-	}
-
 	private TrackedBeacon getStrongestTrackedBeacon(TrackedBeacon t1, TrackedBeacon t2)
     {
         /*double length1 = LocationHelper.getDistance(  t1.getRssi(), t1.getTxPower() );
@@ -369,9 +354,9 @@ public class CacheService
         if( cmp1 < cmp2 ) return 1;
         return 0;*/
 
-        if( t1 == null )
+        if( t2 == null )
         {
-            return t2;
+            return t1;
         }
 
         int signalStrengh1 = 100 + t1.getRssi();
@@ -415,5 +400,25 @@ public class CacheService
 			return 0;
 		});
 		return _activeRooms;
+	}
+
+	private Map<Long,List<TrackedBeacon>> getTrackedBeaconsByBeaconIdMap()
+	{
+		Map<Long, List<TrackedBeacon>> trackedBeaconsByBeaconId = new HashMap<>();
+		List<List<TrackedBeacon>> allTrackedBeacons = new ArrayList<>(trackedBeaconsByTrackerIdMap.values());
+		for( List<TrackedBeacon> beacons : allTrackedBeacons )
+		{
+			for( TrackedBeacon beacon : beacons )
+			{
+				List<TrackedBeacon> trackedBeacons = trackedBeaconsByBeaconId.get( beacon.beaconId );
+				if( trackedBeacons == null )
+				{
+					trackedBeacons = new ArrayList<>();
+					trackedBeaconsByBeaconId.put( beacon.beaconId, trackedBeacons );
+				}
+				trackedBeacons.add(beacon);
+			}
+		}
+		return trackedBeaconsByBeaconId;
 	}
 }
