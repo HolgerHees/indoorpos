@@ -173,7 +173,8 @@ public class CacheService
 				newStrongestTrackedBeacon.activeCount++;
 				_activeRooms.add( daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId ).getRoomId());
 
-				// lastActiveTracker is only equal to activeTracker if it was not found in trackedBeacons
+				// lastStrongestTrackedBeacon is only equal to newStrongestTrackedBeacon if it was not found in trackedBeacons
+				// otherwise it is either a newStrongestTrackedBeacon or at least a fresh copy of lastStrongestTrackedBeacon
 				if( newStrongestTrackedBeacon == lastStrongestTrackedBeacon )
 				{
 					_usedTrackedBeacons.add(lastStrongestTrackedBeacon);
