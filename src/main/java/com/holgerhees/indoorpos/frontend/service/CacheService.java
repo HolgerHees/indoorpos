@@ -158,8 +158,8 @@ public class CacheService
 				{
 					if( lastStrongestTrackedBeacon != null && lastStrongestTrackedBeacon.trackerId.equals( trackedBeaconDTO.trackerId ) )
 					{
-						trackedBeaconDTO.fallbackCount = lastStrongestTrackedBeacon.fallbackCount;
 						trackedBeaconDTO.activeCount = lastStrongestTrackedBeacon.activeCount;
+						trackedBeaconDTO.fallbackCount = lastStrongestTrackedBeacon.fallbackCount;
 						trackedBeaconDTO.attemptTrackerCount = lastStrongestTrackedBeacon.attemptTrackerCount;
 						trackedBeaconDTO.attemptTrackerId = lastStrongestTrackedBeacon.attemptTrackerId;
 
@@ -169,11 +169,6 @@ public class CacheService
 					newStrongestTrackedBeacon = getStrongestTrackedBeacon( trackedBeaconDTO, newStrongestTrackedBeacon );
 					_usedTrackedBeacons.add( trackedBeaconDTO );
 				}
-			}
-
-			if( lastStrongestTrackedBeacon != null && !lastStillTracked )
-			{
-				_usedTrackedBeacons.add(lastStrongestTrackedBeacon);
 			}
 
 			// update "active" state
@@ -190,6 +185,11 @@ public class CacheService
 			// last active Tracker is only returned if it was not found in tracked Beacons
 			if( newStrongestTrackedBeacon != null )
 			{
+				if( lastStrongestTrackedBeacon == newStrongestTrackedBeacon && !lastStillTracked )
+				{
+					_usedTrackedBeacons.add(lastStrongestTrackedBeacon);
+				}
+
 				newStrongestTrackedBeacon.activeCount++;
 
 				Long roomId = daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId ).getRoomId();
