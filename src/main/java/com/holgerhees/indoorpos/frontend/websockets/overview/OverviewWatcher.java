@@ -93,14 +93,14 @@ public class OverviewWatcher implements CacheWatcherClient, EndPointWatcherClien
         OverviewEndPoint.sendMessage( userSession, "area", areas );
     }
 
-    private List<OverviewWatcher.Area> getAreas( List<Long> detectedRooms )
+    private List<OverviewWatcher.Area> getAreas( List<Long> activeRooms )
     {
         List<AreaDTO> areas = daoCacheService.getAreas();
 
         List<OverviewWatcher.Area> entries = new ArrayList<>();
         for( AreaDTO area : areas )
         {
-            if( !detectedRooms.contains( area.getRoomId() ) )
+            if( !activeRooms.contains( area.getRoomId() ) )
             {
                 continue;
             }

@@ -126,7 +126,6 @@ public class CacheService
 	{
 		List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
 
-		Set<Long> _activeRooms = new HashSet<>();
 		List<TrackedBeacon> _usedTrackedBeacons = new ArrayList<>();
 		Map<Long, TrackedBeacon> _strongestBeaconByBeaconIdMap = new HashMap<>();
 		Map<Long, Long> _activeRoomByBeaconId = new HashMap<>();
