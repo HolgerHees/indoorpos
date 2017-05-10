@@ -167,7 +167,7 @@ public class CacheService
 			// detect NEW STRONGEST TRACKED BEACON (incl. possible rooms check)
 			// update LAST STRONGEST TRACKED BEACON
 			// check if LAST STRONGEST TRACKED BEACON is still tracked
-			PrepareResult _result = prepareTrackedBeacons( lastStrongestTrackedBeacon, trackedBeaconsByBeaconId, _usedTrackedBeacons );
+			PrepareResult _result = prepareTrackedBeacons( beaconDTO, lastStrongestTrackedBeacon, trackedBeaconsByBeaconId, _usedTrackedBeacons );
 			TrackedBeacon newStrongestTrackedBeacon = _result.newStrongestTrackedBeacon;
 			lastStrongestTrackedBeacon = _result.lastStrongestTrackedBeacon;
 			boolean lastStillTracked = _result.lastStillTracked;
@@ -355,14 +355,14 @@ public class CacheService
         return t1;
     }
 
-	private PrepareResult prepareTrackedBeacons(TrackedBeacon lastStrongestTrackedBeacon, Map<Long, List<TrackedBeacon>> trackedBeaconsByBeaconId,
+	private PrepareResult prepareTrackedBeacons(BeaconDTO beacon, TrackedBeacon lastStrongestTrackedBeacon, Map<Long, List<TrackedBeacon>> trackedBeaconsByBeaconId,
 		List<TrackedBeacon> usedTrackedBeacons )
 	{
 		boolean lastStillTracked = false;
 
 		TrackedBeacon newStrongestTrackedBeacon = null;
 
-		List<TrackedBeacon> trackedBeaconDTOs = trackedBeaconsByBeaconId.get( lastStrongestTrackedBeacon.beaconId );
+		List<TrackedBeacon> trackedBeaconDTOs = trackedBeaconsByBeaconId.get( beacon.getId() );
 		if( trackedBeaconDTOs != null )
 		{
 			List<Long> closeRoomIds = null;
