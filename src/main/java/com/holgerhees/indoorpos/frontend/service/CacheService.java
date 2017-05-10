@@ -342,11 +342,11 @@ public class CacheService
             return t1;
         }
 
-        int signalStrengh1 = 100 + t1.getRssi();
-        int priority1 = signalStrengh1 * t1.getSamples();
+        int signalStrengh1 = 100 + t1.rssi;
+        int priority1 = signalStrengh1 * t1.samples;
 
-        int signalStrengh2 = 100 + t2.getRssi();
-        int priority2 = signalStrengh2 * t2.getSamples();
+        int signalStrengh2 = 100 + t2.rssi;
+        int priority2 = signalStrengh2 * t2.samples;
 
         if( priority1 > priority2 )
             return t1;
@@ -362,7 +362,7 @@ public class CacheService
 
 		TrackedBeacon newStrongestTrackedBeacon = null;
 
-		List<TrackedBeacon> trackedBeaconDTOs = trackedBeaconsByBeaconId.get( lastStrongestTrackedBeacon.getBeaconId() );
+		List<TrackedBeacon> trackedBeaconDTOs = trackedBeaconsByBeaconId.get( lastStrongestTrackedBeacon.beaconId );
 		if( trackedBeaconDTOs != null )
 		{
 			List<Long> closeRoomIds = null;
@@ -377,8 +377,8 @@ public class CacheService
 				boolean allowed = true;
 				if( closeRoomIds != null )
 				{
-					Long newRoomId = daoCacheService.getRoomIdByTrackerId( trackedBeaconDTO.getTrackerId() );
-					allowed = closeRoomIds.contains( newRoomId ) || isStrongRSSI( trackedBeaconDTO, CacheServiceBuilderJob.CLOSE_ROOM_CHECK_RSSI_THRESHOLD );
+					Long newRoomId = daoCacheService.getRoomIdByTrackerId( trackedBeaconDTO.trackerId );
+					allowed = closeRoomIds.contains( newRoomId ) || isStrongRSSI( trackedBeaconDTO, CacheServiceBuilderJob.SKIP_CLOSE_ROOM_CHECK_RSSI_THRESHOLD );
 				}
 
 				if( allowed )
