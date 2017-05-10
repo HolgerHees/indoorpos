@@ -32,7 +32,10 @@
             var sample = data[i];
 
             content += "<div class=\"row";
-	        if (sample.isFallback) {
+	        if (sample.isTooFarAway) {
+		        content += " toofaraway";
+	        }
+	        else if (sample.isFallback) {
 		        content += " fallback";
 	        }
             else if (sample.isActive) {

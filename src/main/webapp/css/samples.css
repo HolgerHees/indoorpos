@@ -21,9 +21,13 @@
 }
 
 .row.active {
-    background-color: #FFBBBB;
+    background-color: #BBFFBB;
 }
 
 .row.fallback {
-	background-color: #BBBBBB;
+	background-color: #FFFFBB;
+}
+
+.row.toofaraway {
+	background-color: #FFBBBB;
 }

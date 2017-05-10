@@ -2,10 +2,12 @@ package com.holgerhees.indoorpos.maintainance;
 
 import com.holgerhees.indoorpos.persistance.dao.AreaDAO;
 import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
+import com.holgerhees.indoorpos.persistance.dao.CloseRoomDAO;
 import com.holgerhees.indoorpos.persistance.dao.RoomDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
+import com.holgerhees.indoorpos.persistance.dto.CloseRoomDTO;
 import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import com.holgerhees.shared.util.ProfileBasedPropertyPlaceholderConfigurer;
@@ -38,146 +40,56 @@ public class ImportData
             AreaDAO areaDAO = applicationContext.getBean( AreaDAO.class );
             TrackerDAO trackerDAO = applicationContext.getBean( TrackerDAO.class );
             BeaconDAO beaconDAO = applicationContext.getBean( BeaconDAO.class );
+	        CloseRoomDAO closeRoomDAO = applicationContext.getBean( CloseRoomDAO.class);
 
+	        closeRoomDAO.truncate();
             trackerDAO.truncate();
             beaconDAO.truncate();
             roomDAO.truncate();
             areaDAO.truncate();
 
+	        // First Floor - 1000 x 736
+
             // Wohnzimmer
-            RoomDTO roomDTO = new RoomDTO();
-            roomDTO.setFloor( 0 );
-            roomDTO.setName( "Wohnzimmer" );
-            roomDAO.save( roomDTO );
-
-            AreaDTO areaDTO = new AreaDTO();
-            areaDTO.setRoomId( roomDTO.getId() );
-            areaDTO.setTopLeftX( 515 );
-            areaDTO.setTopLeftY( 709 );
-            areaDTO.setBottomRightX( 734 );
-            areaDTO.setBottomRightY( 640 );
-            areaDAO.save( areaDTO );
-
-            areaDTO = new AreaDTO();
-            areaDTO.setRoomId( roomDTO.getId() );
-            areaDTO.setTopLeftX( 510 );
-            areaDTO.setTopLeftY( 640 );
-            areaDTO.setBottomRightX( 972 );
-            areaDTO.setBottomRightY( 280 );
-            areaDAO.save( areaDTO );
-
-            // First Floor - 1000 x 736
-            TrackerDTO trackerDTO = new TrackerDTO();
-            trackerDTO.setUuid( "livingroom" );
-            trackerDTO.setRoomId( roomDTO.getId() );
-            trackerDTO.setPosX( 953 );
-            trackerDTO.setPosY( 620 );
-            trackerDTO.setName( "Wohnzimmer" );
-            trackerDTO.setIp( "192.168.0.125" );
-            trackerDTO.setRssiOffset( 0 );
-            trackerDAO.save( trackerDTO );
+            RoomDTO livingroomDTO = createRoom( roomDAO, "Wohnzimmer", 0 );
+            createArea( areaDAO, livingroomDTO, 515, 709, 734, 640 );
+	        createArea( areaDAO, livingroomDTO, 510, 640, 972, 280 );
+			createTracker( trackerDAO, livingroomDTO, "livingroom", "Wohnzimmer", "192.168.0.125", 0, 953, 620 );
 
             // Küche
-            roomDTO = new RoomDTO();
-            roomDTO.setFloor( 0 );
-            roomDTO.setName( "Küche" );
-            roomDAO.save( roomDTO );
+	        RoomDTO kitchenDTO = createRoom( roomDAO, "Küche", 0 );
+	        createArea( areaDAO, kitchenDTO, 274, 640, 509, 420 );
+	        createTracker( trackerDAO, kitchenDTO, "kitchen", "Küche", "192.168.0.126", -2, 295, 620 );
 
-            areaDTO = new AreaDTO();
-            areaDTO.setRoomId( roomDTO.getId() );
-            areaDTO.setTopLeftX( 274 );
-            areaDTO.setTopLeftY( 640 );
-            areaDTO.setBottomRightX( 509 );
-            areaDTO.setBottomRightY( 420 );
-            areaDAO.save( areaDTO );
+	        // HWR
+	        //RoomDTO hwrDTO = createRoom( roomDAO, "HWR", 0 );
+	        //createArea( areaDAO, hwrDTO, 274, 300, 498, 139 );
+	        //createTracker( trackerDAO, hwrDTO, "hwr", "HWR", "192.168.0.129", 0, 400, 280 );
 
-            trackerDTO = new TrackerDTO();
-            trackerDTO.setUuid( "kitchen" );
-            trackerDTO.setRoomId( roomDTO.getId() );
-            trackerDTO.setPosX( 295 );
-            trackerDTO.setPosY( 620 );
-            trackerDTO.setName( "Küche" );
-            trackerDTO.setIp( "192.168.0.126" );
-            trackerDTO.setRssiOffset( -2 );
-            trackerDAO.save( trackerDTO );
+	        // Flur
+	        RoomDTO floorDTO = createRoom( roomDAO, "Flur", 0 );
+	        createArea( areaDAO, floorDTO, 514, 265, 733, 29 );
+	        createTracker( trackerDAO, floorDTO, "floor", "Flur", "192.168.0.127", 0, 715, 48 );
 
-            // HWR
-            /*roomDTO = new RoomDTO();
-            roomDTO.setFloor(0);
-			roomDTO.setName("HWR");
-			roomDAO.save( roomDTO );
+	        // Gästezimmer
+	        RoomDTO guestroomDTO = createRoom( roomDAO, "Gästezimmer", 0 );
+	        createArea( areaDAO, guestroomDTO, 749, 265, 973, 29 );
+	        createTracker( trackerDAO, guestroomDTO, "guestroom", "Gästezimmer", "192.168.0.128", 0, 953, 48 );
 
-			areaDTO = new AreaDTO();
-			areaDTO.setRoomId(roomDTO.getId());
-			areaDTO.setTopLeftX(274);
-			areaDTO.setTopLeftY(300);
-			areaDTO.setBottomRightX(498);
-			areaDTO.setBottomRightY(139);
-			areaDAO.save(areaDTO);
+	        // Close room relations
+	        attachCloseRoom( closeRoomDAO, livingroomDTO, kitchenDTO );
+	        attachCloseRoom( closeRoomDAO, livingroomDTO, floorDTO );
 
-			trackerDTO = new TrackerDTO();
-			trackerDTO.setUuid("hwr");
-			trackerDTO.setRoomId( roomDTO.getId() );
-			trackerDTO.setPosX(400);
-			trackerDTO.setPosY(280);
-			trackerDTO.setName("HWR");
-            trackerDTO.setIp( "192.168.0.129" );
-            trackerDTO.setTxPower( 0 );
-			trackerDAO.save(trackerDTO);*/
+	        attachCloseRoom( closeRoomDAO, kitchenDTO, livingroomDTO );
 
-            // Flur
-            roomDTO = new RoomDTO();
-            roomDTO.setFloor( 0 );
-            roomDTO.setName( "Flur" );
-            roomDAO.save( roomDTO );
+	        attachCloseRoom( closeRoomDAO, floorDTO, livingroomDTO );
+	        attachCloseRoom( closeRoomDAO, floorDTO, guestroomDTO );
 
-            areaDTO = new AreaDTO();
-            areaDTO.setRoomId( roomDTO.getId() );
-            areaDTO.setTopLeftX( 514 );
-            areaDTO.setTopLeftY( 265 );
-            areaDTO.setBottomRightX( 733 );
-            areaDTO.setBottomRightY( 29 );
-            areaDAO.save( areaDTO );
+	        attachCloseRoom( closeRoomDAO, guestroomDTO, floorDTO );
 
-            trackerDTO = new TrackerDTO();
-            trackerDTO.setUuid( "floor" );
-            trackerDTO.setRoomId( roomDTO.getId() );
-            trackerDTO.setPosX( 715 );
-            trackerDTO.setPosY( 48 );
-            trackerDTO.setName( "Flur" );
-            trackerDTO.setIp( "192.168.0.127" );
-            trackerDTO.setRssiOffset( 0 );
-            trackerDAO.save( trackerDTO );
 
-            // Gästezimmer
-            roomDTO = new RoomDTO();
-            roomDTO.setFloor( 0 );
-            roomDTO.setName( "Gästezimmer" );
-            roomDAO.save( roomDTO );
-
-            areaDTO = new AreaDTO();
-            areaDTO.setRoomId( roomDTO.getId() );
-            areaDTO.setTopLeftX( 749 );
-            areaDTO.setTopLeftY( 265 );
-            areaDTO.setBottomRightX( 973 );
-            areaDTO.setBottomRightY( 29 );
-            areaDAO.save( areaDTO );
-
-            trackerDTO = new TrackerDTO();
-            trackerDTO.setUuid( "guestroom" );
-            trackerDTO.setRoomId( roomDTO.getId() );
-            trackerDTO.setPosX( 953 );
-            trackerDTO.setPosY( 48 );
-            trackerDTO.setName( "Gästezimmer" );
-            trackerDTO.setIp( "192.168.0.128" );
-            trackerDTO.setRssiOffset( 0 );
-            trackerDAO.save( trackerDTO );
-
-            // Holgers Phone
-            BeaconDTO beaconDTO = new BeaconDTO();
-            beaconDTO.setUuid( "c45927d1606f4242b273c52a294489a6" );
-            beaconDTO.setName( "Holger" );
-            beaconDAO.save( beaconDTO );
+			// Holgers Phone
+            createPhone( beaconDAO, "c45927d1606f4242b273c52a294489a6", "Holger" );
 
             //maintainanceService.createDatabaseSchema(DROP_TABLES);
         } finally
@@ -186,4 +98,55 @@ public class ImportData
         }
     }
 
+	private static void attachCloseRoom(CloseRoomDAO closeRoomDAO, RoomDTO roomDTO, RoomDTO _roomDTO )
+	{
+		CloseRoomDTO closeRoomDTO = new CloseRoomDTO();
+		closeRoomDTO.setRoomId( roomDTO.getId() );
+		closeRoomDTO.setCloseRoomId( _roomDTO.getId() );
+		closeRoomDAO.save( closeRoomDTO );
+	}
+
+	private static void createPhone( BeaconDAO beaconDAO, String uuid, String name )
+	{
+		// Holgers Phone
+		BeaconDTO beaconDTO = new BeaconDTO();
+		beaconDTO.setUuid( uuid );
+		beaconDTO.setName( name );
+		beaconDAO.save( beaconDTO );
+
+	}
+
+	private static void createTracker(TrackerDAO trackerDAO, RoomDTO roomDTO, String uuid, String name, String ip, int rssiOffset, int posX, int posY )
+	{
+		TrackerDTO trackerDTO = new TrackerDTO();
+		trackerDTO.setUuid( uuid );
+		trackerDTO.setRoomId( roomDTO.getId() );
+		trackerDTO.setPosX( posX );
+		trackerDTO.setPosY( posY );
+		trackerDTO.setName( name );
+		trackerDTO.setIp( ip );
+		trackerDTO.setRssiOffset( rssiOffset );
+		trackerDAO.save( trackerDTO );
+	}
+
+	private static void createArea(AreaDAO areaDAO, RoomDTO roomDTO, int topLeftX, int topLeftY1, int bottomRightX, int bottomRightY )
+	{
+		AreaDTO areaDTO = new AreaDTO();
+		areaDTO.setRoomId( roomDTO.getId() );
+		areaDTO.setTopLeftX( topLeftX );
+		areaDTO.setTopLeftY( topLeftY1 );
+		areaDTO.setBottomRightX( bottomRightX );
+		areaDTO.setBottomRightY( bottomRightY );
+		areaDAO.save( areaDTO );
+	}
+
+	private static RoomDTO createRoom( RoomDAO roomDAO, String name, int floor )
+    {
+	    RoomDTO roomDTO = new RoomDTO();
+	    roomDTO.setFloor( 0 );
+	    roomDTO.setName( "Gästezimmer" );
+	    roomDAO.save( roomDTO );
+
+	    return roomDTO;
+    }
 }

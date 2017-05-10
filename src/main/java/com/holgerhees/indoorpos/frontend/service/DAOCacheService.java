@@ -2,16 +2,20 @@ package com.holgerhees.indoorpos.frontend.service;
 
 import com.holgerhees.indoorpos.persistance.dao.AreaDAO;
 import com.holgerhees.indoorpos.persistance.dao.BeaconDAO;
+import com.holgerhees.indoorpos.persistance.dao.CloseRoomDAO;
 import com.holgerhees.indoorpos.persistance.dao.RoomDAO;
 import com.holgerhees.indoorpos.persistance.dao.TrackerDAO;
 import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
+import com.holgerhees.indoorpos.persistance.dto.CloseRoomDTO;
 import com.holgerhees.indoorpos.persistance.dto.RoomDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,9 @@ public class DAOCacheService
     @Autowired
     TrackerDAO trackerDAO;
 
+    @Autowired
+	CloseRoomDAO closeRoomDAO;
+
     List<AreaDTO> areaCache;
     List<BeaconDTO> beaconCache;
     Map<String, BeaconDTO> beaconUuidMapCache;
@@ -38,40 +45,74 @@ public class DAOCacheService
     Map<Long, RoomDTO> roomIdMapCache;
     List<TrackerDTO> trackerCache;
     Map<String, TrackerDTO> trackerUuidMapCache;
+	Map<Long, Long> trackerIdRoomIdMapCache;
     Map<Long, TrackerDTO> trackerIdMapCache;
+    Map<Long,List<Long>> closeRoomsMapCache;
 
     @PostConstruct
     public void init()
     {
         areaCache = areaDAO.getAreas();
+
         beaconCache = beaconDAO.getBeacons();
         beaconUuidMapCache = new HashMap<>();
         for( BeaconDTO beaconDTO : beaconCache )
         {
             beaconUuidMapCache.put( beaconDTO.getUuid(), beaconDTO );
         }
+
         beaconIdMapCache = new HashMap<>();
         for( BeaconDTO beaconDTO : beaconCache )
         {
             beaconIdMapCache.put( beaconDTO.getId(), beaconDTO );
         }
+
         List<RoomDTO> rooms = roomDAO.getRooms();
         roomIdMapCache = new HashMap<>();
         for( RoomDTO room : rooms )
         {
             roomIdMapCache.put( room.getId(), room );
         }
+
         trackerCache = trackerDAO.getTracker();
         trackerUuidMapCache = new HashMap<>();
         for( TrackerDTO trackerDTO : trackerCache )
         {
             trackerUuidMapCache.put( trackerDTO.getUuid(), trackerDTO );
         }
+
         trackerIdMapCache = new HashMap<>();
+	    trackerIdRoomIdMapCache = new HashMap<>();
         for( TrackerDTO trackerDTO : trackerCache )
         {
             trackerIdMapCache.put( trackerDTO.getId(), trackerDTO );
+	        trackerIdRoomIdMapCache.put( trackerDTO.getId(), trackerDTO.getRoomId() );
         }
+
+	    closeRoomsMapCache = new HashMap<>();
+        List<CloseRoomDTO> allCloseRoomDTOs = closeRoomDAO.getCloseRooms();
+		for( CloseRoomDTO closeRoomDTO: allCloseRoomDTOs )
+		{
+
+			List<Long> closeRoomDTOs = closeRoomsMapCache.get( closeRoomDTO.getRoomId() );
+			if( closeRoomDTOs == null )
+			{
+				closeRoomDTOs = new ArrayList<>();
+				closeRoomDTOs.add( closeRoomDTO.getRoomId() );
+				closeRoomsMapCache.put( closeRoomDTO.getRoomId(), closeRoomDTOs );
+			}
+			closeRoomDTOs.add( closeRoomDTO.getCloseRoomId() );
+		}
+    }
+
+    public List<Long> getCloseRoomIds( Long roomId )
+    {
+	    return closeRoomsMapCache.get( roomId );
+    }
+
+    public Long getRoomIdByTrackerId( Long trackerId )
+    {
+    	return trackerIdRoomIdMapCache.get( trackerId );
     }
 
     public List<AreaDTO> getAreas()
