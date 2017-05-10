@@ -28,6 +28,6 @@
 	background-color: #FFFFBB;
 }
 
-.row.toofaraway .column {
+.row.skipped .column {
     text-decoration: line-through;
 }

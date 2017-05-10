@@ -45,9 +45,10 @@ public class CacheService
 		private int fallbackCount = 0;
 
 		private int priorityCheckCount = 0;
-		private Long priorityCheckTrackedBeaconId;
+		private Long priorityCheckTrackedBeaconId = null;
 
-		private boolean tooFarAway;
+		private boolean isSkipped = false;
+		private String info = "";
 
 		public Long getTrackerId()
 		{
@@ -99,9 +100,14 @@ public class CacheService
 			this.samples = samples;
 		}
 
-		public boolean isTooFarAway()
+		public boolean isSkipped()
 		{
-			return this.tooFarAway;
+			return this.isSkipped;
+		}
+
+		public String getInfo()
+		{
+			return this.info;
 		}
 
 		public boolean isActive()
@@ -193,6 +199,11 @@ public class CacheService
 					_usedTrackedBeacons.add(lastStrongestTrackedBeacon);
 				}
 
+				if( isPriorised( newStrongestTrackedBeacon ) )
+				{
+					newStrongestTrackedBeacon.info = "PRIO";
+				}
+
 				newStrongestTrackedBeacon.activeCount++;
 
 				Long roomId = daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId ).getRoomId();
@@ -279,29 +290,21 @@ public class CacheService
 
 	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon )
 	{
-		if( lastStrongestTrackedBeacon.activeCount >= CacheServiceBuilderJob.ACTIVE_COUNT_THRESHOLD
-			&&
-			lastStrongestTrackedBeacon.fallbackCount < CacheServiceBuilderJob.MAX_FALLBACK_COUNT )
-		{
-			return true;
-		}
+		if( isPriorised( lastStrongestTrackedBeacon ) && canFallback( lastStrongestTrackedBeacon ) ) return true;
 
 		return false;
 	}
 
 	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
 	{
-		if( lastStrongestTrackedBeacon.fallbackCount < CacheServiceBuilderJob.MAX_FALLBACK_COUNT )
-		{
-			return isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
-		}
+		if( canFallback( lastStrongestTrackedBeacon ) ) return isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
 
 		return false;
 	}
 
 	private boolean isLastActiveTrackerPriorised( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
 	{
-		if( lastStrongestTrackedBeacon.activeCount >= CacheServiceBuilderJob.ACTIVE_COUNT_THRESHOLD )
+		if( isPriorised( lastStrongestTrackedBeacon ) )
 		{
 			// new tracker is trying more then one time
 			//if( hadEnoughPriorityCheckTries( newStrongestTrackedBeacon, lastStrongestTrackedBeacon ) )
@@ -397,7 +400,8 @@ public class CacheService
 				}
 				else
 				{
-					trackedBeaconDTO.tooFarAway = true;
+					trackedBeaconDTO.info = "TFA";
+					trackedBeaconDTO.isSkipped = true;
 				}
 
 				usedTrackedBeacons.add( trackedBeaconDTO );
@@ -424,6 +428,16 @@ public class CacheService
 		}
 
 		return false;
+	}
+
+	private boolean canFallback( TrackedBeacon trackedBeacon )
+	{
+		return  trackedBeacon.fallbackCount < CacheServiceBuilderJob.MAX_FALLBACK_COUNT;
+	}
+
+	private boolean isPriorised( TrackedBeacon trackedBeacon )
+	{
+		return trackedBeacon.activeCount >= CacheServiceBuilderJob.ACTIVE_COUNT_THRESHOLD;
 	}
 
 	private boolean isStrongRSSI( TrackedBeacon trackedBeacon, int rssi )

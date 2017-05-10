@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="${ctx.cssPrefix}/main.css">
     <link rel="stylesheet" href="${ctx.cssPrefix}/samples.css">
@@ -22,6 +22,7 @@
     {
         var content = "";
         content += "<div class=\"row\">";
+        content += "<span class=\"column head\"></span>";
         content += "<span class=\"column head\">Tracker</span>";
         content += "<span class=\"column head\">Beacon</span>";
         content += "<span class=\"column head\">RSSI</span>";
@@ -32,8 +33,8 @@
             var sample = data[i];
 
             content += "<div class=\"row";
-	        if (sample.isTooFarAway) {
-		        content += " toofaraway";
+	        if (sample.isSkipped) {
+		        content += " skipped";
 	        }
 	        else if (sample.isFallback) {
 		        content += " fallback";
@@ -42,6 +43,7 @@
                 content += " active";
             }
             content += "\">";
+            content += "<span class=\"column\">" + sample.info + "</span>";
             content += "<span class=\"column\">" + sample.trackerName + "</span>";
             content += "<span class=\"column\">" + sample.beaconName + "</span>";
             content += "<span class=\"column\">" + sample.rssi + "</span>";

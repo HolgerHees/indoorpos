@@ -41,7 +41,8 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
         String beaconName;
         boolean isActive;
 	    boolean isFallback;
-	    boolean isTooFarAway;
+	    boolean isSkipped;
+	    String info;
         int rssi;
         int samples;
     }
@@ -89,7 +90,8 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
             _sample.samples = trackedBeaconDTO.getSamples();
             _sample.isActive = trackedBeaconDTO.isActive();
             _sample.isFallback = trackedBeaconDTO.isFallback();
-            _sample.isTooFarAway = trackedBeaconDTO.isTooFarAway();
+            _sample.isSkipped = trackedBeaconDTO.isSkipped();
+            _sample.info = trackedBeaconDTO.getInfo();
             entries.add( _sample );
         }
 
