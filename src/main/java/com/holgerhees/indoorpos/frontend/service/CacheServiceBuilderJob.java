@@ -43,7 +43,7 @@ public class CacheServiceBuilderJob
     // more then 3 samples to acitvate "priorised tracker"
     public static int MIN_SAMPLE_THRESHOLD = 3;
 	// a new RSSI value of highter then XX allows a tracker to be valid also when he is from an not direct connected room
-	public static int CLOSE_ROOM_CHECK_RSSI_THRESHOLD = -68;
+	public static int CLOSE_ROOM_CHECK_RSSI_THRESHOLD = -67;
     // a new RSSI value of highter then XX should always force a "normal" isActive check
     public static int FORCE_NORMAL_CHECK_RSSI_THRESHOLD = -70;
     // a new RSSI value must be higher then XX to force a "normal" isActive check

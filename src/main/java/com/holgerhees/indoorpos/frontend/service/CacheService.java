@@ -303,23 +303,16 @@ public class CacheService
 	{
 		if( lastStrongestTrackedBeacon.activeCount >= CacheServiceBuilderJob.ACTIVE_COUNT_THRESHOLD )
 		{
-			if( newStrongestTrackedBeacon.trackerId.equals( lastStrongestTrackedBeacon.priorityCheckTrackedBeaconId) )
-			{
-				// new tracker is trying more then one time
-				if( lastStrongestTrackedBeacon.priorityCheckCount >= CacheServiceBuilderJob.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD )
-				{
-					return false;
-				}
-			}
+			// new tracker is trying more then one time
+			//if( hadEnoughPriorityCheckTries( newStrongestTrackedBeacon, lastStrongestTrackedBeacon ) )
+			//{
+			//	return false;
+			//}
 
-			if( newStrongestTrackedBeacon.samples > CacheServiceBuilderJob.MIN_SAMPLE_THRESHOLD )
+			// new tracker has a very good signal
+			if( isStrongRSSI( newStrongestTrackedBeacon, CacheServiceBuilderJob.FORCE_NORMAL_CHECK_RSSI_THRESHOLD ) )
 			{
-				// new tracker has a very good signal
-				if( newStrongestTrackedBeacon.rssi > CacheServiceBuilderJob.FORCE_NORMAL_CHECK_RSSI_THRESHOLD )
-				{
-
-					return false;
-				}
+				return false;
 			}
 
 			//if( currentActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
@@ -385,10 +378,7 @@ public class CacheService
 				if( closeRoomIds != null )
 				{
 					Long newRoomId = daoCacheService.getRoomIdByTrackerId( trackedBeaconDTO.getTrackerId() );
-					if( !closeRoomIds.contains( newRoomId ) && trackedBeaconDTO.rssi <= CacheServiceBuilderJob.CLOSE_ROOM_CHECK_RSSI_THRESHOLD )
-					{
-						allowed = false;
-					}
+					allowed = closeRoomIds.contains( newRoomId ) || isStrongRSSI( trackedBeaconDTO, CacheServiceBuilderJob.CLOSE_ROOM_CHECK_RSSI_THRESHOLD );
 				}
 
 				if( allowed )
@@ -420,6 +410,29 @@ public class CacheService
 		result.newStrongestTrackedBeacon = newStrongestTrackedBeacon;
 
 		return result;
+	}
+
+	private boolean hadEnoughPriorityCheckTries( TrackedBeacon newStrongestTrackedBeacon, TrackedBeacon lastStrongestTrackedBeacon )
+	{
+		if( newStrongestTrackedBeacon.trackerId.equals( lastStrongestTrackedBeacon.priorityCheckTrackedBeaconId) )
+		{
+			// new tracker is trying more then one time
+			if( lastStrongestTrackedBeacon.priorityCheckCount >= CacheServiceBuilderJob.FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean isStrongRSSI( TrackedBeacon trackedBeacon, int rssi )
+	{
+		if( trackedBeacon.samples > CacheServiceBuilderJob.MIN_SAMPLE_THRESHOLD )
+		{
+			return trackedBeacon.rssi > rssi;
+		}
+		return false;
 	}
 
 	private List<TrackedBeacon> getSortedUsedTrackedBeacons(List<TrackedBeacon> usedTrackedBeacons)
