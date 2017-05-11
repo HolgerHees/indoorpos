@@ -1,6 +1,7 @@
 package com.holgerhees.indoorpos.frontend.service;
 
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
+import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +33,30 @@ public class CacheService
 		boolean lastStillTracked;
 	}
 
+	public static enum State
+	{
+		ACTIVE("active"),
+		PRIORITY("priority"),
+		FALLBACK("fallback"),
+		SKIPPED("skipped"),
+
+		PRIORITY_SIGNAL("priority_signal"),
+		STRONG_SIGNAL("strong_signal"),
+		TOO_FAR_AWAY("too_far_away");
+
+		private String id;
+
+		State(String id)
+		{
+			this.id = id;
+		}
+
+		public String toString()
+		{
+			return id;
+		}
+	}
+
 	public static class TrackedBeacon
 	{
 		private Long trackerId;
@@ -40,15 +65,14 @@ public class CacheService
 		private int rssi;
 		private int samples;
 
+		// cache service state variables
 		private int activeCount = 0;
-
 		private int fallbackCount = 0;
+		private List<State> states = new ArrayList<>();
 
+		// @deprecated
 		private int priorityCheckCount = 0;
 		private Long priorityCheckTrackedBeaconId = null;
-
-		private boolean isSkipped = false;
-		private String info = "";
 
 		public Long getTrackerId()
 		{
@@ -100,22 +124,10 @@ public class CacheService
 			this.samples = samples;
 		}
 
-		public boolean isSkipped()
+		public List<State> getStates()
 		{
-			return this.isSkipped;
+			return this.states;
 		}
-
-		public String getInfo()
-		{
-			return this.info;
-		}
-
-		public boolean isActive()
-		{
-			return this.activeCount > 0;
-		}
-
-		public boolean isFallback() { return this.fallbackCount > 0; }
 
 		public void trackPriorityCheck(TrackedBeacon newStrongestTrackedBeacon)
 		{
@@ -194,16 +206,12 @@ public class CacheService
 			// last active Tracker is only returned if it was not found in tracked Beacons
 			if( newStrongestTrackedBeacon != null )
 			{
-				if( lastStrongestTrackedBeacon == newStrongestTrackedBeacon && !lastStillTracked )
+				if( lastStrongestTrackedBeacon != null )
 				{
-					_usedTrackedBeacons.add(lastStrongestTrackedBeacon);
+					if( lastStrongestTrackedBeacon == newStrongestTrackedBeacon && !lastStillTracked ) _usedTrackedBeacons.add(lastStrongestTrackedBeacon);
+					if( isPriorised( lastStrongestTrackedBeacon ) ) lastStrongestTrackedBeacon.states.add( State.PRIORITY );
 				}
-
-				if( isPriorised( newStrongestTrackedBeacon ) )
-				{
-					newStrongestTrackedBeacon.info = "PRIO";
-				}
-
+				newStrongestTrackedBeacon.states.add( State.ACTIVE );
 				newStrongestTrackedBeacon.activeCount++;
 
 				Long roomId = daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId ).getRoomId();
@@ -247,6 +255,7 @@ public class CacheService
 					// fallback for a temporary missing trackedBeacon
 					if( isLastActiveTrackerPriorisedAsFallback( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
 					{
+						lastStrongestTrackedBeacon.states.add( State.FALLBACK);
 						lastStrongestTrackedBeacon.fallbackCount++;
 						lastStrongestTrackedBeacon.trackPriorityCheck( newStrongestTrackedBeacon);
 						newStrongestTrackedBeacon = lastStrongestTrackedBeacon;
@@ -272,6 +281,7 @@ public class CacheService
 		// fallback for a temporary missing trackedBeacon
 		if( isLastActiveTrackerPriorisedAsFallback( lastStrongestTrackedBeacon ) )
 		{
+			lastStrongestTrackedBeacon.states.add( State.FALLBACK);
 			lastStrongestTrackedBeacon.fallbackCount++;
 			lastStrongestTrackedBeacon.priorityCheckCount = 0;
 			lastStrongestTrackedBeacon.priorityCheckTrackedBeaconId = null;
@@ -313,18 +323,20 @@ public class CacheService
 			//}
 
 			// new tracker has a very good signal
-			if( isStrongRSSI( newStrongestTrackedBeacon, CacheServiceBuilderJob.FORCE_NORMAL_CHECK_RSSI_THRESHOLD ) )
+			if( isStrongRSSI( newStrongestTrackedBeacon ) )
 			{
 				return false;
 			}
 
 			//if( currentActiveTracker.samples > CacheWatcherService.MIN_SAMPLE_THRESHOLD )
 			// priorised trackers signal is higher then "reduced" new signal
-			if( lastStrongestTrackedBeacon.rssi > (newStrongestTrackedBeacon.rssi - CacheServiceBuilderJob.FORCE_PRIORITY_CHECK_RSSI_THRESHOLD) )
+			if( lastStrongestTrackedBeacon.rssi > (newStrongestTrackedBeacon.rssi - daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getPriorisedRssiOffset() ) )
 			{
+				lastStrongestTrackedBeacon.states.add( State.PRIORITY_SIGNAL );
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -371,17 +383,27 @@ public class CacheService
 			List<Long> closeRoomIds = null;
 			if( lastStrongestTrackedBeacon != null )
 			{
-				Long lastRoomId = daoCacheService.getRoomIdByTrackerId(lastStrongestTrackedBeacon.trackerId);
+				Long lastRoomId = daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getRoomId();
 				closeRoomIds = daoCacheService.getCloseRoomIds(lastRoomId);
 			}
 
 			for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
 			{
+				TrackerDTO tracker = daoCacheService.getTrackerById( trackedBeaconDTO.trackerId);
+
+				boolean hasStrongSignal = isStrongRSSI( trackedBeaconDTO );
+				if( hasStrongSignal ) trackedBeaconDTO.states.add( State.STRONG_SIGNAL);
+
 				boolean allowed = true;
 				if( closeRoomIds != null )
 				{
-					Long newRoomId = daoCacheService.getRoomIdByTrackerId( trackedBeaconDTO.trackerId );
-					allowed = closeRoomIds.contains( newRoomId ) || isStrongRSSI( trackedBeaconDTO, CacheServiceBuilderJob.SKIP_CLOSE_ROOM_CHECK_RSSI_THRESHOLD );
+					Long newRoomId = tracker.getRoomId();
+					boolean isCloseRoom = closeRoomIds.contains( newRoomId );
+					if( !isCloseRoom ) trackedBeaconDTO.states.add( State.TOO_FAR_AWAY);
+
+					allowed = isCloseRoom || hasStrongSignal;
+
+					if( !allowed ) trackedBeaconDTO.states.add( State.SKIPPED );
 				}
 
 				if( allowed )
@@ -397,11 +419,6 @@ public class CacheService
 						lastStillTracked = true;
 					}
 					newStrongestTrackedBeacon = getStrongestTrackedBeacon(trackedBeaconDTO, newStrongestTrackedBeacon);
-				}
-				else
-				{
-					trackedBeaconDTO.info = "TFA";
-					trackedBeaconDTO.isSkipped = true;
 				}
 
 				usedTrackedBeacons.add( trackedBeaconDTO );
@@ -440,11 +457,11 @@ public class CacheService
 		return trackedBeacon.activeCount >= CacheServiceBuilderJob.ACTIVE_COUNT_THRESHOLD;
 	}
 
-	private boolean isStrongRSSI( TrackedBeacon trackedBeacon, int rssi )
+	private boolean isStrongRSSI( TrackedBeacon trackedBeacon )
 	{
 		if( trackedBeacon.samples > CacheServiceBuilderJob.MIN_SAMPLE_THRESHOLD )
 		{
-			return trackedBeacon.rssi > rssi;
+			return trackedBeacon.rssi > daoCacheService.getTrackerById( trackedBeacon.trackerId ).getStrongSignalRssiThreshold();
 		}
 		return false;
 	}

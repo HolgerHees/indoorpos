@@ -45,7 +45,6 @@ public class DAOCacheService
     Map<Long, RoomDTO> roomIdMapCache;
     List<TrackerDTO> trackerCache;
     Map<String, TrackerDTO> trackerUuidMapCache;
-	Map<Long, Long> trackerIdRoomIdMapCache;
     Map<Long, TrackerDTO> trackerIdMapCache;
     Map<Long,List<Long>> closeRoomsMapCache;
 
@@ -82,11 +81,9 @@ public class DAOCacheService
         }
 
         trackerIdMapCache = new HashMap<>();
-	    trackerIdRoomIdMapCache = new HashMap<>();
         for( TrackerDTO trackerDTO : trackerCache )
         {
             trackerIdMapCache.put( trackerDTO.getId(), trackerDTO );
-	        trackerIdRoomIdMapCache.put( trackerDTO.getId(), trackerDTO.getRoomId() );
         }
 
 	    closeRoomsMapCache = new HashMap<>();
@@ -110,14 +107,18 @@ public class DAOCacheService
 	    return closeRoomsMapCache.get( roomId );
     }
 
-    public Long getRoomIdByTrackerId( Long trackerId )
+    public List<AreaDTO> getAreas( List<Long> rooms )
     {
-    	return trackerIdRoomIdMapCache.get( trackerId );
-    }
+    	List<AreaDTO> areas = new ArrayList<>();
 
-    public List<AreaDTO> getAreas()
-    {
-        return areaCache;
+    	for( AreaDTO area: areaCache )
+	    {
+			if( rooms.contains( area.getRoomId() ) )
+			{
+				areas.add( area );
+			}
+	    }
+        return areas;
     }
 
     public List<BeaconDTO> getBeacons()

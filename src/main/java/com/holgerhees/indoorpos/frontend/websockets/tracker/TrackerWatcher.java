@@ -113,7 +113,7 @@ public class TrackerWatcher
             for( TrackedBeaconSample sample : beacon.samples )
             {
                 txpower += sample.txpower;
-                rssi += sample.rssi + trackerDTO.getRssiOffset();
+                rssi += sample.rssi;
             }
             int size = beacon.samples.size();
             txpower = txpower / size;

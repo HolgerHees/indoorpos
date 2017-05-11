@@ -27,7 +27,6 @@
 .row.fallback {
 	background-color: #FFFFBB;
 }
-
 .row.skipped .column {
     text-decoration: line-through;
 }

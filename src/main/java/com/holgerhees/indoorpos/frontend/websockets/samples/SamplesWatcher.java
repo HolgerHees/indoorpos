@@ -39,10 +39,7 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
     {
         String trackerName;
         String beaconName;
-        boolean isActive;
-	    boolean isFallback;
-	    boolean isSkipped;
-	    String info;
+        List<CacheService.State> states;
         int rssi;
         int samples;
     }
@@ -88,10 +85,7 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
             _sample.beaconName = beaconDTO.getName();
             _sample.rssi = trackedBeaconDTO.getRssi();
             _sample.samples = trackedBeaconDTO.getSamples();
-            _sample.isActive = trackedBeaconDTO.isActive();
-            _sample.isFallback = trackedBeaconDTO.isFallback();
-            _sample.isSkipped = trackedBeaconDTO.isSkipped();
-            _sample.info = trackedBeaconDTO.getInfo();
+            _sample.states = trackedBeaconDTO.getStates();
             entries.add( _sample );
         }
 

@@ -39,9 +39,14 @@ public class TrackerDTO extends AbstractKeyDTO
     @DbIndex( type = DbIndex.Type.INDEX)
     private String ip;
 
-    @DbColumn( name = "rssi_offset",
-               type = "tinyint(2)" )
-    private int rssiOffset;
+	@DbColumn( name = "strong_signal_rssi_threshold",
+	           type = "tinyint(2)" )
+	private int strongSignalRssiThreshold;
+
+	@DbColumn( name = "priorised_rssi_offset",
+	           type = "tinyint(2)" )
+	private int priorisedRssiOffset;
+
 
     public String getUuid()
     {
@@ -103,13 +108,23 @@ public class TrackerDTO extends AbstractKeyDTO
         this.ip = ip;
     }
 
-    public int getRssiOffset()
-    {
-        return rssiOffset;
-    }
+	public int getStrongSignalRssiThreshold()
+	{
+		return strongSignalRssiThreshold;
+	}
 
-    public void setRssiOffset( int rssiOffset )
-    {
-        this.rssiOffset = rssiOffset;
-    }
+	public void setStrongSignalRssiThreshold(int strongSignalRssiThreshold)
+	{
+		this.strongSignalRssiThreshold = strongSignalRssiThreshold;
+	}
+
+	public int getPriorisedRssiOffset()
+	{
+		return priorisedRssiOffset;
+	}
+
+	public void setPriorisedRssiOffset(int priorisedRssiOffset)
+	{
+		this.priorisedRssiOffset = priorisedRssiOffset;
+	}
 }
