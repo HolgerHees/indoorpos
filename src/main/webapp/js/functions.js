@@ -174,15 +174,17 @@ function updateSamples(data)
 	for (var i = 0; i < data.length; i++) {
 		var sample = data[i];
 
+		//console.log(sample.states);
+
 		content += "<div class=\"row";
-		if ( sample.states.indexOf("skipped") != -1 ) content += " skipped";
-		else if ( sample.states.indexOf("active") != -1 ) content += " active";
-		else if ( sample.states.indexOf("fallback") != -1 ) content += " fallback";
+		if ( sample.states.indexOf("SKIPPED") != -1 ) content += " skipped";
+		else if ( sample.states.indexOf("ACTIVE") != -1 ) content += " active";
+		else if ( sample.states.indexOf("FALLBACK") != -1 ) content += " fallback";
 
 		var info = "";
-		if ( sample.states.indexOf("priority") != -1 )
+		if ( sample.states.indexOf("PRIORITY") != -1 )
 		{
-			if ( sample.states.indexOf("priority_signal") != -1 )
+			if ( sample.states.indexOf("PRIORITY_SIGNAL") != -1 )
 			{
 				info += "PRI+";
 			}
@@ -191,9 +193,9 @@ function updateSamples(data)
 				info += "PRI";
 			}
 		}
-		else if ( sample.states.indexOf("strong_signal") != -1 )
+		else if ( sample.states.indexOf("STRONG_SIGNAL") != -1 )
 		{
-			if( sample.states.indexOf("too_far_away") != -1 )
+			if( sample.states.indexOf("TOO_FAR_AWAY") != -1 )
 			{
 				info += "SIG+";
 			}
@@ -202,7 +204,7 @@ function updateSamples(data)
 				info += "SIG";
 			}
 		}
-		else if( sample.states.indexOf("too_far_away") != -1 )
+		else if( sample.states.indexOf("TOO_FAR_AWAY") != -1 )
 		{
 			info += "TFA";
 		}

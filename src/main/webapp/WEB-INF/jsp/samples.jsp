@@ -2,6 +2,7 @@
 <html>
 <head>
 	<%@ include file="blocks/metadata.jsp" %>
+    <link rel="stylesheet" href="${ctx.cssPrefix}/samples.css">
 </head>
 <body>
 <div class="box">
