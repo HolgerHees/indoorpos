@@ -164,11 +164,11 @@ function updateSamples(data)
 {
 	var content = "";
 	content += "<div class=\"row\">";
-	content += "<span class=\"column head\"></span>";
+	content += "<span class=\"column head\">Status</span>";
 	content += "<span class=\"column head\">Tracker</span>";
 	content += "<span class=\"column head\">Beacon</span>";
 	content += "<span class=\"column head\">RSSI</span>";
-	content += "<span class=\"column head\">Count</span>";
+	content += "<span class=\"column head\"></span>";
 	content += "</div>";
 
 	for (var i = 0; i < data.length; i++) {
@@ -186,11 +186,11 @@ function updateSamples(data)
 		{
 			if ( sample.states.indexOf("PRIORITY_SIGNAL") != -1 )
 			{
-				info += "PRI+";
+				info += "PRIO+";
 			}
 			else
 			{
-				info += "PRI";
+				info += "PRIO";
 			}
 		}
 		else if ( sample.states.indexOf("STRONG_SIGNAL") != -1 )
@@ -206,12 +206,12 @@ function updateSamples(data)
 		}
 		else if( sample.states.indexOf("TOO_FAR_AWAY") != -1 )
 		{
-			info += "TFA";
+			info += "FAR";
 		}
 
         else if( sample.states.indexOf("MIN_RSSI") != -1 )
         {
-            info += "RSSI";
+            info += "LOW";
         }
 
 		content += "\">";
