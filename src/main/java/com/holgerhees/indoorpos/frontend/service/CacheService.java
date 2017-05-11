@@ -357,11 +357,12 @@ public class CacheService
             return t1;
         }
 
+        // the calculation range for the sample count is just 20%. Means the final multiplier is between 0.8 and 1.0
         int signalStrengh1 = 100 + t1.rssi;
-        int priority1 = signalStrengh1 * t1.samples;
+        double priority1 = signalStrengh1 * ( ( ( t1.samples * 0.2 ) / 20 ) + 0.8 );
 
         int signalStrengh2 = 100 + t2.rssi;
-        int priority2 = signalStrengh2 * t2.samples;
+	    double priority2 = signalStrengh2 * ( ( ( t2.samples * 0.2 ) / 20 ) + 0.8 );
 
         if( priority1 > priority2 )
             return t1;
