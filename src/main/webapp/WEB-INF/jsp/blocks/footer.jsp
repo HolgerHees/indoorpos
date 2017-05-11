@@ -1,0 +1,1 @@
+<footer>&copy; 2017 by Holger Hees</footer>

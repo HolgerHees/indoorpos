@@ -159,3 +159,63 @@ function cleanElements(currentElements, usedElements) {
         delete currentElements[key];
     }
 }
+
+function updateSamples(data)
+{
+	var content = "";
+	content += "<div class=\"row\">";
+	content += "<span class=\"column head\"></span>";
+	content += "<span class=\"column head\">Tracker</span>";
+	content += "<span class=\"column head\">Beacon</span>";
+	content += "<span class=\"column head\">RSSI</span>";
+	content += "<span class=\"column head\">Count</span>";
+	content += "</div>";
+
+	for (var i = 0; i < data.length; i++) {
+		var sample = data[i];
+
+		content += "<div class=\"row";
+		if ( sample.states.indexOf("skipped") != -1 ) content += " skipped";
+		else if ( sample.states.indexOf("active") != -1 ) content += " active";
+		else if ( sample.states.indexOf("fallback") != -1 ) content += " fallback";
+
+		var info = "";
+		if ( sample.states.indexOf("priority") != -1 )
+		{
+			if ( sample.states.indexOf("priority_signal") != -1 )
+			{
+				info += "PRI+";
+			}
+			else
+			{
+				info += "PRI";
+			}
+		}
+		else if ( sample.states.indexOf("strong_signal") != -1 )
+		{
+			if( sample.states.indexOf("too_far_away") != -1 )
+			{
+				info += "SIG+";
+			}
+			else
+			{
+				info += "SIG";
+			}
+		}
+		else if( sample.states.indexOf("too_far_away") != -1 )
+		{
+			info += "TFA";
+		}
+
+		content += "\">";
+		content += "<span class=\"column\">" + info + "</span>";
+		content += "<span class=\"column\">" + sample.trackerName + "</span>";
+		content += "<span class=\"column\">" + sample.beaconName + "</span>";
+		content += "<span class=\"column\">" + sample.rssi + "</span>";
+		content += "<span class=\"column\">" + sample.samples + "</span>";
+		content += "</div>";
+	}
+
+	var box = document.getElementById("samples");
+	box.innerHTML = content;
+}
