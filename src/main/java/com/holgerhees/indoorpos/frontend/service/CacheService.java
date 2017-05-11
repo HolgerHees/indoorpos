@@ -40,6 +40,7 @@ public class CacheService
 		FALLBACK("fallback"),
 		SKIPPED("skipped"),
 
+		MIN_RSSI( "min_rssi"),
 		PRIORITY_SIGNAL("priority_signal"),
 		STRONG_SIGNAL("strong_signal"),
 		TOO_FAR_AWAY("too_far_away");
@@ -419,7 +420,15 @@ public class CacheService
 						lastStrongestTrackedBeacon = trackedBeaconDTO;
 						lastStillTracked = true;
 					}
-					newStrongestTrackedBeacon = getStrongestTrackedBeacon(trackedBeaconDTO, newStrongestTrackedBeacon);
+					if( trackedBeaconDTO.rssi > tracker.getMinRssi() || trackedBeaconDTO == lastStrongestTrackedBeacon )
+					{
+						newStrongestTrackedBeacon = getStrongestTrackedBeacon(trackedBeaconDTO, newStrongestTrackedBeacon);
+					}
+					else
+					{
+						trackedBeaconDTO.states.add( State.SKIPPED );
+						trackedBeaconDTO.states.add( State.MIN_RSSI );
+					}
 				}
 
 				usedTrackedBeacons.add( trackedBeaconDTO );
@@ -460,9 +469,9 @@ public class CacheService
 
 	private boolean isStrongRSSI( TrackedBeacon trackedBeacon )
 	{
-		if( trackedBeacon.samples > CacheServiceBuilderJob.MIN_SAMPLE_THRESHOLD )
+		if( trackedBeacon.samples >= CacheServiceBuilderJob.MIN_SAMPLE_THRESHOLD )
 		{
-			return trackedBeacon.rssi > daoCacheService.getTrackerById( trackedBeacon.trackerId ).getStrongSignalRssiThreshold();
+			return trackedBeacon.rssi >= daoCacheService.getTrackerById( trackedBeacon.trackerId ).getStrongSignalRssiThreshold();
 		}
 		return false;
 	}

@@ -39,6 +39,10 @@ public class TrackerDTO extends AbstractKeyDTO
     @DbIndex( type = DbIndex.Type.INDEX)
     private String ip;
 
+    @DbColumn( name = "min_rssi",
+               type = "tinyint(2)" )
+    private int minRssi;
+
 	@DbColumn( name = "strong_signal_rssi_threshold",
 	           type = "tinyint(2)" )
 	private int strongSignalRssiThreshold;
@@ -106,6 +110,16 @@ public class TrackerDTO extends AbstractKeyDTO
     public void setIp( String ip )
     {
         this.ip = ip;
+    }
+
+    public int getMinRssi()
+    {
+        return minRssi;
+    }
+
+    public void setMinRssi( int minRssi )
+    {
+        this.minRssi = minRssi;
     }
 
 	public int getStrongSignalRssiThreshold()

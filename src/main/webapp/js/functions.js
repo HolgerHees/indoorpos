@@ -209,6 +209,11 @@ function updateSamples(data)
 			info += "TFA";
 		}
 
+        else if( sample.states.indexOf("MIN_RSSI") != -1 )
+        {
+            info += "RSSI";
+        }
+
 		content += "\">";
 		content += "<span class=\"column\">" + info + "</span>";
 		content += "<span class=\"column\">" + sample.trackerName + "</span>";
