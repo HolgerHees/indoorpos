@@ -65,6 +65,7 @@ public class CacheService
 		private int txPower;
 		private int rssi;
 		private int samples;
+		private double variance;
 
 		// cache service state variables
 		private int activeCount = 0;
@@ -123,6 +124,16 @@ public class CacheService
 		public void setSamples(int samples)
 		{
 			this.samples = samples;
+		}
+
+		public double getVariance()
+		{
+			return variance;
+		}
+
+		public void setVariance(double variance)
+		{
+			this.variance = variance;
 		}
 
 		public List<State> getStates()

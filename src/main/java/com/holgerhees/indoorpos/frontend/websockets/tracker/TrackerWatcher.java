@@ -108,6 +108,7 @@ public class TrackerWatcher
                 continue;
             }
 
+            // calculate average RSSI
             int txpower = 0;
             int rssi = 0;
             for( TrackedBeaconSample sample : beacon.samples )
@@ -119,6 +120,14 @@ public class TrackerWatcher
             txpower = txpower / size;
             rssi = rssi / size;
 
+            // Calculate variance of RSSI
+            double variance = 0.0;
+	        for( TrackedBeaconSample sample : beacon.samples )
+	        {
+		        variance += Math.pow( sample.rssi - rssi, 2 );
+	        }
+	        variance = variance / size;
+
             //LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
 
             CacheService.TrackedBeacon trackedBeacon = new CacheService.TrackedBeacon();
@@ -127,6 +136,7 @@ public class TrackerWatcher
             trackedBeacon.setTxPower( txpower );
             trackedBeacon.setRssi( rssi );
             trackedBeacon.setSamples( size );
+            trackedBeacon.setVariance( variance );
 
             trackedBeacons.add( trackedBeacon );
         }

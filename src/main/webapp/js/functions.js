@@ -166,9 +166,10 @@ function updateSamples(data)
 	content += "<div class=\"row\">";
 	content += "<span class=\"column head\">Status</span>";
 	content += "<span class=\"column head\">Tracker</span>";
-	content += "<span class=\"column head\">Beacon</span>";
+	//content += "<span class=\"column head\">Beacon</span>";
 	content += "<span class=\"column head\">RSSI</span>";
-	content += "<span class=\"column head\"></span>";
+	content += "<span class=\"column head\">Var.</span>";
+	content += "<span class=\"column head\">Cou.</span>";
 	content += "</div>";
 
 	for (var i = 0; i < data.length; i++) {
@@ -217,8 +218,9 @@ function updateSamples(data)
 		content += "\">";
 		content += "<span class=\"column\">" + info + "</span>";
 		content += "<span class=\"column\">" + sample.trackerName + "</span>";
-		content += "<span class=\"column\">" + sample.beaconName + "</span>";
+		//content += "<span class=\"column\">" + sample.beaconName + "</span>";
 		content += "<span class=\"column\">" + sample.rssi + "</span>";
+		content += "<span class=\"column\">" + parseFloat( sample.variance ).toFixed(2) + "</span>";
 		content += "<span class=\"column\">" + sample.samples + "</span>";
 		content += "</div>";
 	}

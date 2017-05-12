@@ -42,6 +42,7 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
         List<CacheService.State> states;
         int rssi;
         int samples;
+        double variance;
     }
 
     @PostConstruct
@@ -86,6 +87,7 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
             _sample.rssi = trackedBeaconDTO.getRssi();
             _sample.samples = trackedBeaconDTO.getSamples();
             _sample.states = trackedBeaconDTO.getStates();
+            _sample.variance = trackedBeaconDTO.getVariance();
             entries.add( _sample );
         }
 
