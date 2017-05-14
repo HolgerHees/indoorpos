@@ -530,7 +530,7 @@ public class CacheService
 				lastTrackedPositions.put( key, position );
 				//LOGGER.info( "create" );
 			}
-			else if( now - position.timestamp > CacheServiceBuilderJob.INTERVAL_LENGTH * 5 )
+			else if( now - position.timestamp > CacheServiceBuilderJob.INTERVAL_LENGTH * CacheServiceBuilderJob.OUTDATED_COUNT )
 			{
 				position.rssi = -100;
 			}

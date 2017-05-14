@@ -36,10 +36,12 @@ public class CacheServiceBuilderJob
     public static int NETWORK_LATENCY = 20;
 
     /** is Active check **/
-    // "priorised tracker" only if tracker was already active 5 times (now 6 times => 6 seconds)
+    // "priorised tracker" only if tracker is active more then XX times
     public static int ACTIVE_COUNT_THRESHOLD = 5;
 	// if the last active tracker is not tracked anymore, use it XX times as a fallback
-	public static int MAX_FALLBACK_COUNT = 4;
+	public static int MAX_FALLBACK_COUNT = 5;
+	// if the tracker is not tracked anymore more then XX times, ignore history data
+    public static int OUTDATED_COUNT = 5;
     /*********************/
 
     @Autowired
