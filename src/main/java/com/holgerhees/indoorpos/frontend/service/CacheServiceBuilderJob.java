@@ -39,7 +39,7 @@ public class CacheServiceBuilderJob
     // "priorised tracker" only if tracker was already active 5 times (now 6 times => 6 seconds)
     public static int ACTIVE_COUNT_THRESHOLD = 5;
 	// if the last active tracker is not tracked anymore, use it XX times as a fallback
-	public static int MAX_FALLBACK_COUNT = 2;
+	public static int MAX_FALLBACK_COUNT = 4;
     /*********************/
 
     @Autowired
