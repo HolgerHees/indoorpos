@@ -61,12 +61,12 @@ public class ImportData
             RoomDTO livingroomDTO = createRoom( roomDAO, "Wohnzimmer", 0 );
             createArea( areaDAO, livingroomDTO, 515, 709, 734, 640 );
 	        createArea( areaDAO, livingroomDTO, 510, 640, 972, 280 );
-			createTracker( trackerDAO, livingroomDTO, "livingroom", "Wohnzimmer", "192.168.0.125", -100, -80, 10, 953, 620 );
+			createTracker( trackerDAO, livingroomDTO, "livingroom", "Wohnzimmer", "192.168.0.125", -100, -75, 5, 953, 620 );
 
             // Küche
 	        RoomDTO kitchenDTO = createRoom( roomDAO, "Küche", 0 );
 	        createArea( areaDAO, kitchenDTO, 274, 640, 509, 420 );
-	        createTracker( trackerDAO, kitchenDTO, "kitchen", "Küche", "192.168.0.126", -100, -80, 10, 295, 620 );
+	        createTracker( trackerDAO, kitchenDTO, "kitchen", "Küche", "192.168.0.126", -100, -75, 5, 295, 620 );
 
 	        // HWR
 	        //RoomDTO hwrDTO = createRoom( roomDAO, "HWR", 0 );
@@ -76,12 +76,12 @@ public class ImportData
 	        // Flur
 	        RoomDTO floorDTO = createRoom( roomDAO, "Flur", 0 );
 	        createArea( areaDAO, floorDTO, 514, 265, 733, 29 );
-	        createTracker( trackerDAO, floorDTO, "floor", "Flur", "192.168.0.127", -78, -80, 10, 715, 48 );
+	        createTracker( trackerDAO, floorDTO, "floor", "Flur", "192.168.0.127", -78, -75, 5, 715, 48 );
 
 	        // Gästezimmer
 	        RoomDTO guestroomDTO = createRoom( roomDAO, "Gästezimmer", 0 );
 	        createArea( areaDAO, guestroomDTO, 749, 265, 973, 29 );
-	        createTracker( trackerDAO, guestroomDTO, "guestroom", "Gästezimmer", "192.168.0.128", -100,-80, 10, 953, 48 );
+	        createTracker( trackerDAO, guestroomDTO, "guestroom", "Gästezimmer", "192.168.0.128", -100,-75, 5, 953, 48 );
 
 	        // Close room relations
 	        attachCloseRoom( closeRoomDAO, livingroomDTO, kitchenDTO );

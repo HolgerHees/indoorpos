@@ -38,10 +38,6 @@ public class CacheServiceBuilderJob
     /** is Active check **/
     // "priorised tracker" only if tracker was already active 5 times (now 6 times => 6 seconds)
     public static int ACTIVE_COUNT_THRESHOLD = 5;
-    // a new tracker who already tried 2 times to go active is forcing a "normal" isActive check
-    public static int FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD = 2;
-    // more then 3 samples to be a "strong signal tracker"
-    public static int MIN_SAMPLE_THRESHOLD = 3;
 	// if the last active tracker is not tracked anymore, use it XX times as a fallback
 	public static int MAX_FALLBACK_COUNT = 2;
     /*********************/
