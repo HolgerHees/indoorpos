@@ -24,7 +24,7 @@ public class CacheServiceBuilderJob
     public static int PING_INTERVAL = 60000;
 
     // ble scan interval in ms
-    public static int INTERVAL_LENGTH = 2000;
+    public static int INTERVAL_LENGTH = 1000;
 
     // beacon advertising interval in ms
     public static int FREQUENCY = 100;
@@ -36,18 +36,21 @@ public class CacheServiceBuilderJob
     public static int NETWORK_LATENCY = 20;
 
     /** is Active check **/
-    // "priorised tracker" only if tracker was already active 2 times (now 3 times => 6 seconds)
-    public static int ACTIVE_COUNT_THRESHOLD = 2;
+    // "priorised tracker" only if tracker was already active 5 times (now 6 times => 6 seconds)
+    public static int ACTIVE_COUNT_THRESHOLD = 5;
     // a new tracker who already tried 2 times to go active is forcing a "normal" isActive check
     public static int FORCE_NORMAL_CHECK_ATTEMPT_THRESHOLD = 2;
     // more then 3 samples to be a "strong signal tracker"
     public static int MIN_SAMPLE_THRESHOLD = 3;
 	// if the last active tracker is not tracked anymore, use it XX times as a fallback
-	public static int MAX_FALLBACK_COUNT = 1;
+	public static int MAX_FALLBACK_COUNT = 2;
     /*********************/
 
     @Autowired
     CacheService cacheService;
+
+    @Autowired
+    CacheServiceNew cacheServiceNew;
 
     private Thread watcher;
 
@@ -78,6 +81,7 @@ public class CacheServiceBuilderJob
                         long start = System.currentTimeMillis();
 
                         cacheService.updateActiveTracker();
+                        //cacheServiceNew.updateActiveTracker();
 
                         for( CacheServiceBuilderClient client : watcherClients )
                         {

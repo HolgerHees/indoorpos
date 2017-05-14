@@ -219,7 +219,7 @@ function updateSamples(data)
 		content += "<span class=\"column\">" + info + "</span>";
 		content += "<span class=\"column\">" + sample.trackerName + "</span>";
 		//content += "<span class=\"column\">" + sample.beaconName + "</span>";
-		content += "<span class=\"column\">" + sample.rssi + "</span>";
+		content += "<span class=\"column\">" + sample.adjustedRssi + " (" + sample.rssi + ")</span>";
 		content += "<span class=\"column\">" + parseFloat( sample.variance ).toFixed(2) + "</span>";
 		content += "<span class=\"column\">" + sample.samples + "</span>";
 		content += "</div>";

@@ -6,6 +6,7 @@ package com.holgerhees.indoorpos.frontend.websockets.tracker;
 
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
+import com.holgerhees.indoorpos.frontend.service.CacheServiceNew;
 import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
@@ -55,6 +56,9 @@ public class TrackerWatcher
     private CacheService cacheService;
 
     @Autowired
+    private CacheServiceNew cacheServiceNew;
+
+    @Autowired
     private CacheServiceBuilderJob cacheWatcherService;
 
     @PostConstruct
@@ -79,8 +83,8 @@ public class TrackerWatcher
         {
             processTrackedBeacons( param, trackerDTO );
 
-            LOGGER.info( "Handle tracker message in " + df
-                    .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds (" + trackerDTO.getName() + ")" );
+            //LOGGER.info( "Handle tracker message in " + df
+            //        .format( ( ( System.currentTimeMillis() - start ) / 1000.0f ) ) + " seconds (" + trackerDTO.getName() + ")" );
         }
     }
 
@@ -97,6 +101,7 @@ public class TrackerWatcher
     private void processTrackedBeacons( Parameter param, TrackerDTO trackerDTO )
     {
         List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
+        List<CacheServiceNew.TrackedBeacon> trackedBeaconsNew = new ArrayList<>();
 
         for( TrackedBeacon beacon : param.trackedBeacons )
         {
@@ -111,10 +116,13 @@ public class TrackerWatcher
             // calculate average RSSI
             int txpower = 0;
             int rssi = 0;
+            StringBuffer info = new StringBuffer();
             for( TrackedBeaconSample sample : beacon.samples )
             {
                 txpower += sample.txpower;
                 rssi += sample.rssi;
+                info.append( sample.rssi );
+                info.append( ", " );
             }
             int size = beacon.samples.size();
             txpower = txpower / size;
@@ -127,20 +135,32 @@ public class TrackerWatcher
 		        variance += Math.pow( sample.rssi - rssi, 2 );
 	        }
 	        variance = variance / size;
+            double deviation = Math.sqrt( variance );
 
-            //LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Samples: " + size );
+            //LOGGER.info( "Tracker " + trackerDTO.getName() + ". RSSI: " + rssi + ", Variance: " + variance + ", Samples: " + size + ", Info: " + info.toString() );
 
             CacheService.TrackedBeacon trackedBeacon = new CacheService.TrackedBeacon();
             trackedBeacon.setTrackerId( trackerDTO.getId() );
             trackedBeacon.setBeaconId( beaconDTO.getId() );
             trackedBeacon.setTxPower( txpower );
             trackedBeacon.setRssi( rssi );
-            trackedBeacon.setSamples( size );
             trackedBeacon.setVariance( variance );
+            trackedBeacon.setDeviation( deviation );
+            trackedBeacon.setSamples( size );
 
             trackedBeacons.add( trackedBeacon );
+
+            CacheServiceNew.TrackedBeacon trackedBeaconNew = new CacheServiceNew.TrackedBeacon();
+            trackedBeaconNew.setTrackerId( trackerDTO.getId() );
+            trackedBeaconNew.setBeaconId( beaconDTO.getId() );
+            trackedBeaconNew.setRssi( rssi );
+            trackedBeaconNew.setVariance( variance );
+            trackedBeaconNew.setDeviation( deviation );
+            trackedBeaconNew.setSamples( size );
+            trackedBeaconsNew.add( trackedBeaconNew );
         }
 
+        cacheServiceNew.storeTrackerList( trackerDTO.getId(), trackedBeaconsNew );
         cacheService.storeTrackerList( trackerDTO.getId(), trackedBeacons );
     }
 }

@@ -40,6 +40,7 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
         String trackerName;
         String beaconName;
         List<CacheService.State> states;
+        int adjustedRssi;
         int rssi;
         int samples;
         double variance;
@@ -85,9 +86,10 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
             _sample.trackerName = trackerDTO.getName();
             _sample.beaconName = beaconDTO.getName();
             _sample.rssi = trackedBeaconDTO.getRssi();
+            _sample.adjustedRssi = trackedBeaconDTO.getAdjustedRssi();
             _sample.samples = trackedBeaconDTO.getSamples();
-            _sample.states = trackedBeaconDTO.getStates();
             _sample.variance = trackedBeaconDTO.getVariance();
+            _sample.states = trackedBeaconDTO.getStates();
             entries.add( _sample );
         }
 
