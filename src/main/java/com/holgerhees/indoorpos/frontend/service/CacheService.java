@@ -36,11 +36,18 @@ public class CacheService
 		long timestamp;
 	}
 
-	private class PrepareResult
+	private static class PrepareResult
 	{
 		TrackedBeacon newStrongestTrackedBeacon;
 		TrackedBeacon lastStrongestTrackedBeacon;
 		boolean lastStillTracked;
+
+		static PrepareResult instance = new PrepareResult();
+
+		private static PrepareResult getInstance()
+		{
+			return instance;
+		}
 	}
 
 	public static enum State
@@ -210,7 +217,7 @@ public class CacheService
 			// detect NEW STRONGEST TRACKED BEACON (incl. possible rooms check)
 			// update LAST STRONGEST TRACKED BEACON
 			// check if LAST STRONGEST TRACKED BEACON is still tracked
-			PrepareResult _result = getRelevantTrackedBeacons( beaconDTO, lastStrongestTrackedBeacon, trackedBeaconDTOs, _usedTrackedBeacons);
+			PrepareResult _result = getRelevantTrackedBeacons( lastStrongestTrackedBeacon, trackedBeaconDTOs, _usedTrackedBeacons );
 			TrackedBeacon newStrongestTrackedBeacon = _result.newStrongestTrackedBeacon;
 			lastStrongestTrackedBeacon = _result.lastStrongestTrackedBeacon;
 			boolean lastStillTracked = _result.lastStillTracked;
@@ -319,16 +326,16 @@ public class CacheService
 
 	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon )
 	{
-		if( isPriorised( lastStrongestTrackedBeacon ) && canFallback( lastStrongestTrackedBeacon ) ) return true;
+		if( !canFallback( lastStrongestTrackedBeacon ) ) return false;
 
-		return false;
+		return isPriorised( lastStrongestTrackedBeacon );
 	}
 
 	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
 	{
-		if( canFallback( lastStrongestTrackedBeacon ) ) return isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
+		if( !canFallback( lastStrongestTrackedBeacon ) ) return false;
 
-		return false;
+		return isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
 	}
 
 	private boolean isLastActiveTrackerPriorised( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
@@ -336,15 +343,9 @@ public class CacheService
 		if( isPriorised( lastStrongestTrackedBeacon ) )
 		{
 			// new tracker has a very good signal
-			if( isStrongRSSI( newStrongestTrackedBeacon ) )
-			{
-				return false;
-			}
+			if( isStrongRSSI( newStrongestTrackedBeacon ) ) return false;
 
-			if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
-			{
-				return true;
-			}
+			if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )  return true;
 		}
 
 		return false;
@@ -411,8 +412,8 @@ public class CacheService
 		return allowed;
 	}
 
-	private PrepareResult getRelevantTrackedBeacons(BeaconDTO beacon, TrackedBeacon lastStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs,
-		List<TrackedBeacon> usedTrackedBeacons)
+	private PrepareResult getRelevantTrackedBeacons( TrackedBeacon lastStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs,
+		List<TrackedBeacon> usedTrackedBeacons )
 	{
 		boolean lastStillTracked = false;
 
@@ -456,7 +457,7 @@ public class CacheService
 			}
 		}
 
-		PrepareResult result = new PrepareResult();
+		PrepareResult result = PrepareResult.getInstance();
 		result.lastStillTracked = lastStillTracked;
 		result.lastStrongestTrackedBeacon = lastStrongestTrackedBeacon;
 		result.newStrongestTrackedBeacon = newStrongestTrackedBeacon;
