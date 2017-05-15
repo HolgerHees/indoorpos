@@ -56,9 +56,6 @@ public class TrackerWatcher
     private CacheService cacheService;
 
     @Autowired
-    private CacheServiceNew cacheServiceNew;
-
-    @Autowired
     private CacheServiceBuilderJob cacheWatcherService;
 
     @PostConstruct
@@ -149,18 +146,8 @@ public class TrackerWatcher
             trackedBeacon.setSamples( size );
 
             trackedBeacons.add( trackedBeacon );
-
-            CacheServiceNew.TrackedBeacon trackedBeaconNew = new CacheServiceNew.TrackedBeacon();
-            trackedBeaconNew.setTrackerId( trackerDTO.getId() );
-            trackedBeaconNew.setBeaconId( beaconDTO.getId() );
-            trackedBeaconNew.setRssi( rssi );
-            trackedBeaconNew.setVariance( variance );
-            trackedBeaconNew.setDeviation( deviation );
-            trackedBeaconNew.setSamples( size );
-            trackedBeaconsNew.add( trackedBeaconNew );
         }
 
-        cacheServiceNew.storeTrackerList( trackerDTO.getId(), trackedBeaconsNew );
         cacheService.storeTrackerList( trackerDTO.getId(), trackedBeacons );
     }
 }

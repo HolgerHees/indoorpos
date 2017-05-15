@@ -36,20 +36,6 @@ public class CacheService
 		long timestamp;
 	}
 
-	private static class PrepareResult
-	{
-		TrackedBeacon newStrongestTrackedBeacon;
-		TrackedBeacon lastStrongestTrackedBeacon;
-		boolean lastStillTracked;
-
-		static PrepareResult instance = new PrepareResult();
-
-		private static PrepareResult getInstance()
-		{
-			return instance;
-		}
-	}
-
 	public static enum State
 	{
 		ACTIVE("active"),
@@ -85,9 +71,8 @@ public class CacheService
 		private double deviation;
 		private int samples;
 
-		private int adjustedRssi;
-
 		// cache service state variables
+		private int adjustedRssi;
 		private int activeCount = 0;
 		private int fallbackCount = 0;
 		private List<State> states = new ArrayList<>();
@@ -217,10 +202,11 @@ public class CacheService
 			// detect NEW STRONGEST TRACKED BEACON (incl. possible rooms check)
 			// update LAST STRONGEST TRACKED BEACON
 			// check if LAST STRONGEST TRACKED BEACON is still tracked
-			PrepareResult _result = getRelevantTrackedBeacons( lastStrongestTrackedBeacon, trackedBeaconDTOs, _usedTrackedBeacons );
-			TrackedBeacon newStrongestTrackedBeacon = _result.newStrongestTrackedBeacon;
-			lastStrongestTrackedBeacon = _result.lastStrongestTrackedBeacon;
-			boolean lastStillTracked = _result.lastStillTracked;
+			// only "possible rooms" or strong singnaled beacons are allowed and they must have min signal strength
+			TrackedBeacon[] _result = getRelevantTrackedBeacons( lastStrongestTrackedBeacon, trackedBeaconDTOs, _usedTrackedBeacons );
+			boolean lastStillTracked = _result[0] != lastStrongestTrackedBeacon;
+			lastStrongestTrackedBeacon = _result[0];
+			TrackedBeacon newStrongestTrackedBeacon = _result[1];
 
 			// STEP 2
 			// check if LAST STRONGEST TRACKED BEACON has higher priority that NEW STRONGEST TRACKED BEACON
@@ -250,8 +236,7 @@ public class CacheService
 
 				//LOGGER.info( "TBR: rssi: " + newStrongestTrackedBeacon.rssi + " (" + newStrongestTrackedBeacon.adjustedRssi + ") - (" + trackerDTO.getName() + ")" );
 
-				Long roomId = trackerDTO.getRoomId();
-				_activeRoomByBeaconId.put( newStrongestTrackedBeacon.beaconId, roomId );
+				_activeRoomByBeaconId.put( newStrongestTrackedBeacon.beaconId, trackerDTO.getRoomId() );
 				_strongestBeaconByBeaconIdMap.put( newStrongestTrackedBeacon.beaconId, newStrongestTrackedBeacon );
 			}
 		}
@@ -412,11 +397,8 @@ public class CacheService
 		return allowed;
 	}
 
-	private PrepareResult getRelevantTrackedBeacons( TrackedBeacon lastStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs,
-		List<TrackedBeacon> usedTrackedBeacons )
+	private TrackedBeacon[] getRelevantTrackedBeacons( TrackedBeacon lastStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs, List<TrackedBeacon> usedTrackedBeacons )
 	{
-		boolean lastStillTracked = false;
-
 		TrackedBeacon newStrongestTrackedBeacon = null;
 
 		if( trackedBeaconDTOs != null )
@@ -440,7 +422,6 @@ public class CacheService
 						trackedBeaconDTO.activeCount = lastStrongestTrackedBeacon.activeCount;
 						trackedBeaconDTO.fallbackCount = lastStrongestTrackedBeacon.fallbackCount;
 						lastStrongestTrackedBeacon = trackedBeaconDTO;
-						lastStillTracked = true;
 					}
 					if( trackedBeaconDTO.rssi >= tracker.getMinRssi() || trackedBeaconDTO == lastStrongestTrackedBeacon )
 					{
@@ -457,12 +438,7 @@ public class CacheService
 			}
 		}
 
-		PrepareResult result = PrepareResult.getInstance();
-		result.lastStillTracked = lastStillTracked;
-		result.lastStrongestTrackedBeacon = lastStrongestTrackedBeacon;
-		result.newStrongestTrackedBeacon = newStrongestTrackedBeacon;
-
-		return result;
+		return new TrackedBeacon[]{ lastStrongestTrackedBeacon, newStrongestTrackedBeacon };
 	}
 
 	private List<TrackedBeacon> getSortedUsedTrackedBeacons(List<TrackedBeacon> usedTrackedBeacons)

@@ -224,7 +224,7 @@ public class CacheServiceNew
 	private Map<Long, List<TrackedBeacon>> getTrackedBeaconsByBeaconId()
 	{
 		Map<Long, List<TrackedBeacon>> trackedBeaconsByBeaconId = new HashMap<>();
-		List<List<TrackedBeacon>> allTrackedBeacons = new ArrayList<>( trackedBeaconsByTrackerId.values() );
+		/*List<List<TrackedBeacon>> allTrackedBeacons = new ArrayList<>( trackedBeaconsByTrackerId.values() );
 		for( List<TrackedBeacon> beacons : allTrackedBeacons )
 		{
 			for( TrackedBeacon beacon : beacons )
@@ -237,7 +237,7 @@ public class CacheServiceNew
 				}
 				trackedBeacons.add( beacon );
 			}
-		}
+		}*/
 		return trackedBeaconsByBeaconId;
 	}
 
