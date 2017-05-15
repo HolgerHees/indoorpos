@@ -239,12 +239,16 @@ public class CacheService
 				_activeRoomByBeaconId.put( newStrongestTrackedBeacon.beaconId, trackerDTO.getRoomId() );
 				_strongestBeaconByBeaconIdMap.put( newStrongestTrackedBeacon.beaconId, newStrongestTrackedBeacon );
 			}
+			else if( activeRoomsByBeaconId.containsKey( beaconDTO.getId() ) )
+			{
+				_activeRoomByBeaconId.put( beaconDTO.getId(), activeRoomsByBeaconId.get( beaconDTO.getId() ) );
+			}
 		}
 
-		usedTrackedBeacons = getSortedUsedTrackedBeacons( _usedTrackedBeacons );
 		activeRooms = getSortedActiveRooms( _activeRoomByBeaconId );
 		activeRoomsByBeaconId = _activeRoomByBeaconId;
 		strongestBeaconByBeaconIdMap = _strongestBeaconByBeaconIdMap;
+		usedTrackedBeacons = getSortedUsedTrackedBeacons( _usedTrackedBeacons );
 	}
 
 	private TrackedBeacon checkLastActiveTrackerPriorised( boolean lastStillTracked, TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
