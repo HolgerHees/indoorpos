@@ -184,6 +184,7 @@ public class CacheService
 		List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
 
 		List<TrackedBeacon> _usedTrackedBeacons = new ArrayList<>();
+
 		Map<Long, TrackedBeacon> _strongestBeaconByBeaconIdMap = new HashMap<>();
 		Map<Long, Long> _activeRoomByBeaconId = new HashMap<>();
 
@@ -193,43 +194,41 @@ public class CacheService
 		{
 			// get last active tracker
 			TrackedBeacon lastStrongestTrackedBeacon = strongestBeaconByBeaconIdMap.get(beaconDTO.getId());
+			TrackedBeacon newStrongestTrackedBeacon = null;
 
+			// get current tracked beacons
 			List<TrackedBeacon> trackedBeaconDTOs = trackedBeaconsByBeaconId.get( beaconDTO.getId() );
 
-			if( trackedBeaconDTOs != null ) adjustPositions( trackedBeaconDTOs );
-
-			// STEP 1
-			// detect NEW STRONGEST TRACKED BEACON (incl. possible rooms check)
-			// update LAST STRONGEST TRACKED BEACON
-			// check if LAST STRONGEST TRACKED BEACON is still tracked
-			// only "possible rooms" or strong singnaled beacons are allowed and they must have min signal strength
-			TrackedBeacon[] _result = getRelevantTrackedBeacons( lastStrongestTrackedBeacon, trackedBeaconDTOs, _usedTrackedBeacons );
-			boolean lastStillTracked = _result[0] != lastStrongestTrackedBeacon;
-			lastStrongestTrackedBeacon = _result[0];
-			TrackedBeacon newStrongestTrackedBeacon = _result[1];
-
-			// STEP 2
-			// check if LAST STRONGEST TRACKED BEACON has higher priority that NEW STRONGEST TRACKED BEACON
-			if( newStrongestTrackedBeacon != null )
+			// check if lastStrongestTrackedBeacon is still valid
+			if( lastStrongestTrackedBeacon != null && ( trackedBeaconDTOs == null || !trackedBeaconDTOs.contains( lastStrongestTrackedBeacon ) ) )
 			{
-				newStrongestTrackedBeacon = checkLastActiveTrackerPriorised( lastStillTracked, lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
-			}
-			// check if LAST STRONGEST TRACKED BEACON is a temporary fallback
-			else if( lastStrongestTrackedBeacon != null )
-			{
-				newStrongestTrackedBeacon = checkLastActiveTrackerPriorisedAsFallback( lastStrongestTrackedBeacon );
+				lastStrongestTrackedBeacon = checkLastActiveTrackerCanFallback( lastStrongestTrackedBeacon );
 			}
 
-			// STEP 3
-			// last active Tracker is only returned if it was not found in tracked Beacons
+			// apply history data and calculate new strongest beacon
+			if( trackedBeaconDTOs != null )
+			{
+				applyHistoryData( trackedBeaconDTOs );
+
+				TrackedBeacon[] _result = getRelevantTrackedBeacons( lastStrongestTrackedBeacon, trackedBeaconDTOs );
+				lastStrongestTrackedBeacon = _result[0];
+				newStrongestTrackedBeacon = _result[1];
+			}
+
+			// check if lastStrongestTrackedBeacon has higher priority then the "different" newStrongestTrackedBeacon
+			newStrongestTrackedBeacon = checkLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
+
 			if( newStrongestTrackedBeacon != null )
 			{
-				if( lastStrongestTrackedBeacon != null )
+				// fallback means it was not found as a tracked beacon. we have to add them.
+				if( newStrongestTrackedBeacon.fallbackCount > 0 )
 				{
-					if( lastStrongestTrackedBeacon == newStrongestTrackedBeacon && !lastStillTracked ) _usedTrackedBeacons.add(lastStrongestTrackedBeacon);
-					if( isPriorised( lastStrongestTrackedBeacon ) ) lastStrongestTrackedBeacon.states.add( State.PRIORITY );
+					if( trackedBeaconDTOs == null ) trackedBeaconDTOs = new ArrayList<>();
+					trackedBeaconDTOs.add(newStrongestTrackedBeacon);
 				}
+
 				newStrongestTrackedBeacon.states.add( State.ACTIVE );
+
 				newStrongestTrackedBeacon.activeCount++;
 
 				TrackerDTO trackerDTO = daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId );
@@ -243,6 +242,8 @@ public class CacheService
 			{
 				_activeRoomByBeaconId.put( beaconDTO.getId(), activeRoomsByBeaconId.get( beaconDTO.getId() ) );
 			}
+
+			if( trackedBeaconDTOs != null ) _usedTrackedBeacons.addAll( trackedBeaconDTOs );
 		}
 
 		activeRooms = getSortedActiveRooms( _activeRoomByBeaconId );
@@ -251,98 +252,47 @@ public class CacheService
 		usedTrackedBeacons = getSortedUsedTrackedBeacons( _usedTrackedBeacons );
 	}
 
-	private TrackedBeacon checkLastActiveTrackerPriorised( boolean lastStillTracked, TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
+	private TrackedBeacon checkLastActiveTrackerCanFallback( TrackedBeacon lastStrongestTrackedBeacon )
 	{
-		if( lastStrongestTrackedBeacon != null )
+
+		if( lastStrongestTrackedBeacon.fallbackCount > CacheServiceBuilderJob.MAX_FALLBACK_COUNT )
 		{
-			// active tracker is the same. keep old values and reset last "losing" tracker
-			if( lastStrongestTrackedBeacon == newStrongestTrackedBeacon )
+			return null;
+		}
+		else
+		{
+			lastStrongestTrackedBeacon.states.add( State.FALLBACK );
+			lastStrongestTrackedBeacon.fallbackCount++;
+			return lastStrongestTrackedBeacon;
+		}
+	}
+
+	private TrackedBeacon checkLastActiveTrackerPriorised( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
+	{
+		if( lastStrongestTrackedBeacon != null && isPriorised( lastStrongestTrackedBeacon ) )
+		{
+			lastStrongestTrackedBeacon.states.add( State.PRIORITY );
+
+			if( newStrongestTrackedBeacon != null )
 			{
-				newStrongestTrackedBeacon.fallbackCount = 0;
+				// new tracker has a very good signal
+				if( isStrongRSSI( newStrongestTrackedBeacon ) )
+				{
+					return newStrongestTrackedBeacon;
+				}
+
+				if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
+				{
+					return lastStrongestTrackedBeacon;
+				}
 			}
-			// active tracker is different
 			else
 			{
-				if( lastStillTracked )
-				{
-					// use "trackedBeacon" if "lastActiveTracker" has higher priority then "activeTracker"
-					if( isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon) )
-					{
-						lastStrongestTrackedBeacon.fallbackCount = 0;
-						newStrongestTrackedBeacon = lastStrongestTrackedBeacon;
-					}
-				}
-				else
-				{
-					// fallback for a temporary missing trackedBeacon
-					if( isLastActiveTrackerPriorisedAsFallback( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
-					{
-						lastStrongestTrackedBeacon.states.add( State.FALLBACK);
-						lastStrongestTrackedBeacon.fallbackCount++;
-						newStrongestTrackedBeacon = lastStrongestTrackedBeacon;
-					}
-				}
-			}
-
-			// "lastStrongestTrackedBeacon" is not "active" anymore
-			if( newStrongestTrackedBeacon != lastStrongestTrackedBeacon )
-			{
-				lastStrongestTrackedBeacon.fallbackCount = 0;
-				lastStrongestTrackedBeacon.activeCount = 0;
+				return lastStrongestTrackedBeacon;
 			}
 		}
 
 		return newStrongestTrackedBeacon;
-	}
-
-	private TrackedBeacon checkLastActiveTrackerPriorisedAsFallback(TrackedBeacon lastStrongestTrackedBeacon)
-	{
-		// fallback for a temporary missing trackedBeacon
-		if( isLastActiveTrackerPriorisedAsFallback( lastStrongestTrackedBeacon ) )
-		{
-			lastStrongestTrackedBeacon.states.add( State.FALLBACK);
-			lastStrongestTrackedBeacon.fallbackCount++;
-			return lastStrongestTrackedBeacon;
-		}
-		else
-		{
-			lastStrongestTrackedBeacon.fallbackCount = 0;
-			lastStrongestTrackedBeacon.activeCount = 0;
-		}
-
-		return null;
-	}
-
-	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon )
-	{
-		if( !canFallback( lastStrongestTrackedBeacon ) ) return false;
-
-		return isPriorised( lastStrongestTrackedBeacon );
-	}
-
-	private boolean isLastActiveTrackerPriorisedAsFallback( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
-	{
-		if( !canFallback( lastStrongestTrackedBeacon ) ) return false;
-
-		return isLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
-	}
-
-	private boolean isLastActiveTrackerPriorised( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon )
-	{
-		if( isPriorised( lastStrongestTrackedBeacon ) )
-		{
-			// new tracker has a very good signal
-			if( isStrongRSSI( newStrongestTrackedBeacon ) ) return false;
-
-			if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )  return true;
-		}
-
-		return false;
-	}
-
-	private boolean canFallback( TrackedBeacon trackedBeacon )
-	{
-		return  trackedBeacon.fallbackCount < CacheServiceBuilderJob.MAX_FALLBACK_COUNT;
 	}
 
 	private boolean isPriorised( TrackedBeacon trackedBeacon )
@@ -381,64 +331,53 @@ public class CacheService
 		return t1;
 	}
 
-	private boolean isAllowed( TrackerDTO tracker, TrackedBeacon trackedBeaconDTO, List<Long> closeRoomIds )
-	{
-		boolean allowed = true;
-		boolean hasStrongSignal = isStrongRSSI( trackedBeaconDTO );
-		if( hasStrongSignal ) trackedBeaconDTO.states.add( State.STRONG_SIGNAL );
-
-		if( closeRoomIds != null )
-		{
-			Long newRoomId = tracker.getRoomId();
-			boolean isCloseRoom = closeRoomIds.contains( newRoomId );
-			if( !isCloseRoom ) trackedBeaconDTO.states.add( State.TOO_FAR_AWAY );
-
-			allowed = isCloseRoom || hasStrongSignal;
-		}
-
-		if( !allowed ) trackedBeaconDTO.states.add( State.SKIPPED );
-
-		return allowed;
-	}
-
-	private TrackedBeacon[] getRelevantTrackedBeacons( TrackedBeacon lastStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs, List<TrackedBeacon> usedTrackedBeacons )
+	private TrackedBeacon[] getRelevantTrackedBeacons( TrackedBeacon lastStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs )
 	{
 		TrackedBeacon newStrongestTrackedBeacon = null;
 
-		if( trackedBeaconDTOs != null )
+		List<Long> closeRoomIds = null;
+		if( lastStrongestTrackedBeacon != null )
 		{
-			List<Long> closeRoomIds = null;
-			if( lastStrongestTrackedBeacon != null )
+			Long lastRoomId = daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getRoomId();
+			closeRoomIds = daoCacheService.getCloseRoomIds(lastRoomId);
+		}
+
+		for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
+		{
+			// update lastStrongestTrackedBeacon reference with a new trackedBeacon object
+			if( lastStrongestTrackedBeacon != null && lastStrongestTrackedBeacon.trackerId.equals(trackedBeaconDTO.trackerId) )
 			{
-				Long lastRoomId = daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getRoomId();
-				closeRoomIds = daoCacheService.getCloseRoomIds(lastRoomId);
+				trackedBeaconDTO.activeCount = lastStrongestTrackedBeacon.activeCount;
+				trackedBeaconDTO.fallbackCount = 0;
+				lastStrongestTrackedBeacon = trackedBeaconDTO;
 			}
 
-			for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
+			boolean hasStrongSignal = true;
+			boolean hasMinSignal = true;
+			boolean isCloseRoom = true;
+
+			if( trackedBeaconDTO.activeCount == 0 )
 			{
 				TrackerDTO tracker = daoCacheService.getTrackerById( trackedBeaconDTO.trackerId);
-				boolean allowed = isAllowed( tracker, trackedBeaconDTO, closeRoomIds );
 
-				if( allowed )
-				{
-					if( lastStrongestTrackedBeacon != null && lastStrongestTrackedBeacon.trackerId.equals(trackedBeaconDTO.trackerId) )
-					{
-						trackedBeaconDTO.activeCount = lastStrongestTrackedBeacon.activeCount;
-						trackedBeaconDTO.fallbackCount = lastStrongestTrackedBeacon.fallbackCount;
-						lastStrongestTrackedBeacon = trackedBeaconDTO;
-					}
-					if( trackedBeaconDTO.rssi >= tracker.getMinRssi() || trackedBeaconDTO == lastStrongestTrackedBeacon )
-					{
-						newStrongestTrackedBeacon = getStrongestTrackedBeacon(trackedBeaconDTO, newStrongestTrackedBeacon);
-					}
-					else
-					{
-						trackedBeaconDTO.states.add( State.SKIPPED );
-						trackedBeaconDTO.states.add( State.MIN_RSSI );
-					}
-				}
+				hasStrongSignal = isStrongRSSI( trackedBeaconDTO );
+				if( hasStrongSignal ) trackedBeaconDTO.states.add( State.STRONG_SIGNAL );
 
-				usedTrackedBeacons.add( trackedBeaconDTO );
+				hasMinSignal = trackedBeaconDTO.rssi >= tracker.getMinRssi();
+				if( !hasMinSignal ) trackedBeaconDTO.states.add( State.MIN_RSSI );
+
+				isCloseRoom = closeRoomIds == null || closeRoomIds.contains( tracker.getRoomId() );
+				if( !isCloseRoom ) trackedBeaconDTO.states.add( State.TOO_FAR_AWAY );
+			}
+
+			// check if it is a "close" room or has a strong signal
+			if( ( hasStrongSignal || hasMinSignal ) && isCloseRoom )
+			{
+				newStrongestTrackedBeacon = getStrongestTrackedBeacon(trackedBeaconDTO, newStrongestTrackedBeacon);
+			}
+			else
+			{
+				trackedBeaconDTO.states.add( State.SKIPPED );
 			}
 		}
 
@@ -495,7 +434,7 @@ public class CacheService
 		return trackedBeaconsByBeaconId;
 	}
 
-	private void adjustPositions( List<TrackedBeacon> trackedBeacons )
+	private void applyHistoryData( List<TrackedBeacon> trackedBeacons )
 	{
 		long now = System.currentTimeMillis();
 
