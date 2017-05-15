@@ -1,4 +1,4 @@
-package com.holgerhees.indoorpos.frontend.service;
+package com.holgerhees.indoorpos.util;
 
 /**
  * Created by hhees on 14.05.17.
