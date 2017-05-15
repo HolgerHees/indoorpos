@@ -281,9 +281,13 @@ public class CacheService
 					return newStrongestTrackedBeacon;
 				}
 
-				if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
+				if( newStrongestTrackedBeacon != lastStrongestTrackedBeacon )
 				{
-					return lastStrongestTrackedBeacon;
+					if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
+					{
+						lastStrongestTrackedBeacon.states.add( State.PRIORITY_SIGNAL );
+						return lastStrongestTrackedBeacon;
+					}
 				}
 			}
 			else
@@ -308,13 +312,7 @@ public class CacheService
 	private boolean isLastActiveTrackerRSSIPriorised(TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon)
 	{
 		// priorised trackers signal is higher then "reduced" new signal
-		if( lastStrongestTrackedBeacon.adjustedRssi > (newStrongestTrackedBeacon.adjustedRssi - daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getPriorisedRssiOffset() ) )
-		{
-			lastStrongestTrackedBeacon.states.add( State.PRIORITY_SIGNAL );
-			return true;
-		}
-
-		return false;
+		return lastStrongestTrackedBeacon.adjustedRssi > (newStrongestTrackedBeacon.adjustedRssi - daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getPriorisedRssiOffset() );
 	}
 
 	private TrackedBeacon getStrongestTrackedBeacon(TrackedBeacon t1, TrackedBeacon t2)
