@@ -228,7 +228,6 @@ public class CacheService
 				}
 
 				newStrongestTrackedBeacon.states.add( State.ACTIVE );
-
 				newStrongestTrackedBeacon.activeCount++;
 
 				TrackerDTO trackerDTO = daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId );
