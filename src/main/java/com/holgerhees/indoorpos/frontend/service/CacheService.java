@@ -537,26 +537,38 @@ public class CacheService
 
 	private BeaconPosition getBeaconPositions(TrackedBeacon newStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs )
 	{
-		double[][] positions = new double[trackedBeaconDTOs.size()][2];
-		double[] distances = new double[trackedBeaconDTOs.size()];
+		double[] centroid;
 
-		for( int i = 0; i < trackedBeaconDTOs.size(); i++ )
+		if( trackedBeaconDTOs.size() == 1 )
 		{
-			TrackedBeacon trackedBeacon = trackedBeaconDTOs.get(i);
-			positions[i][0] = trackedBeacon.tracker.getPosX();
-			positions[i][1] = trackedBeacon.tracker.getPosY();
-
-			double distance = LocationHelper.getDistance(trackedBeacon.rssi, -65);
-
-			// convert it to pixel
-			distances[i] = distance * 1000 / 10;
+			centroid = new double[]{ newStrongestTrackedBeacon.tracker.getPosX(), newStrongestTrackedBeacon.tracker.getPosY() };
 		}
+		else
+		{
+			double[][] positions = new double[trackedBeaconDTOs.size()][2];
+			double[] distances = new double[trackedBeaconDTOs.size()];
 
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances), new LevenbergMarquardtOptimizer());
-		LeastSquaresOptimizer.Optimum optimum = solver.solve();
+			for( int i = 0; i < trackedBeaconDTOs.size(); i++ )
+			{
+				TrackedBeacon trackedBeacon = trackedBeaconDTOs.get( i );
+				positions[i][0] = trackedBeacon.tracker.getPosX();
+				positions[i][1] = trackedBeacon.tracker.getPosY();
 
-		// the answer
-		double[] centroid = optimum.getPoint().toArray();
+				double distance = LocationHelper.getDistance( trackedBeacon.rssi, -70 );
+
+				// convert it to pixel
+				distances[i] = distance * CacheServiceBuilderJob.MAP_WIDTH / 10;
+			}
+
+			NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver( new TrilaterationFunction( positions, distances ), new LevenbergMarquardtOptimizer() );
+			LeastSquaresOptimizer.Optimum optimum = solver.solve();
+
+			// the answer
+			centroid = optimum.getPoint().toArray();
+
+			if( centroid[0] > CacheServiceBuilderJob.MAP_WIDTH ) centroid[0] = CacheServiceBuilderJob.MAP_WIDTH;
+			if( centroid[1] > CacheServiceBuilderJob.MAP_HEIGHT ) centroid[1] = CacheServiceBuilderJob.MAP_HEIGHT;
+		}
 
 		BeaconPosition position = new BeaconPosition();
 		position.beaconId = newStrongestTrackedBeacon.beaconId;

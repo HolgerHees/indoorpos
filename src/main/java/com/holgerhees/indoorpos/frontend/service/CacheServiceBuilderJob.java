@@ -44,6 +44,9 @@ public class CacheServiceBuilderJob
     public static int OUTDATED_COUNT = 5;
     // reference variance
 	public static double REFERENCE_VARIANCE = 80.0;
+
+	public static int MAP_WIDTH = 1000;
+	public static int MAP_HEIGHT = 736;
     /*********************/
 
     @Autowired

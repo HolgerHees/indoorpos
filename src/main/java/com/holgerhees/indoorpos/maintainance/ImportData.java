@@ -48,7 +48,7 @@ public class ImportData
             roomDAO.truncate();
             areaDAO.truncate();
 
-	        // First Floor - 1000 x 736
+	        // First Floor - CacheServiceBuilderJob.MAP_WIDTH x CacheServiceBuilderJob.MAP_HEIGHT
 
 	        // strongSignalRssiThreshold
 	        // - A signal stronger then XX, always skip priorised check. Means the new tracker will be active.

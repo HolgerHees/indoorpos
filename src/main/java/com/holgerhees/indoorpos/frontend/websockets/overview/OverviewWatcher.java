@@ -54,8 +54,8 @@ public class OverviewWatcher implements CacheServiceBuilderClient, EndPointWatch
 	private class Beacon
 	{
 		String key;
-		int x;
-		int y;
+		int posX;
+		int posY;
 		int floor;
 	}
 
@@ -135,9 +135,10 @@ public class OverviewWatcher implements CacheServiceBuilderClient, EndPointWatch
 		{
 			Beacon beacon = new Beacon();
 			beacon.key = "beacon" + position.getBeaconId();
-			beacon.x = position.getX();
-			beacon.y = position.getY();
+			beacon.posX = position.getX();
+			beacon.posY = position.getY();
 			beacon.floor = daoCacheService.getRoomById( position.getRoomId() ).getFloor();
+            entries.add( beacon );
 		}
 
 		return entries;
