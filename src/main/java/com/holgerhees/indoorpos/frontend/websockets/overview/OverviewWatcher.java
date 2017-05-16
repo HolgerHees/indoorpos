@@ -134,6 +134,7 @@ public class OverviewWatcher implements CacheServiceBuilderClient, EndPointWatch
 		for( CacheService.BeaconPosition position: cacheService.getBeaconPositions() )
 		{
 			Beacon beacon = new Beacon();
+			beacon.key = "beacon" + position.getBeaconId();
 			beacon.x = position.getX();
 			beacon.y = position.getY();
 			beacon.floor = daoCacheService.getRoomById( position.getRoomId() ).getFloor();

@@ -65,6 +65,7 @@ public class CacheService
 	{
 		int x;
 		int y;
+		Long beaconId;
 		Long roomId;
 
 		public int getX()
@@ -75,6 +76,11 @@ public class CacheService
 		public int getY()
 		{
 			return y;
+		}
+
+		public Long getBeaconId()
+		{
+			return beaconId;
 		}
 
 		public Long getRoomId()
@@ -553,6 +559,7 @@ public class CacheService
 		double[] centroid = optimum.getPoint().toArray();
 
 		BeaconPosition position = new BeaconPosition();
+		position.beaconId = newStrongestTrackedBeacon.beaconId;
 		position.roomId = newStrongestTrackedBeacon.tracker.getRoomId();
 		position.x = (int) centroid[0];
 		position.y = (int) centroid[1];
