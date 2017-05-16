@@ -112,7 +112,7 @@ public class TrackerWatcher
 
             // calculate average RSSI
             int txpower = 0;
-            int rssi = 0;
+            double rssi = 0;
             StringBuffer info = new StringBuffer();
             for( TrackedBeaconSample sample : beacon.samples )
             {

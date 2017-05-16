@@ -42,6 +42,8 @@ public class CacheServiceBuilderJob
 	public static int MAX_FALLBACK_COUNT = 5;
 	// if the tracker is not tracked anymore more then XX times, ignore history data
     public static int OUTDATED_COUNT = 5;
+    // reference variance
+	public static double REFERENCE_VARIANCE = 80.0;
     /*********************/
 
     @Autowired

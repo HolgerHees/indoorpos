@@ -96,7 +96,7 @@ public class ImportData
 
 
 			// Holgers Phone
-            createPhone( beaconDAO, "c45927d1606f4242b273c52a294489a6", "Holger" );
+            createPhone( beaconDAO, "c45927d1606f4242b273c52a294489a6", "Holger", 0 );
 
             //maintainanceService.createDatabaseSchema(DROP_TABLES);
         } finally
@@ -113,12 +113,13 @@ public class ImportData
 		closeRoomDAO.save( closeRoomDTO );
 	}
 
-	private static void createPhone( BeaconDAO beaconDAO, String uuid, String name )
+	private static void createPhone( BeaconDAO beaconDAO, String uuid, String name, int rssiOffset )
 	{
 		// Holgers Phone
 		BeaconDTO beaconDTO = new BeaconDTO();
 		beaconDTO.setUuid( uuid );
 		beaconDTO.setName( name );
+		beaconDTO.setRssiOffset( rssiOffset );
 		beaconDAO.save( beaconDTO );
 
 	}

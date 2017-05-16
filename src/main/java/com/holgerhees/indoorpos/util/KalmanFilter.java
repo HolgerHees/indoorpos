@@ -39,21 +39,6 @@ public class KalmanFilter
         this.x = 0; // estimated signal without noise
     }
 
-    public void setR( double r )
-    {
-        R = r;
-    }
-
-    public void setQ( double q )
-    {
-        Q = q;
-    }
-
-    public void setA( double a )
-    {
-        A = a;
-    }
-
     /**
      * Filter a new value
      * @param  {Number} z Measurement
@@ -85,32 +70,5 @@ public class KalmanFilter
         }
 
         return this.x;
-    }
-
-    /**
-     * Return the last filtered measurement
-     * @return {Number}
-     */
-    public double lastMeasurement()
-    {
-        return this.x;
-    }
-
-    /**
-     * Set measurement noise Q
-     * @param {Number} noise
-     */
-    public void setMeasurementNoise(double noise)
-    {
-        this.Q = noise;
-    }
-
-    /**
-     * Set the process noise R
-     * @param {Number} noise
-     */
-    public void setProcessNoise( double noise)
-    {
-        this.R = noise;
     }
 }

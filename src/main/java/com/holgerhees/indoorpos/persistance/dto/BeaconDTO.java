@@ -15,7 +15,11 @@ public class BeaconDTO extends AbstractKeyDTO
                type = "varchar(255)" )
     private String name;
 
-    public String getUuid()
+	@DbColumn( name = "rssiOffset",
+	           type = "tinyint(2)" )
+	private int rssiOffset;
+
+	public String getUuid()
     {
         return uuid;
     }
@@ -34,4 +38,14 @@ public class BeaconDTO extends AbstractKeyDTO
     {
         this.name = name;
     }
+
+	public int getRssiOffset()
+	{
+		return rssiOffset;
+	}
+
+	public void setRssiOffset(int rssiOffset)
+	{
+		this.rssiOffset = rssiOffset;
+	}
 }

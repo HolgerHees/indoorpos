@@ -15,7 +15,7 @@ import java.util.*;
 public class CacheService
 {
 	private static Log LOGGER = LogFactory.getLog(CacheService.class);
-	private static DecimalFormat df = new DecimalFormat( "#.##" );
+	private static DecimalFormat df = new DecimalFormat( "#.#" );
 
 	private long lastUpdate;
 	Map<Long, List<TrackedBeacon>> trackedBeaconsByTrackerIdMap = new HashMap<>();
@@ -25,18 +25,12 @@ public class CacheService
 	Map<Long, TrackedBeacon> strongestBeaconByBeaconIdMap = new HashMap<>();
 	List<TrackedBeacon> usedTrackedBeacons = new ArrayList<>();
 
-	private Map<String, Position> lastTrackedPositions = new HashMap<>();
+	private Map<Long, TrackedState> lastTrackedStates = new HashMap<>();
 
 	@Autowired
 	DAOCacheService daoCacheService;
 
-	private class Position
-	{
-		int rssi;
-		long timestamp;
-	}
-
-	public static enum State
+	public enum State
 	{
 		ACTIVE("active"),
 		PRIORITY("priority"),
@@ -61,18 +55,29 @@ public class CacheService
 		}
 	}
 
+	private class TrackedState
+	{
+		double rssi;
+		long timestamp;
+	}
+
 	public static class TrackedBeacon
 	{
 		private Long trackerId;
 		private Long beaconId;
 		private int txPower;
-		private int rssi;
+		private double rssi;
 		private double variance;
 		private double deviation;
 		private int samples;
 
 		// cache service state variables
-		private int adjustedRssi;
+		private TrackerDTO tracker;
+		private BeaconDTO beacon;
+
+		private double adjustedRssi;
+		private double adjustedVariance;
+
 		private int activeCount = 0;
 		private int fallbackCount = 0;
 		private List<State> states = new ArrayList<>();
@@ -107,12 +112,12 @@ public class CacheService
 			this.txPower = txPower;
 		}
 
-		public int getRssi()
+		public double getRssi()
 		{
 			return rssi;
 		}
 
-		public void setRssi(int rssi)
+		public void setRssi(double rssi)
 		{
 			this.rssi = rssi;
 		}
@@ -142,7 +147,7 @@ public class CacheService
 			this.deviation = deviation;
 		}
 
-		public int getAdjustedRssi()
+		public double getAdjustedRssi()
 		{
 			return adjustedRssi;
 		}
@@ -184,7 +189,6 @@ public class CacheService
 		List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
 
 		List<TrackedBeacon> _usedTrackedBeacons = new ArrayList<>();
-
 		Map<Long, TrackedBeacon> _strongestBeaconByBeaconIdMap = new HashMap<>();
 		Map<Long, Long> _activeRoomByBeaconId = new HashMap<>();
 
@@ -192,32 +196,44 @@ public class CacheService
 
 		for( BeaconDTO beaconDTO : beaconDTOs )
 		{
-			// get last active tracker
+			// STEP 1: get last active tracker
 			TrackedBeacon lastStrongestTrackedBeacon = strongestBeaconByBeaconIdMap.get(beaconDTO.getId());
 			TrackedBeacon newStrongestTrackedBeacon = null;
 
-			// get current tracked beacons
+			// STEP 2: get current tracked beacons
 			List<TrackedBeacon> trackedBeaconDTOs = trackedBeaconsByBeaconId.get( beaconDTO.getId() );
 
-			// check if lastStrongestTrackedBeacon is still valid
+			// STEP 3: check if lastStrongestTrackedBeacon is still valid
 			if( lastStrongestTrackedBeacon != null && ( trackedBeaconDTOs == null || !trackedBeaconDTOs.contains( lastStrongestTrackedBeacon ) ) )
 			{
 				lastStrongestTrackedBeacon = checkLastActiveTrackerCanFallback( lastStrongestTrackedBeacon );
 			}
 
-			// apply history data and calculate new strongest beacon
+			// STEP 4: apply history data, update lastStrongestTrackedBeacon and calculate newStrongestTrackedBeacon
 			if( trackedBeaconDTOs != null )
 			{
-				applyHistoryData( trackedBeaconDTOs );
+				List<Long> closeRoomIds = getCloseRoomIds( lastStrongestTrackedBeacon );
 
-				TrackedBeacon[] _result = getRelevantTrackedBeacons( lastStrongestTrackedBeacon, trackedBeaconDTOs );
-				lastStrongestTrackedBeacon = _result[0];
-				newStrongestTrackedBeacon = _result[1];
+				for( TrackedBeacon trackedBeacon : trackedBeaconDTOs )
+				{
+					// Cache tracker and beacon. Is used later several times
+					trackedBeacon.tracker = daoCacheService.getTrackerById( trackedBeacon.trackerId );
+					trackedBeacon.beacon = daoCacheService.getBeaconById( trackedBeacon.beaconId );
+
+					applyStateData( trackedBeacon);
+
+					LOGGER.info( "TBR: rssi: " + df.format( trackedBeacon.adjustedRssi ) + " (" + df.format( trackedBeacon.rssi ) + "), variance: " + df.format( trackedBeacon.adjustedVariance ) + " (" + df.format( trackedBeacon.variance ) + "), samples: " + trackedBeacon.samples + " (" + trackedBeacon.tracker.getName() + ")" );
+
+					lastStrongestTrackedBeacon = findAndUpdateLastStrongestTrackedBeacon( lastStrongestTrackedBeacon, trackedBeacon );
+
+					newStrongestTrackedBeacon = getStrongestTrackedBeacon( trackedBeacon, newStrongestTrackedBeacon, closeRoomIds );
+				}
 			}
 
-			// check if lastStrongestTrackedBeacon has higher priority then the "different" newStrongestTrackedBeacon
+			// STEP 5: check if lastStrongestTrackedBeacon has higher priority then the "different" newStrongestTrackedBeacon
 			newStrongestTrackedBeacon = checkLastActiveTrackerPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon );
 
+			// STEP 6: finalize
 			if( newStrongestTrackedBeacon != null )
 			{
 				// fallback means it was not found as a tracked beacon. we have to add them.
@@ -230,11 +246,7 @@ public class CacheService
 				newStrongestTrackedBeacon.states.add( State.ACTIVE );
 				newStrongestTrackedBeacon.activeCount++;
 
-				TrackerDTO trackerDTO = daoCacheService.getTrackerById( newStrongestTrackedBeacon.trackerId );
-
-				//LOGGER.info( "TBR: rssi: " + newStrongestTrackedBeacon.rssi + " (" + newStrongestTrackedBeacon.adjustedRssi + ") - (" + trackerDTO.getName() + ")" );
-
-				_activeRoomByBeaconId.put( newStrongestTrackedBeacon.beaconId, trackerDTO.getRoomId() );
+				_activeRoomByBeaconId.put( newStrongestTrackedBeacon.beaconId, newStrongestTrackedBeacon.tracker.getRoomId() );
 				_strongestBeaconByBeaconIdMap.put( newStrongestTrackedBeacon.beaconId, newStrongestTrackedBeacon );
 			}
 			else if( activeRoomsByBeaconId.containsKey( beaconDTO.getId() ) )
@@ -272,7 +284,7 @@ public class CacheService
 		{
 			lastStrongestTrackedBeacon.states.add( State.PRIORITY );
 
-			if( newStrongestTrackedBeacon != null )
+			if( newStrongestTrackedBeacon != null && newStrongestTrackedBeacon != lastStrongestTrackedBeacon )
 			{
 				// new tracker has a very good signal
 				if( isStrongRSSI( newStrongestTrackedBeacon ) )
@@ -280,13 +292,10 @@ public class CacheService
 					return newStrongestTrackedBeacon;
 				}
 
-				if( newStrongestTrackedBeacon != lastStrongestTrackedBeacon )
+				if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
 				{
-					if( isLastActiveTrackerRSSIPriorised( lastStrongestTrackedBeacon, newStrongestTrackedBeacon ) )
-					{
-						lastStrongestTrackedBeacon.states.add( State.PRIORITY_SIGNAL );
-						return lastStrongestTrackedBeacon;
-					}
+					lastStrongestTrackedBeacon.states.add( State.PRIORITY_SIGNAL );
+					return lastStrongestTrackedBeacon;
 				}
 			}
 			else
@@ -305,80 +314,66 @@ public class CacheService
 
 	private boolean isStrongRSSI( TrackedBeacon trackedBeacon )
 	{
-		return trackedBeacon.adjustedRssi >= daoCacheService.getTrackerById( trackedBeacon.trackerId ).getStrongSignalRssiThreshold();
+		return trackedBeacon.adjustedRssi >= trackedBeacon.tracker.getStrongSignalRssiThreshold() - trackedBeacon.beacon.getRssiOffset();
 	}
 
 	private boolean isLastActiveTrackerRSSIPriorised(TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon newStrongestTrackedBeacon)
 	{
 		// priorised trackers signal is higher then "reduced" new signal
-		return lastStrongestTrackedBeacon.adjustedRssi > (newStrongestTrackedBeacon.adjustedRssi - daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getPriorisedRssiOffset() );
+		return lastStrongestTrackedBeacon.adjustedRssi > (newStrongestTrackedBeacon.adjustedRssi - lastStrongestTrackedBeacon.tracker.getPriorisedRssiOffset() );
 	}
 
 	private TrackedBeacon getStrongestTrackedBeacon(TrackedBeacon t1, TrackedBeacon t2)
 	{
-		if( t2 == null )
-		{
-			return t1;
-		}
+		if( t2 == null ) return t1;
 
-		if( t1.adjustedRssi > t2.adjustedRssi )
-			return t1;
-		if( t1.adjustedRssi < t2.adjustedRssi )
-			return t2;
+		if( t1.adjustedRssi > t2.adjustedRssi ) return t1;
+		if( t1.adjustedRssi < t2.adjustedRssi ) return t2;
 		return t1;
 	}
 
-	private TrackedBeacon[] getRelevantTrackedBeacons( TrackedBeacon lastStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs )
+	private TrackedBeacon getStrongestTrackedBeacon( TrackedBeacon trackedBeacon, TrackedBeacon newStrongestTrackedBeacon, List<Long> closeRoomIds )
 	{
-		TrackedBeacon newStrongestTrackedBeacon = null;
+		boolean hasStrongSignal = true;
+		boolean hasMinSignal = true;
+		boolean isCloseRoom = true;
 
-		List<Long> closeRoomIds = null;
-		if( lastStrongestTrackedBeacon != null )
+		if( trackedBeacon.activeCount == 0 )
 		{
-			Long lastRoomId = daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getRoomId();
-			closeRoomIds = daoCacheService.getCloseRoomIds(lastRoomId);
+			hasStrongSignal = isStrongRSSI( trackedBeacon );
+			if( hasStrongSignal ) trackedBeacon.states.add( State.STRONG_SIGNAL );
+
+			hasMinSignal = trackedBeacon.adjustedRssi >= trackedBeacon.tracker.getMinRssi() - trackedBeacon.beacon.getRssiOffset();
+			if( !hasMinSignal ) trackedBeacon.states.add( State.MIN_RSSI );
+
+			isCloseRoom = closeRoomIds == null || closeRoomIds.contains( trackedBeacon.tracker.getRoomId() );
+			if( !isCloseRoom ) trackedBeacon.states.add( State.TOO_FAR_AWAY );
 		}
 
-		for( TrackedBeacon trackedBeaconDTO : trackedBeaconDTOs )
+		// check if it is a "close" room or has a strong signal
+		if( ( hasStrongSignal || hasMinSignal ) && isCloseRoom )
 		{
-			// update lastStrongestTrackedBeacon reference with a new trackedBeacon object
-			if( lastStrongestTrackedBeacon != null && lastStrongestTrackedBeacon.trackerId.equals(trackedBeaconDTO.trackerId) )
-			{
-				trackedBeaconDTO.activeCount = lastStrongestTrackedBeacon.activeCount;
-				trackedBeaconDTO.fallbackCount = 0;
-				lastStrongestTrackedBeacon = trackedBeaconDTO;
-			}
-
-			boolean hasStrongSignal = true;
-			boolean hasMinSignal = true;
-			boolean isCloseRoom = true;
-
-			if( trackedBeaconDTO.activeCount == 0 )
-			{
-				TrackerDTO tracker = daoCacheService.getTrackerById( trackedBeaconDTO.trackerId);
-
-				hasStrongSignal = isStrongRSSI( trackedBeaconDTO );
-				if( hasStrongSignal ) trackedBeaconDTO.states.add( State.STRONG_SIGNAL );
-
-				hasMinSignal = trackedBeaconDTO.rssi >= tracker.getMinRssi();
-				if( !hasMinSignal ) trackedBeaconDTO.states.add( State.MIN_RSSI );
-
-				isCloseRoom = closeRoomIds == null || closeRoomIds.contains( tracker.getRoomId() );
-				if( !isCloseRoom ) trackedBeaconDTO.states.add( State.TOO_FAR_AWAY );
-			}
-
-			// check if it is a "close" room or has a strong signal
-			if( ( hasStrongSignal || hasMinSignal ) && isCloseRoom )
-			{
-				newStrongestTrackedBeacon = getStrongestTrackedBeacon(trackedBeaconDTO, newStrongestTrackedBeacon);
-			}
-			else
-			{
-				trackedBeaconDTO.states.add( State.SKIPPED );
-			}
+			newStrongestTrackedBeacon = getStrongestTrackedBeacon(trackedBeacon, newStrongestTrackedBeacon);
+		}
+		else
+		{
+			trackedBeacon.states.add( State.SKIPPED );
 		}
 
-		return new TrackedBeacon[]{ lastStrongestTrackedBeacon, newStrongestTrackedBeacon };
+		return newStrongestTrackedBeacon;
+	}
+
+	private TrackedBeacon findAndUpdateLastStrongestTrackedBeacon( TrackedBeacon lastStrongestTrackedBeacon, TrackedBeacon trackedBeacon )
+	{
+		// update lastStrongestTrackedBeacon reference with a new trackedBeacon object
+		if( lastStrongestTrackedBeacon != null && lastStrongestTrackedBeacon.trackerId.equals(trackedBeacon.trackerId) )
+		{
+			trackedBeacon.activeCount = lastStrongestTrackedBeacon.activeCount;
+			trackedBeacon.fallbackCount = 0;
+			lastStrongestTrackedBeacon = trackedBeacon;
+		}
+
+		return lastStrongestTrackedBeacon;
 	}
 
 	private List<TrackedBeacon> getSortedUsedTrackedBeacons(List<TrackedBeacon> usedTrackedBeacons)
@@ -431,48 +426,62 @@ public class CacheService
 		return trackedBeaconsByBeaconId;
 	}
 
-	private void applyHistoryData( List<TrackedBeacon> trackedBeacons )
+	private List<Long> getCloseRoomIds(TrackedBeacon lastStrongestTrackedBeacon)
+	{
+		if( lastStrongestTrackedBeacon != null )
+		{
+			Long lastRoomId = daoCacheService.getTrackerById( lastStrongestTrackedBeacon.trackerId ).getRoomId();
+			return daoCacheService.getCloseRoomIds(lastRoomId);
+		}
+
+		return null;
+	}
+
+	private void applyStateData( TrackedBeacon trackedBeacon)
 	{
 		long now = System.currentTimeMillis();
 
-		for( TrackedBeacon trackedBeacon : trackedBeacons )
+		Long key = ( trackedBeacon.trackerId * 100000 ) + trackedBeacon.beaconId;
+
+		TrackedState state = lastTrackedStates.get( key);
+		if( state == null )
 		{
-			String key = trackedBeacon.trackerId + "|" + trackedBeacon.beaconId;
-
-			Position position = lastTrackedPositions.get( key );
-			if( position == null )
-			{
-				position = new Position();
-				position.rssi = -100;
-				lastTrackedPositions.put( key, position );
-				//LOGGER.info( "create" );
-			}
-			else if( now - position.timestamp > CacheServiceBuilderJob.INTERVAL_LENGTH * CacheServiceBuilderJob.OUTDATED_COUNT )
-			{
-				position.rssi = -100;
-			}
-
-			int maxSamples = CacheServiceBuilderJob.INTERVAL_LENGTH / CacheServiceBuilderJob.FREQUENCY;
-			int missingSamples = maxSamples - trackedBeacon.samples;
-
-			double adjustedVariance = trackedBeacon.variance + ( ( missingSamples * 80.0 ) / maxSamples );
-			double diffRssi = trackedBeacon.rssi - position.rssi;
-
-			double reverseVariance = 80 - adjustedVariance;
-			if( reverseVariance < 0 ) reverseVariance = 0;
-			else if( reverseVariance > 80 ) reverseVariance = 80;
-
-			double effectiveDiffRssi = reverseVariance * diffRssi / 80;
-
-			position.rssi += effectiveDiffRssi;
-			//LOGGER.info( "update" );
-			//TrackerDTO trackerDTO = daoCacheService.getTrackerById( trackedBeacon.trackerId );
-
-			LOGGER.info( "TBR: rssi: " + position.rssi + " (" + trackedBeacon.rssi + "), variance: " + df.format( adjustedVariance ) + " (" + df.format( trackedBeacon.variance ) + "), samples: " + trackedBeacon.samples + " (" + daoCacheService.getTrackerById( trackedBeacon.trackerId ).getName() + ")" );
-
-			position.timestamp = now;
-
-			trackedBeacon.adjustedRssi = position.rssi;
+			state = new TrackedState();
+			state.rssi = -100.0;
+			lastTrackedStates.put( key, state );
 		}
+		else if( now - state.timestamp > CacheServiceBuilderJob.INTERVAL_LENGTH * CacheServiceBuilderJob.OUTDATED_COUNT )
+		{
+			state.rssi = -100.0;
+		}
+
+		state.timestamp = now;
+
+		// STEP 1: increase variance based on missing samples.
+		//         if all samples are there we increase the variance by 0
+		//         if all samples are missing we increase the variance by 80 (REFERENCE_VARIANCE)
+		int maxSamples = CacheServiceBuilderJob.INTERVAL_LENGTH / CacheServiceBuilderJob.FREQUENCY;
+		int missingSamples = maxSamples - trackedBeacon.samples;
+		double adjustedVariance = trackedBeacon.variance + ( ( missingSamples * CacheServiceBuilderJob.REFERENCE_VARIANCE ) / maxSamples );
+
+		// STEP 2: calculate difference between old and new RSSI
+		double totalDiffRssi = trackedBeacon.rssi - state.rssi;
+
+		// STEP 3: calculate percentage of adjusted variance
+		//         variance of 80.0 (REFERENCE_VARIANCE) means 0%
+		//         variance of 0.0 means 100%
+		double percent = adjustedVariance * 100.0 / CacheServiceBuilderJob.REFERENCE_VARIANCE;
+		if( percent < 0.0 ) percent = 0.0;
+		else if( percent > 100.0 ) percent = 100.0;
+		//         reverse
+		percent = 100.0 - percent;
+
+		// STEP 4: calculate effectiveDiffRssi
+		double effectiveDiffRssi = totalDiffRssi * percent / 100.0;
+
+		state.rssi += effectiveDiffRssi;
+
+		trackedBeacon.adjustedRssi = state.rssi;
+		trackedBeacon.adjustedVariance = adjustedVariance;
 	}
 }
