@@ -6,7 +6,6 @@ package com.holgerhees.indoorpos.frontend.websockets.tracker;
 
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
-import com.holgerhees.indoorpos.frontend.service.CacheServiceNew;
 import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
@@ -98,7 +97,6 @@ public class TrackerWatcher
     private void processTrackedBeacons( Parameter param, TrackerDTO trackerDTO )
     {
         List<CacheService.TrackedBeacon> trackedBeacons = new ArrayList<>();
-        List<CacheServiceNew.TrackedBeacon> trackedBeaconsNew = new ArrayList<>();
 
         for( TrackedBeacon beacon : param.trackedBeacons )
         {

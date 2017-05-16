@@ -4,6 +4,7 @@ package com.holgerhees.indoorpos.frontend.websockets.overview;
  * Created by hhees on 03.05.17.
  */
 
+import com.google.gson.JsonElement;
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderClient;
 import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
@@ -11,6 +12,8 @@ import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
 import com.holgerhees.indoorpos.persistance.dto.AreaDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
+import com.holgerhees.shared.web.util.GSonFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +37,27 @@ public class OverviewWatcher implements CacheServiceBuilderClient, EndPointWatch
     @Autowired
     CacheServiceBuilderJob cacheWatcherService;
 
-    private List<Long> lastDetectedRooms;
+    private String lastMessage;
+
+	public static class Result
+	{
+		String type;
+		Object data;
+
+		public Result( String type, Object data )
+		{
+			this.type = type;
+			this.data = data;
+		}
+	}
+
+	private class Beacon
+	{
+		String key;
+		int x;
+		int y;
+		int floor;
+	}
 
     private class Area
     {
@@ -65,41 +88,68 @@ public class OverviewWatcher implements CacheServiceBuilderClient, EndPointWatch
     @Override
     public void notifyCacheChange()
     {
-        if( !OverviewEndPoint.hasSessions() )
-        {
-            return;
-        }
+        if( !OverviewEndPoint.hasSessions() ) return;
 
         List<Long> detectedRooms = cacheService.getActiveRooms();
-        if( detectedRooms.equals( lastDetectedRooms ) )
-        {
-            return;
-        }
 
-        lastDetectedRooms = detectedRooms;
+	    List<Result> result = new ArrayList<>();
 
         List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
-        OverviewEndPoint.broadcastMessage( "area", areas );
+	    result.add( new Result( "area", areas ) );
+
+	    List<Beacon> beacons = getBeacons();
+	    result.add( new Result( "beacon", beacons ) );
+
+	    JsonElement json = GSonFactory.createGSon().toJsonTree( result );
+
+		String message = json.toString();
+	    if( message.equals( lastMessage ) ) return;
+	    lastMessage = message;
+
+	    OverviewEndPoint.broadcastMessage( message );
     }
 
     @Override
     public void notifyNewSession( Session userSession )
     {
-        OverviewEndPoint.sendMessage( userSession, "tracker", getTracker() );
+	    List<Result> result = new ArrayList<>();
+
+	    result.add( new Result( "tracker", getTracker() ) );
 
 	    List<Long> detectedRooms = cacheService.getActiveRooms();
         List<OverviewWatcher.Area> areas = getAreas( detectedRooms );
-        OverviewEndPoint.sendMessage( userSession, "area", areas );
+	    result.add( new Result( "area", areas ) );
+
+	    List<Beacon> beacons = getBeacons();
+	    result.add( new Result( "beacon", beacons ) );
+
+	    JsonElement json = GSonFactory.createGSon().toJsonTree( result);
+
+        OverviewEndPoint.sendMessage( userSession, json.toString() );
     }
 
-    private List<OverviewWatcher.Area> getAreas( List<Long> activeRooms )
+	private List<Beacon> getBeacons()
+	{
+		List<Beacon> entries = new ArrayList<>();
+		for( CacheService.BeaconPosition position: cacheService.getBeaconPositions() )
+		{
+			Beacon beacon = new Beacon();
+			beacon.x = position.getX();
+			beacon.y = position.getY();
+			beacon.floor = daoCacheService.getRoomById( position.getRoomId() ).getFloor();
+		}
+
+		return entries;
+	}
+
+    private List<Area> getAreas( List<Long> activeRooms )
     {
         List<AreaDTO> areas = daoCacheService.getAreas( activeRooms );
 
-        List<OverviewWatcher.Area> entries = new ArrayList<>();
+        List<Area> entries = new ArrayList<>();
         for( AreaDTO area : areas )
         {
-            OverviewWatcher.Area _area = new OverviewWatcher.Area();
+            Area _area = new Area();
             _area.key = "area" + area.getId();
             _area.topLeftX = area.getTopLeftX();
             _area.topLeftY = area.getTopLeftY();
@@ -113,14 +163,14 @@ public class OverviewWatcher implements CacheServiceBuilderClient, EndPointWatch
         return entries;
     }
 
-    private List<OverviewWatcher.Tracker> getTracker()
+    private List<Tracker> getTracker()
     {
         List<TrackerDTO> trackers = daoCacheService.getTracker();
 
-        List<OverviewWatcher.Tracker> result = new ArrayList<>();
+        List<Tracker> result = new ArrayList<>();
         for( TrackerDTO tracker : trackers )
         {
-            OverviewWatcher.Tracker _tracker = new OverviewWatcher.Tracker();
+            Tracker _tracker = new Tracker();
             _tracker.key = "tracker" + tracker.getId();
             _tracker.name = tracker.getName();
             _tracker.floor = daoCacheService.getRoomById( tracker.getRoomId() ).getFloor();

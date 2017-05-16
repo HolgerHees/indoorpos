@@ -15,6 +15,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @ServerEndpoint( value = "/overviewUpdate" )
@@ -24,18 +25,6 @@ public class OverviewEndPoint
 
     private static Set<Session> userSessions = Collections.synchronizedSet( new HashSet<>() );
     private static EndPointWatcherClient watcher;
-
-    private static class Result
-    {
-        String type;
-        Object data;
-
-        public Result( String type, Object data )
-        {
-            this.type = type;
-            this.data = data;
-        }
-    }
 
     @OnOpen
     public void onOpen( Session userSession )
@@ -74,26 +63,21 @@ public class OverviewEndPoint
         return userSessions.size() > 0;
     }
 
-    public static void sendMessage( Session session, String type, Object obj )
+    public static void sendMessage( Session session, String message )
     {
         try
         {
-            Result result = new Result( type, obj );
-            JsonElement json = GSonFactory.createGSon().toJsonTree( result );
             // must be synchron
-            session.getBasicRemote().sendText( json.toString() );
+            session.getBasicRemote().sendText( message );
         }
         catch( IOException e ){}
     }
 
-    public static void broadcastMessage( String type, Object obj )
+    public static void broadcastMessage( String message )
     {
-        Result result = new Result( type, obj );
-        JsonElement json = GSonFactory.createGSon().toJsonTree( result );
-
         for( Session session : userSessions )
         {
-            session.getAsyncRemote().sendText( json.toString() );
+            session.getAsyncRemote().sendText( message );
         }
     }
 }

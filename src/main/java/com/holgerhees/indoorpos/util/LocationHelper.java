@@ -6,7 +6,7 @@ public class LocationHelper
     {
     }
 
-    public static double getDistance( int rssi, int txPower )
+    public static double getDistance( double rssi, double txPower )
     {
         /*
          * RSSI = TxPower - 10 * n * lg(d)
@@ -17,7 +17,7 @@ public class LocationHelper
 
         //d = 10 ^ ((TxPower - RSSI) / 20)
 
-        double result = Math.pow( 10d, ( (double) txPower - rssi ) / ( 10 * 2 ) );
+        double result = Math.pow( 10d, ( txPower - rssi ) / ( 10 * 2 ) );
 
         return result;
     }

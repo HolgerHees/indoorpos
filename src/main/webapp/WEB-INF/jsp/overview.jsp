@@ -25,6 +25,7 @@
     var openSVGRequests = 3;
     var areaRects = {};
     var trackerCircles = {};
+    var beaconCircles = {};
 
     function wsOpen(message)
     {
@@ -35,11 +36,22 @@
     {
         //console.log(message);
         var obj = JSON.parse(message.data);
-        if (obj.type == "tracker") {
-            drawPoints(trackerCircles, obj.data, "#c82124");
-        }
-        else {
-            drawAreas(areaRects, obj.data, "#000066");
+        for( var i = 0; i < obj.length; i++ )
+        {
+        	var data = obj[i];
+
+	        if (data.type == "beacon")
+	        {
+		        drawPoints(beaconCircles, data.data, "#888800");
+	        }
+	        else if (data.type == "tracker")
+	        {
+		        drawPoints(trackerCircles, data.data, "#c82124");
+	        }
+	        else
+	        {
+		        drawAreas(areaRects, data.data, "#000066");
+	        }
         }
     }
 

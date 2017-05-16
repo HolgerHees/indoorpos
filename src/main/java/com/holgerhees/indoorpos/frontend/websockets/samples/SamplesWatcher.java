@@ -4,6 +4,7 @@ package com.holgerhees.indoorpos.frontend.websockets.samples;
  * Created by hhees on 03.05.17.
  */
 
+import com.google.gson.JsonElement;
 import com.holgerhees.indoorpos.frontend.service.CacheService;
 import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderClient;
 import com.holgerhees.indoorpos.frontend.service.CacheServiceBuilderJob;
@@ -11,6 +12,8 @@ import com.holgerhees.indoorpos.frontend.service.DAOCacheService;
 import com.holgerhees.indoorpos.frontend.websockets.EndPointWatcherClient;
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
+import com.holgerhees.shared.web.util.GSonFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +43,8 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
         String trackerName;
         String beaconName;
         List<CacheService.State> states;
-        int adjustedRssi;
-        int rssi;
+	    double adjustedRssi;
+        double rssi;
         int samples;
         double variance;
     }
@@ -56,20 +59,21 @@ public class SamplesWatcher implements CacheServiceBuilderClient, EndPointWatche
     @Override
     public void notifyCacheChange()
     {
-        if( !SamplesEndPoint.hasSessions() )
-        {
-            return;
-        }
+        if( !SamplesEndPoint.hasSessions() ) return;
 
         List<SamplesWatcher.Samples> samples = getSamples();
-        SamplesEndPoint.broadcastMessage( samples );
+	    JsonElement json = GSonFactory.createGSon().toJsonTree( samples);
+
+        SamplesEndPoint.broadcastMessage( json.toString() );
     }
 
     @Override
     public void notifyNewSession( Session userSession )
     {
         List<SamplesWatcher.Samples> samples = getSamples();
-        SamplesEndPoint.sendMessage( userSession, samples );
+	    JsonElement json = GSonFactory.createGSon().toJsonTree( samples);
+
+        SamplesEndPoint.sendMessage( userSession, json.toString() );
     }
 
     private List<SamplesWatcher.Samples> getSamples()

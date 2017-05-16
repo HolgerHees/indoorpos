@@ -2,9 +2,14 @@ package com.holgerhees.indoorpos.frontend.service;
 
 import com.holgerhees.indoorpos.persistance.dto.BeaconDTO;
 import com.holgerhees.indoorpos.persistance.dto.TrackerDTO;
+import com.holgerhees.indoorpos.util.LocationHelper;
+import com.lemmingapex.trilateration.NonLinearLeastSquaresSolver;
+import com.lemmingapex.trilateration.TrilaterationFunction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
+import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +29,7 @@ public class CacheService
 	Map<Long, Long> activeRoomsByBeaconId = new HashMap<>();
 	Map<Long, TrackedBeacon> strongestBeaconByBeaconIdMap = new HashMap<>();
 	List<TrackedBeacon> usedTrackedBeacons = new ArrayList<>();
+	List<BeaconPosition> beaconPositions = new ArrayList<>();
 
 	private Map<Long, TrackedState> lastTrackedStates = new HashMap<>();
 
@@ -52,6 +58,28 @@ public class CacheService
 		public String toString()
 		{
 			return id;
+		}
+	}
+
+	public static class BeaconPosition
+	{
+		int x;
+		int y;
+		Long roomId;
+
+		public int getX()
+		{
+			return x;
+		}
+
+		public int getY()
+		{
+			return y;
+		}
+
+		public Long getRoomId()
+		{
+			return roomId;
 		}
 	}
 
@@ -178,6 +206,11 @@ public class CacheService
 		return activeRoomsByBeaconId.get( beaconId );
 	}
 
+	public List<BeaconPosition> getBeaconPositions()
+	{
+		return beaconPositions;
+	}
+
 	public void storeTrackerList(Long trackerId, List<TrackedBeacon> trackedBeacons)
 	{
 		trackedBeaconsByTrackerIdMap.put(trackerId, trackedBeacons);
@@ -188,6 +221,7 @@ public class CacheService
 	{
 		List<BeaconDTO> beaconDTOs = daoCacheService.getBeacons();
 
+		List<BeaconPosition> _beaconPositions = new ArrayList<>();
 		List<TrackedBeacon> _usedTrackedBeacons = new ArrayList<>();
 		Map<Long, TrackedBeacon> _strongestBeaconByBeaconIdMap = new HashMap<>();
 		Map<Long, Long> _activeRoomByBeaconId = new HashMap<>();
@@ -218,7 +252,7 @@ public class CacheService
 				{
 					// Cache tracker and beacon. Is used later several times
 					trackedBeacon.tracker = daoCacheService.getTrackerById( trackedBeacon.trackerId );
-					trackedBeacon.beacon = daoCacheService.getBeaconById( trackedBeacon.beaconId );
+					trackedBeacon.beacon = beaconDTO;
 
 					applyStateData( trackedBeacon);
 
@@ -254,13 +288,24 @@ public class CacheService
 				_activeRoomByBeaconId.put( beaconDTO.getId(), activeRoomsByBeaconId.get( beaconDTO.getId() ) );
 			}
 
-			if( trackedBeaconDTOs != null ) _usedTrackedBeacons.addAll( trackedBeaconDTOs );
+			// STEP 7: calculate beacon positions ans collect "used" trackedBeacons
+			if( trackedBeaconDTOs != null )
+			{
+				if( newStrongestTrackedBeacon != null )
+				{
+					BeaconPosition position = getBeaconPositions( newStrongestTrackedBeacon, trackedBeaconDTOs );
+					_beaconPositions.add( position );
+				}
+
+				_usedTrackedBeacons.addAll( trackedBeaconDTOs );
+			}
 		}
 
 		activeRooms = getSortedActiveRooms( _activeRoomByBeaconId );
 		activeRoomsByBeaconId = _activeRoomByBeaconId;
 		strongestBeaconByBeaconIdMap = _strongestBeaconByBeaconIdMap;
 		usedTrackedBeacons = getSortedUsedTrackedBeacons( _usedTrackedBeacons );
+		beaconPositions = _beaconPositions;
 	}
 
 	private TrackedBeacon checkLastActiveTrackerCanFallback( TrackedBeacon lastStrongestTrackedBeacon )
@@ -326,7 +371,6 @@ public class CacheService
 	private TrackedBeacon getStrongestTrackedBeacon(TrackedBeacon t1, TrackedBeacon t2)
 	{
 		if( t2 == null ) return t1;
-
 		if( t1.adjustedRssi > t2.adjustedRssi ) return t1;
 		if( t1.adjustedRssi < t2.adjustedRssi ) return t2;
 		return t1;
@@ -484,4 +528,45 @@ public class CacheService
 		trackedBeacon.adjustedRssi = state.rssi;
 		trackedBeacon.adjustedVariance = adjustedVariance;
 	}
+
+	private BeaconPosition getBeaconPositions(TrackedBeacon newStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs )
+	{
+		double[][] positions = new double[trackedBeaconDTOs.size()][2];
+		double[] distances = new double[trackedBeaconDTOs.size()];
+
+		for( int i = 0; i < trackedBeaconDTOs.size(); i++ )
+		{
+			TrackedBeacon trackedBeacon = trackedBeaconDTOs.get(i);
+			positions[i][0] = trackedBeacon.tracker.getPosX();
+			positions[i][1] = trackedBeacon.tracker.getPosY();
+
+			double distance = LocationHelper.getDistance(trackedBeacon.rssi, -65);
+
+			// convert it to pixel
+			distances[i] = distance * 1000 / 10;
+		}
+
+		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances), new LevenbergMarquardtOptimizer());
+		LeastSquaresOptimizer.Optimum optimum = solver.solve();
+
+		// the answer
+		double[] centroid = optimum.getPoint().toArray();
+
+		BeaconPosition position = new BeaconPosition();
+		position.roomId = newStrongestTrackedBeacon.tracker.getRoomId();
+		position.x = (int) centroid[0];
+		position.y = (int) centroid[1];
+
+		return position;
+	}
+
+	/*private int updateRssi( int rssi1, double variance1, int rssi2, double variance2 )
+	{
+		return (int) ( ( variance2 * rssi1 + variance1 * rssi2 ) / ( rssi1 + rssi2 ) );
+	}
+
+	private double updateVariance( double variance1, double variance2 )
+	{
+		return 1 / ( 1 / variance1 + 1 / variance2 );
+	}*/
 }

@@ -65,24 +65,21 @@ public class SamplesEndPoint
         return userSessions.size() > 0;
     }
 
-    public static void sendMessage( Session session, Object obj )
+    public static void sendMessage( Session session, String message )
     {
         try
         {
-            JsonElement json = GSonFactory.createGSon().toJsonTree( obj );
             // must be synchron
-            session.getBasicRemote().sendText( json.toString() );
+            session.getBasicRemote().sendText( message );
         }
         catch( IOException e ){}
     }
 
-    public static void broadcastMessage( Object obj )
+    public static void broadcastMessage( String message )
     {
-        JsonElement json = GSonFactory.createGSon().toJsonTree( obj );
-
         for( Session session : userSessions )
         {
-            session.getAsyncRemote().sendText( json.toString() );
+            session.getAsyncRemote().sendText( message );
         }
     }
 }

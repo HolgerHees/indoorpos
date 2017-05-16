@@ -49,9 +49,6 @@ public class CacheServiceBuilderJob
     @Autowired
     CacheService cacheService;
 
-    @Autowired
-    CacheServiceNew cacheServiceNew;
-
     private Thread watcher;
 
     private long lastUpdate;
