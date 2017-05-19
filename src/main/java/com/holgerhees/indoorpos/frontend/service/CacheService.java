@@ -508,7 +508,7 @@ public class CacheService
 
 		state.timestamp = now;
 
-		/*// STEP 1: use number of samples as a percentage how much we should go in this direction
+		// STEP 1: use number of samples as a percentage how much we should go in this direction
 		//         factor is between 0 and 1
 		int maxSamples = CacheServiceBuilderJob.INTERVAL_LENGTH / CacheServiceBuilderJob.FREQUENCY;
 		int factor = trackedBeacon.samples / maxSamples;
@@ -526,9 +526,9 @@ public class CacheService
 		state.rssi += effectiveDiffRssi;
 
 		trackedBeacon.adjustedRssi = state.rssi;
-		//trackedBeacon.adjustedVariance = adjustedVariance;*/
+		//trackedBeacon.adjustedVariance = adjustedVariance;
 
-		// STEP 1: increase variance based on missing samples.
+		/*// STEP 1: increase variance based on missing samples.
 		//         if all samples are there we increase the variance by 0
 		//         if all samples are missing we increase the variance by 80 (REFERENCE_VARIANCE)
 		int maxSamples = CacheServiceBuilderJob.INTERVAL_LENGTH / CacheServiceBuilderJob.FREQUENCY;
@@ -553,7 +553,7 @@ public class CacheService
 		state.rssi += effectiveDiffRssi;
 
 		trackedBeacon.adjustedRssi = state.rssi;
-		trackedBeacon.adjustedVariance = adjustedVariance;
+		trackedBeacon.adjustedVariance = adjustedVariance;*/
 	}
 
 	private BeaconPosition getBeaconPositions(TrackedBeacon newStrongestTrackedBeacon, List<TrackedBeacon> trackedBeaconDTOs )
