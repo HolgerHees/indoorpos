@@ -83,6 +83,31 @@ public class ImportData
 	        createArea( areaDAO, guestroomDTO, 749, 265, 973, 29 );
 	        createTracker( trackerDAO, guestroomDTO, "guestroom", "Gästezimmer", "192.168.0.128", -80,-75, 5, 953, 48 );
 
+			// Kind1
+			RoomDTO child1DTO = createRoom( roomDAO, "Kind 1", 1 );
+			createArea( areaDAO, child1DTO, 749, 265, 973, 29 );
+			createTracker( trackerDAO, child1DTO, "child1", "Kind 1", "192.168.0.130", -80,-75, 5, 953, 48 );
+
+			// Kind2
+			RoomDTO child2DTO = createRoom( roomDAO, "Kind 2", 1 );
+			createArea( areaDAO, child2DTO, 749, 265, 973, 29 );
+			createTracker( trackerDAO, child2DTO, "child2", "Kind 2", "192.168.0.129", -80,-75, 5, 953, 48 );
+
+			// Badezimmer
+			RoomDTO bathroomDTO = createRoom( roomDAO, "Badezimmer", 1 );
+			createArea( areaDAO, bathroomDTO, 749, 265, 973, 29 );
+			createTracker( trackerDAO, bathroomDTO, "bathroom", "Badezimmer", "192.168.0.131", -80,-75, 5, 953, 48 );
+
+			// Schlafzimmer
+			RoomDTO bedroomDTO = createRoom( roomDAO, "Schlafzimmer", 1 );
+			createArea( areaDAO, bedroomDTO, 749, 265, 973, 29 );
+			createTracker( trackerDAO, bedroomDTO, "bedroom", "Schlafzimmer", "192.168.0.132", -80,-75, 5, 953, 48 );
+
+			// Schlafzimmer
+			RoomDTO dressingroomDTO = createRoom( roomDAO, "Ankleide", 1 );
+			createArea( areaDAO, dressingroomDTO, 749, 265, 973, 29 );
+			createTracker( trackerDAO, dressingroomDTO, "dressingroom", "Ankleide", "192.168.0.133", -80,-75, 5, 953, 48 );
+
 	        // Close room relations
 	        attachCloseRoom( closeRoomDAO, livingroomDTO, kitchenDTO );
 	        attachCloseRoom( closeRoomDAO, livingroomDTO, floorDTO );
@@ -94,6 +119,11 @@ public class ImportData
 
 	        attachCloseRoom( closeRoomDAO, guestroomDTO, floorDTO );
 
+			attachCloseRoom( closeRoomDAO, child1DTO, floorDTO );
+			attachCloseRoom( closeRoomDAO, child2DTO, floorDTO );
+			attachCloseRoom( closeRoomDAO, bathroomDTO, floorDTO );
+			attachCloseRoom( closeRoomDAO, bedroomDTO, floorDTO );
+			attachCloseRoom( closeRoomDAO, dressingroomDTO, bedroomDTO );
 
 			// Holgers Phone
             createPhone( beaconDAO, "c45927d1606f4242b273c52a294489a6", "Holger", 0 );
